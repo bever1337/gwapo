@@ -1,0 +1,202 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Guild Wars 2 API",
+        "version": "v2.0.0"
+    },
+    "servers": [
+        {
+            "url": "https://api.guildwars2.com"
+        }
+    ],
+    "components": {
+        "parameters": {
+            "langParameter": {
+                "in": "query",
+                "name": "lang",
+                "description": "Language",
+                "schema": {
+                    "type": "string"
+                },
+                "required": false
+            }
+        },
+        "responses": {},
+        "securitySchemes": {
+            "gw2_api_key": {
+                "type": "http",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "paths": {
+        "/v2/achievements": {
+            "get": {
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/langParameter"
+                    },
+                    {
+                        "description": "Achievement Ids",
+                        "in": "query",
+                        "name": "ids",
+                        "required": false,
+                        "schema": {
+                            "items": {
+                                "type": "number"
+                            },
+                            "type": "array",
+                            "uniqueItems": true
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "items": {
+                                                "$ref": "./schema/achievements/achievement.schema.json"
+                                            },
+                                            "type": "array",
+                                            "uniqueItems": true
+                                        },
+                                        {
+                                            "items": {
+                                                "type": "number"
+                                            },
+                                            "type": "array",
+                                            "uniqueItems": true
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "summary": "Returns bulk achievements data",
+                "tags": [
+                    "achievements"
+                ]
+            }
+        },
+        "/v2/achievements/{achievement_id}": {
+            "get": {
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "achievement_id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "./schema/achievements/achievement.schema.json"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "text": {
+                                            "description": "Error message",
+                                            "example": "no such id",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "description": "Achievement not found"
+                    }
+                },
+                "summary": "Returns an achievement by id",
+                "tags": [
+                    "achievements"
+                ]
+            }
+        },
+        "/v2/account": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "./schema/account/account.schema.json"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "text": {
+                                            "description": "Error message",
+                                            "example": "Invalid access token",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "description": "Unauthorized -- No API key provided."
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "text": {
+                                            "description": "Error message",
+                                            "example": "Invalid access token",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "description": "Forbidden -- invalid API key or a valid API key without the necessary permissions."
+                    }
+                },
+                "security": [
+                    {
+                        "gw2_api_key": [
+                            "account builds guilds progression",
+                            "account builds guilds",
+                            "account builds progression",
+                            "account builds",
+                            "account guilds progression",
+                            "account guilds",
+                            "account progression",
+                            "account"
+                        ]
+                    }
+                ],
+                "summary": "This resource returns information about player accounts.",
+                "tags": [
+                    "account"
+                ]
+            }
+        }
+    }
+}
