@@ -9,6 +9,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Debug
+        run: |
+          pwd
+          ls -la
       - name: Generate Swagger UI
         uses: Legion2/swagger-ui-action@v1
         with:
