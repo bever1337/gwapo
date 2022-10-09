@@ -1,0 +1,247 @@
+openapi: 3.0.3
+info:
+  title: Guild Wars 2 API
+  version: 2.0.0
+servers:
+  - url: https://api.guildwars2.com
+components:
+  parameters:
+    langParameter:
+      in: query
+      name: lang
+      description: Language
+      schema:
+        type: string
+      required: false
+  securitySchemes:
+    gw2_api_key:
+      type: http
+      scheme: bearer
+  schemas:
+    achievement_flags:
+      description: 'Achievement categories. TODO alternative to enum that supports comments'
+      enum:
+        - "Pvp"
+        - "CategoryDisplay"
+        - "MoveToTop"
+        - "IgnoreNearlyComplete"
+        - "Repeatable"
+        - "Hidden"
+        - "RequiresUnlock"
+        - "RepairOnLogin"
+        - "Daily"
+        - "Weekly"
+        - "Monthly"
+        - "Permanent"
+    achievement_tiers:
+      type: object
+      description: "Describe's the achievement's tiers."
+      required:
+        - count
+        - points
+      properties:
+        count:
+          type: integer
+          description:  'The number of "things" (achievement-specific) that must be completed to achieve this tier.'
+        points:
+          type: integer
+          description: "The amount of AP awarded for completing this tier."
+    achievement_rewards:
+      description: Describes the rewards given for the achievement.
+      oneOf:
+        - type: object
+          description: Coins
+          required:
+            - type
+            - count
+          properties:
+            type:
+              description: The type of reward.
+              type: string
+              enum:
+                - "Coins"
+            count:
+              description: The number of Coins to be rewarded.
+              type: integer
+        - type: object
+          description: Item
+          required:
+            - type
+            - count
+            - id
+          properties:
+            type:
+              description: The type of reward.
+              type: string
+              enum:
+                - "Item"
+            count:
+              description: The number of `id` to be rewarded.
+              type: integer
+            id:
+              description: The item ID to be rewarded.
+              type: integer
+        - type: object
+          description: Mastery
+          required:
+            - type
+            - id
+            - region
+          properties:
+            type:
+              description: The type of reward.
+              type: string
+              enum:
+                - "Mastery"
+            id:
+              description: The mastery point ID to be rewarded.
+              type: integer
+            region:
+              description: The region the Mastery Point applies to. Either Tyria, Maguuma, Desert or Tundra.
+              type: string
+        - type: object
+          description: Title
+          required:
+            - type
+            - id
+          properties:
+            type:
+              description: The type of reward.
+              type: string
+              enum:
+                - "Title"
+            id:
+              description: The title ID.
+              type: integer
+    achievement_bits:
+      type: object
+      required:
+        - type
+      properties:
+        type:
+          description: The type of bit. Can be `Text`, `Item`, `Minipet`, or `Skin`
+          type: string
+        id:
+          description: The ID of the item, mini, or skin, if applicable.
+          type: number
+        text:
+          description: The text for the bit, if `type` is `Text`
+          type: string
+    achievement:
+      type: object
+      required:
+        - id
+        - name
+        - description
+        - requirement
+        - locked_text
+        - type
+        - flags
+        - tiers
+      properties:
+        id:
+          description: The achievement id.
+          type: integer
+        icon:
+          description: The achievement icon.
+          type: string
+        name:
+          description: The achievement name.
+          type: string
+        description:
+          description: The achievement description.
+          type: string
+        requirement:
+          description: The achievement requirement as listed in-game.
+          type: string
+        locked_text:
+          description: The achievement description prior to unlocking it.
+          type: integer
+        type:
+          description: 'The achievement type. Possible values: Default, ItemSet. TODO as enum or oneOf with description'
+          type: string
+        flags:
+          type: array
+          items:
+            $ref: '#/components/schemas/achievement_flags'
+        tiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/achievement_tiers'
+        prerequisites:
+          description: Contains an array of achievement `id`s required to progress the given achievement.
+          type: array
+          items:
+            type: integer
+        rewards:
+          type: array
+          items:
+            $ref: '#/components/schemas/achievement_rewards'
+        bits:
+          type: array
+          items:
+            $ref: '#/components/schemas/achievement_bits'
+        point_cap:
+          type: integer
+          description: The maximum number of AP that can be rewarded by an achievement flagged as `Repeatable`.
+paths:
+  /v2/achievements:
+    get:
+      summary: Returns bulk achievements data
+      parameters:
+        - $ref: '#/components/parameters/langParameter'
+        - in: query
+          name: ids
+          description: Achievement Ids
+          schema:
+            type: array
+            items:
+              type: number
+            uniqueItems: true
+          required: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: array
+                    items:
+                      type: number
+                    uniqueItems: true
+                  - type: array
+                    uniqueItems: true
+                    items:
+                      $ref: '#/components/schemas/achievement'
+              examples:
+                Root:
+                  description: If the root endpoint (`/v2/achievements`) is accessed without specifying an id, a list of all ids is returned
+                  value: [ 1, 2, 3 ]
+                Ids:
+                  value: [{todo: true}]
+  /v2/achievements/{achievement_id}:
+    get:
+      summary: Returns an achievement by id
+      parameters:
+        - in: path
+          name: achievement_id
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Achievement not found
+          content:
+            application/json:
+              examples:
+                NotFound:
+                  value: { text: "no such id" }
+              schema:
+                type: object
+                properties:
+                  text:
+                    description: Error message
+                    type: string
