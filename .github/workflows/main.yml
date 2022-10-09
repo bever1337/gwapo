@@ -12,12 +12,12 @@ jobs:
       - name: Debug
         run: |
           pwd
-          ls -la
+          ls ./gwapo -la
       - name: Generate Swagger UI
         uses: Legion2/swagger-ui-action@v1
         with:
           output: swagger-ui
-          spec-file: api.json
+          spec-file: gwapo/api.json
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
