@@ -1,0 +1,143 @@
+openapi: 3.0.0
+info:
+  title: Guild Wars 2 API
+  version: v2.0.0
+servers:
+  - url: https://api.guildwars2.com
+components:
+  parameters:
+    langParameter:
+      in: query
+      name: lang
+      description: Language
+      schema:
+        type: string
+      required: false
+  responses:
+    Forbidden:
+      description: "Forbidden -- invalid API key or a valid API key without the necessary permissions."
+      content:
+        application/json:
+          example: { text: "Invalid access token" }
+          schema:
+            type: object
+            properties:
+              text:
+                description: Error message
+                type: string
+    Unauthorized:
+      description: "Unauthorized -- No API key provided."
+      content:
+        application/json:
+          example: { text: "Invalid access token" }
+          schema:
+            type: object
+            properties:
+              text:
+                description: Error message
+                type: string
+  securitySchemes:
+    gw2_api_key:
+      type: http
+      scheme: bearer
+paths:
+  /v2/achievements:
+    get:
+      summary: Returns bulk achievements data
+      parameters:
+        - $ref: "#/components/parameters/langParameter"
+        - in: query
+          name: ids
+          description: Achievement Ids
+          schema:
+            type: array
+            items:
+              type: number
+            uniqueItems: true
+          required: false
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: array
+                    items:
+                      type: number
+                    uniqueItems: true
+                  - type: array
+                    uniqueItems: true
+                    items:
+                      $ref: "./schema/achievements/achievement.schema.json"
+      tags:
+        - achievements
+  /v2/achievements/{achievement_id}:
+    get:
+      summary: Returns an achievement by id
+      parameters:
+        - in: path
+          name: achievement_id
+          schema:
+            type: integer
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./schema/achievements/achievement.schema.json"
+        "404":
+          description: Achievement not found
+          content:
+            application/json:
+              examples:
+                NotFound:
+                  value: { text: "no such id" }
+              schema:
+                type: object
+                properties:
+                  text:
+                    description: Error message
+                    type: string
+      tags:
+        - achievements
+  /v2/account:
+    get:
+      summary: This resource returns information about player accounts.
+      security:
+        - gw2_api_key:
+            - account
+            - account
+              builds
+            - account
+              guilds
+            - account
+              progression
+            - account
+              builds
+              guilds
+            - account
+              builds
+              progression
+            - account
+              guilds
+              progression
+            - account
+              builds
+              guilds
+              progression
+      responses:
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./schema/account/account.schema.json"
+      tags:
+        - account
