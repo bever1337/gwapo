@@ -1,0 +1,53 @@
+{
+    "description": "Achievement categories",
+    "oneOf": [
+        {
+            "const": "CategoryDisplay",
+            "description": "is a meta achievement"
+        },
+        {
+            "const": "Daily",
+            "description": "Flags an achievement as resetting daily."
+        },
+        {
+            "const": "Hidden",
+            "description": "hidden achievement; must fulfil unlock requirements before making progress or showing in the hero panel"
+        },
+        {
+            "const": "IgnoreNearlyComplete",
+            "description": "doesn't appear in the \"nearly complete\" UI"
+        },
+        {
+            "const": "Monthly",
+            "description": "Flags an achievement as resetting monthly."
+        },
+        {
+            "const": "MoveToTop",
+            "description": "affects in-game UI collation"
+        },
+        {
+            "const": "Permanent",
+            "description": "Flags an achievement as progress never reseting."
+        },
+        {
+            "const": "Pvp",
+            "description": "can only get progress in PvP or WvW"
+        },
+        {
+            "const": "RepairOnLogin",
+            "description": "unknown"
+        },
+        {
+            "const": "Repeatable",
+            "description": "can be repeated multiple times"
+        },
+        {
+            "const": "RequiresUnlock",
+            "description": "must fulfil unlock requirements before making progress but will show in the hero panel before unlocking"
+        },
+        {
+            "const": "Weekly",
+            "description": "Flags an achievement as resetting weekly."
+        }
+    ]
+}
