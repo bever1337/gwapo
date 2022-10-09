@@ -6,22 +6,9 @@ on:
       - main
 
 jobs:
-  generate-openapi-spec:
-    runs-on: windows-latest
-    steps:
-      - name: Upload api.json
-        uses: actions/upload-artifact@v2
-        with:
-          name: spec-file
-          path: api.json
   deploy:
-    needs: generate-openapi-spec
     runs-on: ubuntu-latest
     steps:
-      - name: Download api.json
-        uses: actions/download-artifact@v2
-        with:
-          name: spec-file
       - name: Generate Swagger UI
         uses: Legion2/swagger-ui-action@v1
         with:
