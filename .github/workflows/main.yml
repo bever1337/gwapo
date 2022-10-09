@@ -9,27 +9,16 @@ jobs:
   generate-openapi-spec:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 5.0.100
-      - name: Install dependencies
-        run: dotnet restore
-      - name: Install tools
-        run: dotnet tool restore
-      - name: Generate openapi.json
-        run: dotnet nswag run nswag.json
-      - name: Upload openapi.json
+      - name: Upload api.json
         uses: actions/upload-artifact@v2
         with:
           name: spec-file
-          path: openapi.json
+          path: api.json
   deploy:
     needs: generate-openapi-spec
     runs-on: ubuntu-latest
     steps:
-      - name: Download openapi.json
+      - name: Download api.json
         uses: actions/download-artifact@v2
         with:
           name: spec-file
@@ -37,7 +26,7 @@ jobs:
         uses: Legion2/swagger-ui-action@v1
         with:
           output: swagger-ui
-          spec-file: openapi.json
+          spec-file: api.json
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
