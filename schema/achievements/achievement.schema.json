@@ -1,78 +1,78 @@
 {
-    "properties": {
-        "bits": {
-            "items": {
-                "$ref": "./achievement_bits.schema.json"
-            },
-            "type": "array"
-        },
-        "description": {
-            "description": "The achievement description.",
-            "type": "string"
-        },
-        "flags": {
-            "items": {
-                "$ref": "./achievement_flags.schema.json"
-            },
-            "type": "array"
-        },
-        "icon": {
-            "description": "The achievement icon.",
-            "type": "string"
-        },
-        "id": {
-            "description": "The achievement id.",
-            "type": "integer"
-        },
-        "locked_text": {
-            "description": "The achievement description prior to unlocking it.",
-            "type": "integer"
-        },
-        "name": {
-            "description": "The achievement name.",
-            "type": "string"
-        },
-        "point_cap": {
-            "description": "The maximum number of AP that can be rewarded by an achievement flagged as `Repeatable`.",
-            "type": "integer"
-        },
-        "prerequisites": {
-            "description": "Contains an array of achievement `id`s required to progress the given achievement.",
-            "items": {
-                "type": "integer"
-            },
-            "type": "array"
-        },
-        "requirement": {
-            "description": "The achievement requirement as listed in-game.",
-            "type": "string"
-        },
-        "rewards": {
-            "items": {
-                "$ref": "./achievement_rewards.schema.json"
-            },
-            "type": "array"
-        },
-        "tiers": {
-            "items": {
-                "$ref": "./achievement_tiers.schema.json"
-            },
-            "type": "array"
-        },
-        "type": {
-            "description": "The achievement type. Possible values: Default, ItemSet. TODO as enum or oneOf with description",
-            "type": "string"
-        }
+  "properties": {
+    "bits": {
+      "items": {
+        "$ref": "./achievement_bits.schema.json"
+      },
+      "type": "array"
     },
-    "required": [
-        "description",
-        "flags",
-        "id",
-        "locked_text",
-        "name",
-        "requirement",
-        "tiers",
-        "type"
-    ],
-    "type": "object"
+    "description": {
+      "description": "The achievement description.",
+      "type": "string"
+    },
+    "flags": {
+      "items": {
+        "$ref": "./achievement_flags.schema.json"
+      },
+      "type": "array"
+    },
+    "icon": {
+      "description": "The achievement icon.",
+      "type": "string"
+    },
+    "id": {
+      "description": "The achievement id.",
+      "type": "integer"
+    },
+    "locked_text": {
+      "description": "The achievement description prior to unlocking it.",
+      "type": "integer"
+    },
+    "name": {
+      "description": "The achievement name.",
+      "type": "string"
+    },
+    "point_cap": {
+      "description": "The maximum number of AP that can be rewarded by an achievement flagged as `Repeatable`.",
+      "type": "integer"
+    },
+    "prerequisites": {
+      "description": "Contains an array of achievement `id`s required to progress the given achievement.",
+      "items": {
+        "type": "integer"
+      },
+      "type": "array"
+    },
+    "requirement": {
+      "description": "The achievement requirement as listed in-game.",
+      "type": "string"
+    },
+    "rewards": {
+      "items": {
+        "$ref": "./achievement_rewards.schema.json"
+      },
+      "type": "array"
+    },
+    "tiers": {
+      "items": {
+        "$ref": "./achievement_tiers.schema.json"
+      },
+      "type": "array"
+    },
+    "type": {
+      "description": "The achievement type. Possible values: Default, ItemSet. TODO as enum or oneOf with description",
+      "type": "string"
+    }
+  },
+  "required": [
+    "description",
+    "flags",
+    "id",
+    "locked_text",
+    "name",
+    "requirement",
+    "tiers",
+    "type"
+  ],
+  "type": "object"
 }

@@ -1,0 +1,23 @@
+{
+  "allOf": [
+    {
+      "$ref": "./tokeninfo.schema.json"
+    },
+    {
+      "properties": {
+        "type": { "$ref": "./tokeninfo_type.schema.json" },
+        "expires_at": { "format": "datetime", "type": "string" },
+        "issued_at": { "format": "datetime", "type": "string" },
+        "urls": {
+          "type": "array",
+          "items": {
+            "format": "url",
+            "type": "string"
+          }
+        }
+      },
+      "required": ["type"],
+      "type": "object"
+    }
+  ]
+}

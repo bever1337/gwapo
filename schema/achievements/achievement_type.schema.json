@@ -1,13 +1,13 @@
 {
-    "description": "The achievement type.",
-    "oneOf": [
-        {
-            "const": "Default",
-            "description": "A default achievement."
-        },
-        {
-            "const": "ItemSet",
-            "description": "Achievement is linked to Collections"
-        }
-    ]
+  "description": "The achievement type.",
+  "oneOf": [
+    {
+      "const": "Default",
+      "description": "A default achievement."
+    },
+    {
+      "const": "ItemSet",
+      "description": "Achievement is linked to Collections"
+    }
+  ]
 }

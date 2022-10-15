@@ -1,18 +1,15 @@
 {
-    "description": "Describe's the achievement's tiers",
-    "properties": {
-        "count": {
-            "description": "The number of \"things\" (achievement-specific) that must be completed to achieve this tier.",
-            "type": "integer"
-        },
-        "points": {
-            "description": "The amount of AP awarded for completing this tier.",
-            "type": "integer"
-        }
+  "description": "Describe's the achievement's tiers",
+  "properties": {
+    "count": {
+      "description": "The number of \"things\" (achievement-specific) that must be completed to achieve this tier.",
+      "type": "integer"
     },
-    "required": [
-        "count",
-        "points"
-    ],
-    "type": "object"
+    "points": {
+      "description": "The amount of AP awarded for completing this tier.",
+      "type": "integer"
+    }
+  },
+  "required": ["count", "points"],
+  "type": "object"
 }
