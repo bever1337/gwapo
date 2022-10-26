@@ -1,8 +1,6 @@
 {
   "name": "gwapo",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -22,7 +20,13 @@
   "dependencies": {
     "@reduxjs/toolkit": "^1.8.6",
     "dotenv": "^16.0.3",
-    "nano": "^10.0.0",
+    "memorystream": "^0.3.1",
+    "node-fetch": "^3.2.10",
+    "pouchdb": "^7.3.0",
+    "pouchdb-adapter-indexeddb": "^7.3.0",
+    "pouchdb-find": "^7.3.0",
+    "pouchdb-load": "^1.4.6",
+    "pouchdb-replication-stream": "^1.2.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.4"
@@ -30,13 +34,26 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^14.4.3",
-    "@types/jest": "^29.1.2",
-    "@types/node": "^18.11.0",
-    "@types/react": "^18.0.21",
-    "@types/react-dom": "^18.0.6",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^17.0.45",
+    "@types/pouchdb": "^6.4.0",
+    "@types/react": "^18.0.22",
+    "@types/react-dom": "^18.0.7",
     "react-scripts": "^5.0.1",
-    "typescript": "^4.8.4"
+    "typescript": "^4.8.4",
+    "workbox-background-sync": "^6.5.4",
+    "workbox-broadcast-update": "^6.5.4",
+    "workbox-cacheable-response": "^6.5.4",
+    "workbox-core": "^6.5.4",
+    "workbox-expiration": "^6.5.4",
+    "workbox-google-analytics": "^6.5.4",
+    "workbox-navigation-preload": "^6.5.4",
+    "workbox-precaching": "^6.5.4",
+    "workbox-range-requests": "^6.5.4",
+    "workbox-routing": "^6.5.4",
+    "workbox-strategies": "^6.5.4",
+    "workbox-streams": "^6.5.4"
   },
   "eslintConfig": {
     "extends": [
