@@ -4,7 +4,7 @@ import { MaterialsTab } from "./materials-tab";
 
 import { pouch } from "../features/pouch";
 
-interface Materials {
+interface IMaterials {
   id: number;
   items: number[];
   name: string;
@@ -12,7 +12,7 @@ interface Materials {
 }
 
 export function MaterialsContainer() {
-  const [items, setItems] = useState<Materials[]>([]);
+  const [items, setItems] = useState<IMaterials[]>([]);
   useEffect(() => {
     pouch
       .find({
@@ -22,7 +22,7 @@ export function MaterialsContainer() {
         fields: ["id", "items", "name", "order"],
       })
       .then(({ docs }) => {
-        setItems(docs as unknown as Materials[]);
+        setItems(docs as unknown as IMaterials[]);
       })
       .catch(console.warn);
   }, []);

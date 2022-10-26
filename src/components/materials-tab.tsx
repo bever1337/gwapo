@@ -1,24 +1,25 @@
 import React, { Fragment, useEffect, useState } from "react";
 
 import { Material } from "./material";
+import classes from "./materials.module.css";
 
 import { pouch } from "../features/pouch";
 
-interface Materials {
+interface IMaterials {
   id: number;
   items: number[];
   name: string;
   order: number;
 }
 
-interface Material {
+interface IMaterial {
   icon: `https://${string}`;
   id: number;
   name: string;
 }
 
-export function MaterialsTab({ materials }: { materials: Materials }) {
-  const [items, setItems] = useState<Material[]>([]);
+export function MaterialsTab({ materials }: { materials: IMaterials }) {
+  const [items, setItems] = useState<IMaterial[]>([]);
   useEffect(() => {
     pouch
       .allDocs({
@@ -27,19 +28,23 @@ export function MaterialsTab({ materials }: { materials: Materials }) {
       })
       .then((allDocsResponse) => {
         setItems(
-          allDocsResponse.rows.map((row) => row.doc as unknown as Material)
+          allDocsResponse.rows.map((row) => row.doc as unknown as IMaterial)
         );
       })
       .catch(console.warn);
   }, [materials]);
   return (
-    <Fragment>
+    <section>
       <h2>{materials.name}</h2>
-      <ul>
+      <label>
+        {"\u25B2"}
+        <input name={`collapse-${materials.name}`} type="checkbox" />
+      </label>
+      <ul className={[classes["materials__list"]].join(" ")}>
         {items.map((item) => (
           <Material key={item.id} material={item} />
         ))}
       </ul>
-    </Fragment>
+    </section>
   );
 }

@@ -1,12 +1,14 @@
 import React from "react";
 
-interface Material {
+import classes from "./materials.module.css";
+
+interface IMaterial {
   icon: `https://${string}`;
   id: number;
   name: string;
 }
 
-export function Material({ material }: { material: Material }) {
+export function Material({ material }: { material: IMaterial }) {
   // const [items, setItems] = useState<Material[]>([]);
   // useEffect(() => {
   //   pouch
@@ -23,8 +25,11 @@ export function Material({ material }: { material: Material }) {
   // }, [materials]);
   return (
     <li>
-      {material.name}
-      <img alt={material.name} src={material.icon} />
+      <img
+        className={[classes["material__img"]].join(" ")}
+        alt={material.name}
+        src={material.icon}
+      />
     </li>
   );
 }

@@ -1,0 +1,12 @@
+.materials__list {
+  display: grid;
+  gap: 0.25rem;
+  grid-template-columns: repeat(10, auto);
+  list-style: none;
+}
+
+.material__img {
+  display: block;
+  height: 4rem;
+  width: 4rem;
+}
