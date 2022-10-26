@@ -1,8 +1,25 @@
 .materials__list {
   display: grid;
   gap: 0.25rem;
-  grid-template-columns: repeat(10, auto);
+  grid-template-columns: repeat(10, 4rem);
+  justify-content: flex-start;
   list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.materials__section {
+  display: inline-block;
+}
+
+.materials__nav {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.materials__name {
+  flex: 1 1 auto;
 }
 
 .material__img {

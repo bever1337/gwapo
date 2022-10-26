@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Material } from "./material";
 import classes from "./materials.module.css";
@@ -18,7 +18,11 @@ interface IMaterial {
   name: string;
 }
 
+const TRIANGLE_CLOSED = "\u25B2";
+const TRIANGLE_OPEN = "\u25BC";
+
 export function MaterialsTab({ materials }: { materials: IMaterials }) {
+  const [collapsed, setCollapsed] = useState(false);
   const [items, setItems] = useState<IMaterial[]>([]);
   useEffect(() => {
     pouch
@@ -33,17 +37,29 @@ export function MaterialsTab({ materials }: { materials: IMaterials }) {
       })
       .catch(console.warn);
   }, [materials]);
+  const materialElements = items.map((item) => (
+    <Material key={item.id} material={item} />
+  ));
   return (
-    <section>
-      <h2>{materials.name}</h2>
-      <label>
-        {"\u25B2"}
-        <input name={`collapse-${materials.name}`} type="checkbox" />
-      </label>
+    <section className={[classes["materials__section"]].join(" ")}>
+      <div className={[classes["materials__nav"]].join(" ")}>
+        <h2 className={[classes["materials__name"]].join(" ")}>
+          {materials.name}
+        </h2>
+        <label>
+          {collapsed ? TRIANGLE_CLOSED : TRIANGLE_OPEN}
+          <input
+            checked={collapsed}
+            onChange={(event) => {
+              setCollapsed(event.target.checked);
+            }}
+            name={`collapse-${materials.name}`}
+            type="checkbox"
+          />
+        </label>
+      </div>
       <ul className={[classes["materials__list"]].join(" ")}>
-        {items.map((item) => (
-          <Material key={item.id} material={item} />
-        ))}
+        {collapsed ? null : materialElements}
       </ul>
     </section>
   );
