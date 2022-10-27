@@ -6,8 +6,13 @@ import type {
 } from "@reduxjs/toolkit/query/react";
 import type { BaseQueryApi } from "@reduxjs/toolkit/src/query/baseQueryTypes";
 
+import type { Scope } from "../types/token";
+
+import type { RootState } from ".";
+
 interface BaseQueryExtraOptions {
   baseUrl?: `https://${string}`;
+  scope?: Scope[];
 }
 
 const rawBaseQuery = fetchBaseQuery();
@@ -23,16 +28,22 @@ const baseQuery: BaseQueryFn<
   queryApi: BaseQueryApi,
   extraOptions: BaseQueryExtraOptions
 ) {
-  return rawBaseQuery(
-    { ...args, url: `${extraOptions.baseUrl!}${args.url}` },
-    queryApi,
-    extraOptions
-  );
+  const nextArguments = { ...args };
+  if (extraOptions.baseUrl) {
+    nextArguments.url = `${extraOptions.baseUrl}${args.url}`;
+  }
+  if (Array.isArray(extraOptions.scope)) {
+    nextArguments.params = args.params ?? {};
+    nextArguments.params.access_token = (
+      queryApi.getState() as RootState
+    ).client.access?.id!;
+  }
+  return rawBaseQuery(nextArguments, queryApi, extraOptions);
 };
 
 export const api = createApi({
   baseQuery,
   endpoints: () => ({}),
   reducerPath: "cache",
-  tagTypes: [],
+  tagTypes: ["access_token"],
 });

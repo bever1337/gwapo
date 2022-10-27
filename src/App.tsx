@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Provider } from "react-redux";
 
+import { Authenticator } from "./components/authenticator";
 // import { RarityTab } from "./components/rarity-tab";
 import { MaterialsContainer } from "./components/materials-container";
 import { pouch } from "./features/pouch";
@@ -39,14 +40,11 @@ export function App() {
     // pouch
     //   .load(process.env.PUBLIC_URL + "/dump.txt")
     //   .then(() =>
-    //     pouch.createIndex({
-    //       index: { fields: ["$id", "rarity", "type"] },
-    //     })
-    //   )
     pouch
       .createIndex({
         index: { fields: ["$id", "rarity", "type"] },
       })
+      // )
       .then(() => {
         setReady(true);
       })
@@ -56,6 +54,7 @@ export function App() {
   }, []);
   return (
     <Provider store={appStore}>
+      <Authenticator />
       {ready ? <MaterialsContainer /> : null}
     </Provider>
   );

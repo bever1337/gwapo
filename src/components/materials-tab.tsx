@@ -5,6 +5,8 @@ import classes from "./materials.module.css";
 
 import { pouch } from "../features/pouch";
 
+import type { AccountMaterial } from "../store/api/read-account-materials";
+
 interface IMaterials {
   id: number;
   items: number[];
@@ -21,7 +23,13 @@ interface IMaterial {
 const TRIANGLE_CLOSED = "\u25B2";
 const TRIANGLE_OPEN = "\u25BC";
 
-export function MaterialsTab({ materials }: { materials: IMaterials }) {
+export function MaterialsTab({
+  accountMaterials,
+  materials,
+}: {
+  accountMaterials: { [index: number]: AccountMaterial };
+  materials: IMaterials;
+}) {
   const [collapsed, setCollapsed] = useState(false);
   const [items, setItems] = useState<IMaterial[]>([]);
   useEffect(() => {
@@ -37,8 +45,13 @@ export function MaterialsTab({ materials }: { materials: IMaterials }) {
       })
       .catch(console.warn);
   }, [materials]);
+  // console.log(materials.name, accountMaterials);
   const materialElements = items.map((item) => (
-    <Material key={item.id} material={item} />
+    <Material
+      accountMaterial={accountMaterials[item.id]}
+      key={item.id}
+      material={item}
+    />
   ));
   return (
     <section className={[classes["materials__section"]].join(" ")}>
