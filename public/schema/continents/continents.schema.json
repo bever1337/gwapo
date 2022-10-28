@@ -1,0 +1,27 @@
+{
+  "$id": "continents",
+  "properties": {
+    "continent_dims": {
+      "type": "array",
+      "description": "The width and height dimensions of the continent.",
+      "items": { "type": "integer" },
+      "maxItems": 2,
+      "minItems": 2
+    },
+    "floors": {
+      "description": "A list of floors ids available for this continent.",
+      "type": "array",
+      "items": { "type": "integer" }
+    },
+    "id": { "description": "The id of the continent.", "type": "integer" },
+    "min_zoom": {
+      "description": "The minimal zoom level for use with the map tile service.",
+      "type": "integer"
+    },
+    "max_zoom": {
+      "description": "The maximum zoom level for use with the map tile service.",
+      "type": "integer"
+    },
+    "name": { "description": "The name of the continent.", "type": "string" }
+  }
+}

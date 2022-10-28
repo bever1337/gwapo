@@ -1,8 +1,4 @@
-const PouchDB = require("pouchdb");
-const replicationStream = require("pouchdb-replication-stream");
-
-PouchDB.plugin(replicationStream.plugin);
-PouchDB.adapter("writableStream", replicationStream.adapters.writableStream);
+const { pouch } = require("./common");
 
 const BATCH_SIZE = 50;
 const BATCH_STEP = 5;
@@ -10,7 +6,6 @@ const BATCH_TASK_MINIMUM_LENGTH = 1000;
 const ITEMS_URL = "https://api.guildwars2.com/v2/materials";
 
 async function main() {
-  const pouch = new PouchDB("gwapo-db");
   const fetch = await import("node-fetch").then(({ default: fetch }) => fetch);
   /** Fetch no faster than 1 second */
   const gatekeptFetch = (requestInfo, requestInit) =>

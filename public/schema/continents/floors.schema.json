@@ -1,0 +1,40 @@
+{
+  "$id": "continents/floors",
+  "properties": {
+    "clamped_view": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "integer"
+        },
+        "maxItems": 2,
+        "minItems": 2
+      },
+      "maxItems": 2,
+      "minItems": 2
+    },
+    "continent_id": {
+      "description": "The floor's parent's AKA continent's id",
+      "type": "integer"
+    },
+    "id": {
+      "description": "The floor id",
+      "type": "integer"
+    },
+    "regions": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "texture_dims": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "maxItems": 2,
+      "minItems": 2
+    }
+  }
+}
