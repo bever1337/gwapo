@@ -2,3 +2,4 @@
 build/
 gwapo-db/
 node_modules/
+public/dump.txt
