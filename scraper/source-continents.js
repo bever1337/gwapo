@@ -6,67 +6,41 @@ const BATCH_STEP = 5;
 const BATCH_TASK_MINIMUM_LENGTH = 1000;
 const CONTINENTS_URL = "https://api.guildwars2.com/v2/continents";
 
-async function main() {
-  /** Fetch no faster than 1 second */
-  const slowFetch = (requestInfo, requestInit) =>
-    Promise.all([
-      import("node-fetch")
-        .then(({ default: fetch }) => fetch(requestInfo, requestInit))
-        .then((response) => response.json()),
-      new Promise((resolve) => {
-        setTimeout(() => {
-          resolve();
-        }, BATCH_TASK_MINIMUM_LENGTH);
-      }),
-    ]).then(([response]) => response);
+/** Fetch no faster than 1 second */
+const slowFetch = (requestInfo, requestInit) =>
+  Promise.all([
+    import("node-fetch")
+      .then(({ default: fetch }) => fetch(requestInfo, requestInit))
+      .then((response) => response.json()),
+    new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, BATCH_TASK_MINIMUM_LENGTH);
+    }),
+  ]).then(([response]) => response);
 
+async function main() {
   console.log("Fetching continents indices...");
-  /** @type {integer[]} */
   const continentsIds = await slowFetch(CONTINENTS_URL);
-  console.log(`Found ${continentsIds.length} continents.`);
-  console.log(`Batch size ${BATCH_SIZE}.`);
-  console.log(
-    `${Math.ceil(continentsIds.length / BATCH_SIZE)} fetches required.`
+  console.log(`Fetching continents: ${continentsIds.join(",")}`);
+  const continentsDataUrl = `${CONTINENTS_URL}?ids=${continentsIds.join(",")}`;
+  const gw2Continents = await slowFetch(continentsDataUrl);
+  console.log("Putting continents in pouch");
+  await pouch.bulkDocs(
+    gw2Continents.map((continent) => ({
+      _id: `gwapo/maps/continents_${continent.id}`,
+      $id: "gwapo/maps/continents",
+      continent_dims: continent.continent_dims,
+      id: continent.id,
+      min_zoom: continent.min_zoom,
+      max_zoom: continent.max_zoom,
+      name: continent.name,
+    }))
   );
 
-  let continentsDocs = [];
-  for (let i = 0; i < continentsIds.length; i += BATCH_SIZE * BATCH_STEP) {
-    const continentsBatch = [];
-    console.log(
-      `Fetched ${i} continents so far. ${(
-        (i / continentsIds.length) *
-        100
-      ).toFixed(2)}% complete`
-    );
-    for (
-      let j = i;
-      j < Math.min(i + BATCH_STEP * BATCH_SIZE, continentsIds.length);
-      j += BATCH_SIZE
-    ) {
-      const continentsDataUrl = `${CONTINENTS_URL}?ids=${continentsIds
-        .slice(j, j + BATCH_SIZE)
-        .join(",")}`;
-      continentsBatch.push(slowFetch(continentsDataUrl));
-    }
-    const batchedContinentsDocs = (await Promise.all(continentsBatch))[0].map(
-      (continent) => ({
-        ...continent,
-        _id: `continents_${continent.id}`,
-        $id: "continents",
-      })
-    );
-    continentsDocs = continentsDocs.concat(batchedContinentsDocs);
-  }
-  await pouch.bulkDocs(continentsDocs);
-
-  for (
-    let continentIndex = 0;
-    continentIndex < continentsDocs.length;
-    continentIndex += 1
-  ) {
-    const continent = continentsDocs[continentIndex];
-    let flattenedContinentFloors = [];
-    console.log("Fetching floors for", continent.name);
+  for (const continent of gw2Continents) {
+    let gw2Floors = [];
+    console.log(`Fetching floors for ${continent.name} in batches...`);
     for (
       let batchIndex = 0;
       batchIndex < continent.floors.length;
@@ -79,90 +53,91 @@ async function main() {
         Math.min(batchIndex + BATCH_STEP * BATCH_SIZE, continent.floors.length);
         batchStartIndex += BATCH_SIZE
       ) {
-        const floorsDataUrl = `${CONTINENTS_URL}/${
-          continent.id
-        }/floors?ids=${continent.floors
+        const idsThisBatch = continent.floors
           .slice(batchStartIndex, batchStartIndex + BATCH_SIZE)
-          .join(",")}`;
+          .join(",");
+        console.log(
+          `Fetched ${batchStartIndex} ${continent.name} floors so far, ${(
+            (batchStartIndex / continent.floors.length) *
+            100
+          ).toFixed(2)}%. Ids this batch: ${idsThisBatch}`
+        );
+        const floorsDataUrl = `${CONTINENTS_URL}/${continent.id}/floors?ids=${idsThisBatch}`;
         floorsBatch.push(slowFetch(floorsDataUrl));
-      } // end batch
-      flattenedContinentFloors = (await Promise.all(floorsBatch)).reduce(
-        (acc, floorDocs) =>
-          floorDocs.reduce((accInner, floor) => accInner.concat(floor), acc),
-        flattenedContinentFloors
-      );
-    } // end floors
-
-    const floorsDocs = [];
-    for (
-      let floorIndex = 0;
-      floorIndex < flattenedContinentFloors.length;
-      floorIndex += 1
-    ) {
-      const floor = flattenedContinentFloors[floorIndex];
-      floorsDocs.push({
-        ...floor,
-        continent_id: continent.id,
-        _id: `continents/floors_${continent.id}_${floor.id}`,
-        regions: Object.values(floor.regions || {}).map((region) => region.id),
-      });
-    }
-    await pouch.bulkDocs(floorsDocs);
-
-    const regionsDocs = [];
-    for (
-      let floorIndex = 0;
-      floorIndex < flattenedContinentFloors.length;
-      floorIndex += 1
-    ) {
-      const floor = flattenedContinentFloors[floorIndex];
-      const floorRegions = Object.values(floor.regions);
-      for (
-        let regionIndex = 0;
-        regionIndex < floorRegions.length;
-        regionIndex += 1
-      ) {
-        const region = floorRegions[regionIndex];
-        regionsDocs.push({
-          ...region,
-          continent_id: continent.id,
-          floor_id: floor.id,
-          _id: `continents/regions_${continent.id}_${floor.id}_${region.id}`,
-          maps: Object.values(region.maps).map((map) => map.id),
-        });
+      }
+      for (const floorsInBatch of await Promise.all(floorsBatch)) {
+        gw2Floors = gw2Floors.concat(floorsInBatch);
       }
     }
-    await pouch.bulkDocs(regionsDocs);
+    console.log(`Putting ${continent.name} floors in pouch`);
+    await pouch.bulkDocs(
+      gw2Floors.map((floor) => ({
+        $id: "gwapo/maps/floors",
+        _id: `gwapo/maps/floors_${continent.id}_${floor.id}`,
+        clamped_view: floor.clamped_view,
+        continent_id: continent.id,
+        id: floor.id,
+        texture_dims: floor.texture_dims,
+      }))
+    );
 
-    const mapsDocs = [];
-    for (
-      let floorIndex = 0;
-      floorIndex < flattenedContinentFloors.length;
-      floorIndex += 1
-    ) {
-      const floor = flattenedContinentFloors[floorIndex];
-      const floorRegions = Object.values(floor.regions);
-      for (
-        let regionIndex = 0;
-        regionIndex < floorRegions.length;
-        regionIndex += 1
-      ) {
-        const region = floorRegions[regionIndex];
-        const regionMaps = Object.values(region.maps);
-        for (let mapIndex = 0; mapIndex < regionMaps.length; mapIndex += 1) {
-          mapsDocs.push({
-            ...regionMaps[mapIndex],
+    console.log(`Reducing ${continent.name} floors into regions`);
+    const regionsDocs = {};
+    for (const floor of gw2Floors) {
+      for (const region of Object.values(floor.regions)) {
+        regionsDocs[region.id] = {
+          $id: "gwapo/maps/regions",
+          _id: `gwapo/maps/regions_${continent.id}_${region.id}`,
+          continent_id: continent.id,
+          continent_rect: region.continent_rect,
+          floors: (regionsDocs[region.id]?.floors ?? []).concat([floor.id]),
+          id: region.id,
+          label_coord: region.label_coord,
+          name: region.name,
+        };
+      }
+    }
+    console.log(`Putting ${continent.name} regions in pouch`);
+    await pouch.bulkDocs(Object.values(regionsDocs));
+    // todo
+    // use maps API
+    const mapsDocs = {};
+    for (const floor of gw2Floors) {
+      for (const region of Object.values(floor.regions)) {
+        for (const map of Object.values(region.maps)) {
+          mapsDocs[map.id] = {
+            // adventures: Object.values(map.adventures).map(
+            //   (adventure) => adventure.id
+            // ),
             continent_id: continent.id,
-            floor_id: floor.id,
-            _id: `continents/maps_${continent.id}_${floor.id}_${region.id}_${regionMaps[mapIndex].id}`,
+            continent_rect: map.continent_rect,
+            default_floor: map.default_floor,
+            floors: (mapsDocs[map.id]?.floors ?? []).concat([floor.id]),
+            id: map.id,
+            label_coord: map.label_coord,
+            map_rect: map.map_rect,
+            // mastery_points: Object.values(map.mastery_points).map(
+            //   (mastery_point) => mastery_point.id
+            // ),
+            max_level: map.max_level,
+            min_level: map.min_level,
+            name: map.name,
+            // points_of_interest: Object.values(map.points_of_interest).map(
+            //   (point_of_interest) => point_of_interest.id
+            // ),
             region_id: region.id,
-          });
+            // sectors: Object.values(map.sectors).map((sector) => sector.id),
+            // skill_challenges: map.skill_challenges,
+            // tasks: Object.values(map.tasks).map((task) => task.id),
+            type: null, // sourced from /maps api
+          };
         }
       }
     }
-    await pouch.bulkDocs(mapsDocs);
+    console.log(`Putting ${continent.name} maps in pouch`);
+    await pouch.bulkDocs(Object.values(mapsDocs));
     // pouch
-  } // end continent
+  }
 }
 
 main();

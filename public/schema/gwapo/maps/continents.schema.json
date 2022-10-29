@@ -1,5 +1,5 @@
 {
-  "$id": "continents",
+  "$id": "gwapo/maps/continents",
   "properties": {
     "continent_dims": {
       "type": "array",
@@ -7,11 +7,6 @@
       "items": { "type": "integer" },
       "maxItems": 2,
       "minItems": 2
-    },
-    "floors": {
-      "description": "A list of floors ids available for this continent.",
-      "type": "array",
-      "items": { "type": "integer" }
     },
     "id": { "description": "The id of the continent.", "type": "integer" },
     "min_zoom": {
@@ -23,5 +18,6 @@
       "type": "integer"
     },
     "name": { "description": "The name of the continent.", "type": "string" }
-  }
+  },
+  "type": "object"
 }

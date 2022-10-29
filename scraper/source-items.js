@@ -5,28 +5,28 @@ const BATCH_STEP = 5;
 const BATCH_TASK_MINIMUM_LENGTH = 1000;
 const ITEMS_URL = "https://api.guildwars2.com/v2/items";
 
+const gatekeptFetch = (requestInfo, requestInit) => {
+  const fetchCtor = () =>
+    import("node-fetch")
+      .then(({ default: fetch }) => fetch(requestInfo, requestInit))
+      .then((response) => response.json());
+  return Promise.all([
+    fetchCtor().catch((error) => {
+      console.error(error);
+      console.warn("RETRYING", requestInfo);
+      return fetchCtor();
+    }),
+    new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, BATCH_TASK_MINIMUM_LENGTH);
+    }),
+  ]).then(([response]) => response);
+};
+
 async function main() {
   const fetch = await import("node-fetch").then(({ default: fetch }) => fetch);
   /** Fetch no faster than 1 second */
-  const gatekeptFetch = (requestInfo, requestInit) =>
-    Promise.all([
-      new Promise((resolve) => {
-        setTimeout(() => {
-          resolve();
-        }, BATCH_TASK_MINIMUM_LENGTH);
-      }),
-      fetch(requestInfo, requestInit)
-        .then((response) => response.json())
-        .then((itemsList) =>
-          pouch.bulkDocs(
-            itemsList.map((item) => ({
-              ...item,
-              _id: `items_${item.id}`,
-              $id: "items",
-            }))
-          )
-        ),
-    ]);
 
   console.log("Fetching item indices...");
   /** @type {integer[]} */
@@ -50,7 +50,17 @@ async function main() {
       const itemsUrl = `${ITEMS_URL}?ids=${itemIds
         .slice(j, j + BATCH_SIZE)
         .join(",")}`;
-      batch.push(gatekeptFetch(itemsUrl));
+      batch.push(
+        gatekeptFetch(itemsUrl).then((itemsList) =>
+          pouch.bulkDocs(
+            itemsList.map((item) => ({
+              ...item,
+              _id: `items_${item.id}`,
+              $id: "items",
+            }))
+          )
+        )
+      );
     }
     await Promise.all(batch);
   }

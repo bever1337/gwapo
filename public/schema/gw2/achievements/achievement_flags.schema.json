@@ -1,4 +1,5 @@
 {
+  "$id": "gw2/achievements/flags",
   "description": "Achievement categories",
   "oneOf": [
     {

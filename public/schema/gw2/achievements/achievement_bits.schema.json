@@ -1,4 +1,5 @@
 {
+  "$id": "gw2/achievements/bits",
   "properties": {
     "id": {
       "description": "The ID of the item, mini, or skin, if applicable.",

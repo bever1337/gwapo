@@ -1,10 +1,6 @@
 {
-  "$id": "continents/regions",
+  "$id": "gw2/continents/regions",
   "properties": {
-    "continent_id": {
-      "description": "The region's floor's continent id",
-      "type": "integer"
-    },
     "continent_rect": {
       "type": "array",
       "description": "The dimensions of the continent, expressed as top-left (NW) and bottom-right (SE) corner coordinates.",
@@ -18,10 +14,6 @@
       },
       "maxItems": 2,
       "minItems": 2
-    },
-    "floor_id": {
-      "description": "The region's floor id",
-      "type": "integer"
     },
     "id": {
       "description": "The region id",
@@ -38,8 +30,9 @@
     "maps": {
       "type": "array",
       "items": {
-        "type": "integer"
+        "$ref": "gw2/continents/maps"
       }
     }
-  }
+  },
+  "type": "object"
 }

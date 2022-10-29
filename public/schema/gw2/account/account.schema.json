@@ -1,4 +1,5 @@
 {
+  "$id": "gw2/account",
   "properties": {
     "access": {
       "description": "A list of what content this account has access to.",

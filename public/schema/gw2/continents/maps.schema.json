@@ -1,16 +1,12 @@
 {
-  "$id": "continents/maps",
+  "$id": "gw2/continents/maps",
   "properties": {
     "adventures": {
       "description": "A list of adventures within the map.",
       "items": {
-        "$ref": "/continents/adventures"
+        "$ref": "gw2/continents/adventures"
       },
       "type": "array"
-    },
-    "continent_id": {
-      "description": "The region's floor's continent id",
-      "type": "integer"
     },
     "continent_rect": {
       "description": "The dimensions of the map within the continent coordinate system, given as top-left (NW) and bottom-right (SE) corner coordinates.",
@@ -29,10 +25,6 @@
     "default_floor": {
       "description": "The default floor of the map.",
       "type": "number"
-    },
-    "floor_id": {
-      "description": "The region's floor id",
-      "type": "integer"
     },
     "id": {
       "description": "The map id",
@@ -64,7 +56,7 @@
     "mastery_points": {
       "description": "A list of mastery insights within the map.",
       "items": {
-        "$ref": "/continents/mastery_points"
+        "$ref": "gw2/continents/mastery_points"
       },
       "type": "array"
     },
@@ -80,32 +72,28 @@
     "points_of_interest": {
       "description": "A list of points of interest (landmarks, waypoints, vistas, etc).",
       "items": {
-        "$ref": "/continents/points_of_interest"
+        "$ref": "gw2/continents/points_of_interest"
       },
       "type": "array"
-    },
-    "region_id": {
-      "description": "The region id",
-      "type": "integer"
     },
     "sectors": {
       "description": "A list of areas within the map.",
       "items": {
-        "$ref": "/continents/sectors"
+        "$ref": "gw2/continents/sectors"
       },
       "type": "array"
     },
     "skill_challenges": {
       "description": "A list of skill challenges.",
       "items": {
-        "$ref": "/continents/skill_challenges"
+        "$ref": "gw2/continents/skill_challenges"
       },
       "type": "array"
     },
     "tasks": {
       "description": "A list of renown hearts.",
       "items": {
-        "$ref": "/continents/tasks"
+        "$ref": "gw2/continents/tasks"
       },
       "type": "array"
     }

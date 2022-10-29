@@ -1,4 +1,5 @@
 {
+  "$id": "gw2/tokeninfo",
   "description": "Information about an API key.",
   "properties": {
     "id": {

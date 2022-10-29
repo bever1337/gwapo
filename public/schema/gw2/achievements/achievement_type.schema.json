@@ -1,4 +1,5 @@
 {
+  "$id": "gw2/achievements/type",
   "description": "The achievement type.",
   "oneOf": [
     {

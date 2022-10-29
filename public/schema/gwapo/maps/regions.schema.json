@@ -1,0 +1,32 @@
+{
+  "$id": "gwapo/maps/regions",
+  "properties": {
+    "continent_id": { "type": "integer" },
+    "continent_rect": {
+      "type": "array",
+      "description": "The dimensions of the continent, expressed as top-left (NW) and bottom-right (SE) corner coordinates.",
+      "items": {
+        "type": "array",
+        "items": { "type": "integer" },
+        "maxItems": 2,
+        "minItems": 2
+      },
+      "maxItems": 2,
+      "minItems": 2
+    },
+    "floors": { "items": { "type": "integer" }, "type": "array" },
+    "id": {
+      "description": "The region id",
+      "type": "integer"
+    },
+    "label_coord": {
+      "type": "array",
+      "description": "The coordinates of the region label.",
+      "items": { "type": "integer" },
+      "maxItems": 2,
+      "minItems": 2
+    },
+    "name": { "description": "The region name.", "type": "string" }
+  },
+  "type": "object"
+}

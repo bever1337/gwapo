@@ -1,0 +1,148 @@
+{
+  "$id": "gwapo/maps/maps",
+  "properties": {
+    "adventures": {
+      "description": "A list of adventure IDs within the map.",
+      "items": {
+        "type": "integer"
+      },
+      "type": "array"
+    },
+    "continent_id": {
+      "type": "integer",
+      "description": "The id of the continent this map belongs to."
+    },
+    "continent_rect": {
+      "description": "The dimensions of the map within the continent coordinate system, given as top-left (NW) and bottom-right (SE) corner coordinates.",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "integer"
+        },
+        "maxItems": 2,
+        "minItems": 2
+      },
+      "maxItems": 2,
+      "minItems": 2,
+      "type": "array"
+    },
+    "default_floor": {
+      "description": "The default floor of the map.",
+      "type": "number"
+    },
+    "floors": {
+      "description": "A list of available floor IDs for this map.",
+      "items": { "type": "integer" },
+      "type": "array"
+    },
+    "id": { "description": "The map id", "type": "integer" },
+    "label_coord": {
+      "description": "The coordinates of the map label.",
+      "items": {
+        "type": "integer"
+      },
+      "maxItems": 2,
+      "minItems": 2,
+      "type": "array"
+    },
+    "map_rect": {
+      "description": "The dimensions of the map, given as the coordinates of the lower-left (SW) and upper-right (NE) corners.",
+      "items": {
+        "items": {
+          "type": "integer"
+        },
+        "maxItems": 2,
+        "minItems": 2,
+        "type": "array"
+      },
+      "maxItems": 2,
+      "minItems": 2,
+      "type": "array"
+    },
+    "mastery_points": {
+      "description": "A list of mastery insight IDs within the map.",
+      "items": {
+        "type": "integer"
+      },
+      "type": "array"
+    },
+    "max_level": {
+      "description": "The maximum level of the map.",
+      "type": "number"
+    },
+    "min_level": {
+      "description": "The minimum level of the map.",
+      "type": "number"
+    },
+    "name": { "description": "The map name.", "type": "string" },
+    "points_of_interest": {
+      "description": "A list of points of interest IDs (landmarks, waypoints, vistas, etc).",
+      "items": {
+        "type": "integer"
+      },
+      "type": "array"
+    },
+    "region_id": {
+      "type": "number",
+      "description": "The id of the region this map belongs to."
+    },
+    "sectors": {
+      "description": "A list of area IDs within the map.",
+      "items": {
+        "type": "integer"
+      },
+      "type": "array"
+    },
+    "skill_challenges": {
+      "description": "A list of skill challenge IDs.",
+      "items": {
+        "$ref": "gwapo/maps/skill_challenges"
+      },
+      "type": "array"
+    },
+    "tasks": {
+      "description": "A list of renown heart IDs.",
+      "items": {
+        "type": "integer"
+      },
+      "type": "array"
+    },
+    "type": {
+      "description": "The map type. Possible values",
+      "oneOf": [
+        {
+          "const": "BlueHome",
+          "description": "The home borderlands of the blue worlds in WvW."
+        },
+        {
+          "const": "Center",
+          "description": "The map in WvW that resides in the center of the borderlands, Eternal Battlegrounds."
+        },
+        {
+          "const": "EdgeOfTheMists",
+          "description": "The Edge of the Mists map in WvW."
+        },
+        {
+          "const": "GreenHome",
+          "description": "The home borderlands of the green worlds in WvW."
+        },
+        { "const": "Instance", "description": "Instances." },
+        {
+          "const": "JumpPuzzle",
+          "description": "At present only a WvW map that houses a jumping puzzle of the same name, Obsidian Sanctum."
+        },
+        { "const": "Public", "description": "Open world maps." },
+        { "const": "Pvp", "description": "PvP as well as activity maps." },
+        {
+          "const": "RedHome",
+          "description": "The home borderlands of the red worlds in WvW."
+        },
+        {
+          "const": "Tutorial",
+          "description": "The tutorial missions for newly created characters."
+        }
+      ]
+    }
+  },
+  "type": "object"
+}

@@ -1,4 +1,5 @@
 {
+  "$id": "gw2/tokeninfo/type",
   "description": "The type of the access token given. Either `APIKey` or `Subtoken`.",
   "oneOf": [{ "const": "APIKey" }, { "const": "Subtoken" }]
 }

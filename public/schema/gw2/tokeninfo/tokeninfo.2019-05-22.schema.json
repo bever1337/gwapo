@@ -1,4 +1,5 @@
 {
+  "$id": "gw2/tokeninfo.2019-05-22",
   "allOf": [
     {
       "$ref": "./tokeninfo.schema.json"

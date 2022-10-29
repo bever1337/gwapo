@@ -1,9 +1,10 @@
 {
-  "type": "object",
+  "$id": "gw2/achievements/categories",
   "properties": {
     "id": {
       "description": "The category's ID.",
       "type": "integer"
     }
-  }
+  },
+  "type": "object"
 }
