@@ -28,7 +28,7 @@ export function MaterialsContainer() {
     pouch
       .find({
         selector: {
-          $id: { $eq: "materials" },
+          $id: { $eq: "gwapo/materials" },
         },
         fields: ["id", "items", "name", "order"],
       })

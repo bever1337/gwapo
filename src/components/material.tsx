@@ -1,6 +1,7 @@
 import React from "react";
+import { Link, Route, Routes } from "react-router-dom";
 
-import classes from "./materials.module.css";
+import classes from "./material.module.css";
 
 import type { AccountMaterial } from "../store/api/read-account-materials";
 
@@ -32,13 +33,34 @@ export function Material({
   //     .catch(console.warn);
   // }, [materials]);
   return (
-    <li>
+    <li className={[classes["material__item"]].join(" ")}>
       <img
         className={[classes["material__img"]].join(" ")}
         alt={material.name}
         src={material.icon}
-        title={`${accountMaterial?.count ?? "unknown"} qty`}
       />
+      {typeof accountMaterial?.count === "number" ? (
+        <Link
+          to={`${material.id}`}
+          className={[classes["material__count"]].join(" ")}
+        >
+          {accountMaterial.count}
+        </Link>
+      ) : null}
+      <Routes>
+        <Route
+          element={
+            <dialog open style={{ position: "absolute", zIndex: 1 }}>
+              <form method="dialog">
+                <button type="submit">x</button>
+              </form>
+              <h3>{material.name}</h3>
+              <p>{accountMaterial?.count ?? "unknown"} in bank</p>
+            </dialog>
+          }
+          path={`${material.id}`}
+        />
+      </Routes>
     </li>
   );
 }

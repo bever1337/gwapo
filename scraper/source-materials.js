@@ -22,7 +22,7 @@ async function main() {
             Object.values(materialsJson).map((materials) => ({
               ...materials,
               _id: `materials_${materials.id}`,
-              $id: "materials",
+              $id: "gwapo/materials",
             }))
           );
         }),

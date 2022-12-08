@@ -20,6 +20,53 @@ const slowFetch = (requestInfo, requestInit) =>
   ]).then(([response]) => response);
 
 async function main() {
+  console.log("Fetching maps indices...");
+  const mapsIds = await slowFetch("https://api.guildwars2.com/v2/maps");
+  const gw2Maps = {};
+  for (
+    let batchIndex = 0;
+    batchIndex < mapsIds.length;
+    batchIndex += BATCH_SIZE * BATCH_STEP
+  ) {
+    const mapsBatch = [];
+    for (
+      let batchStartIndex = batchIndex;
+      batchStartIndex <
+      Math.min(batchIndex + BATCH_STEP * BATCH_SIZE, mapsIds.length);
+      batchStartIndex += BATCH_SIZE
+    ) {
+      const idsThisBatch = mapsIds
+        .slice(batchStartIndex, batchStartIndex + BATCH_SIZE)
+        .join(",");
+      console.log(
+        `Fetched ${batchStartIndex} maps so far, ${(
+          (batchStartIndex / mapsIds.length) *
+          100
+        ).toFixed(2)}%. Ids this batch: ${idsThisBatch}`
+      );
+      const floorsDataUrl = `https://api.guildwars2.com/v2/maps?ids=${idsThisBatch}`;
+      mapsBatch.push(slowFetch(floorsDataUrl));
+    }
+    for (const mapsInBatch of await Promise.all(mapsBatch)) {
+      for (const map in mapsInBatch) {
+        gw2Maps[map.id] = {
+          $id: "gwapo/maps/maps",
+          _id: `maps_${map.id}`,
+          continent_id: map.continent_id,
+          continent_rect: map.continent_rect,
+          default_floor: map.default_floor,
+          floors: map.floors,
+          id: map.id,
+          map_rect: map.map_rect,
+          max_level: map.max_level,
+          min_level: map.min_level,
+          name: map.name,
+          region_id: map.region_id,
+        };
+      }
+    }
+  }
+
   console.log("Fetching continents indices...");
   const continentsIds = await slowFetch(CONTINENTS_URL);
   console.log(`Fetching continents: ${continentsIds.join(",")}`);
@@ -28,7 +75,7 @@ async function main() {
   console.log("Putting continents in pouch");
   await pouch.bulkDocs(
     gw2Continents.map((continent) => ({
-      _id: `gwapo/maps/continents_${continent.id}`,
+      _id: `continents_${continent.id}`,
       $id: "gwapo/maps/continents",
       continent_dims: continent.continent_dims,
       id: continent.id,
@@ -73,7 +120,7 @@ async function main() {
     await pouch.bulkDocs(
       gw2Floors.map((floor) => ({
         $id: "gwapo/maps/floors",
-        _id: `gwapo/maps/floors_${continent.id}_${floor.id}`,
+        _id: `floors_${continent.id}_${floor.id}`,
         clamped_view: floor.clamped_view,
         continent_id: continent.id,
         id: floor.id,
@@ -87,7 +134,7 @@ async function main() {
       for (const region of Object.values(floor.regions)) {
         regionsDocs[region.id] = {
           $id: "gwapo/maps/regions",
-          _id: `gwapo/maps/regions_${continent.id}_${region.id}`,
+          _id: `regions_${continent.id}_${region.id}`,
           continent_id: continent.id,
           continent_rect: region.continent_rect,
           floors: (regionsDocs[region.id]?.floors ?? []).concat([floor.id]),
@@ -99,20 +146,21 @@ async function main() {
     }
     console.log(`Putting ${continent.name} regions in pouch`);
     await pouch.bulkDocs(Object.values(regionsDocs));
-    // todo
-    // use maps API
-    const mapsDocs = {};
+
+    // const mapsDocs = {};
     for (const floor of gw2Floors) {
       for (const region of Object.values(floor.regions)) {
         for (const map of Object.values(region.maps)) {
-          mapsDocs[map.id] = {
+          gw2Maps[map.id] = {
             // adventures: Object.values(map.adventures).map(
             //   (adventure) => adventure.id
             // ),
             continent_id: continent.id,
             continent_rect: map.continent_rect,
             default_floor: map.default_floor,
-            floors: (mapsDocs[map.id]?.floors ?? []).concat([floor.id]),
+            floors: (gw2Maps[map.id]?.floors ?? [])
+              .concat([floor.id])
+              .filter(filterUnique),
             id: map.id,
             label_coord: map.label_coord,
             map_rect: map.map_rect,
@@ -125,19 +173,22 @@ async function main() {
             // points_of_interest: Object.values(map.points_of_interest).map(
             //   (point_of_interest) => point_of_interest.id
             // ),
-            region_id: region.id,
+            region_id: map.region_id ?? region.id,
             // sectors: Object.values(map.sectors).map((sector) => sector.id),
             // skill_challenges: map.skill_challenges,
             // tasks: Object.values(map.tasks).map((task) => task.id),
-            type: null, // sourced from /maps api
           };
         }
       }
     }
-    console.log(`Putting ${continent.name} maps in pouch`);
-    await pouch.bulkDocs(Object.values(mapsDocs));
-    // pouch
   }
+
+  console.log(`Putting maps in pouch`);
+  await pouch.bulkDocs(Object.values(gw2Maps));
 }
 
 main();
+
+function filterUnique(element, index, collection) {
+  return index === collection.indexOf(element);
+}

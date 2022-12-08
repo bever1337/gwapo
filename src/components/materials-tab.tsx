@@ -53,24 +53,24 @@ export function MaterialsTab({
       material={item}
     />
   ));
+
   return (
-    <section className={[classes["materials__section"]].join(" ")}>
-      <div className={[classes["materials__nav"]].join(" ")}>
-        <h2 className={[classes["materials__name"]].join(" ")}>
-          {materials.name}
-        </h2>
-        <label>
-          {collapsed ? TRIANGLE_CLOSED : TRIANGLE_OPEN}
-          <input
-            checked={collapsed}
-            onChange={(event) => {
-              setCollapsed(event.target.checked);
-            }}
-            name={`collapse-${materials.name}`}
-            type="checkbox"
-          />
-        </label>
-      </div>
+    <section className={[classes["materials__inline-wrapper"]].join(" ")}>
+      <h2 className={[classes["materials__header"]].join(" ")}>
+        {materials.name}
+      </h2>
+      <label className={[classes["materials__control"]].join(" ")}>
+        {collapsed ? TRIANGLE_CLOSED : TRIANGLE_OPEN}
+        <input
+          checked={collapsed}
+          onChange={(event) => {
+            setCollapsed(event.target.checked);
+          }}
+          name={`collapse-${materials.name}`}
+          type="checkbox"
+        />
+      </label>
+
       <ul className={[classes["materials__list"]].join(" ")}>
         {collapsed ? null : materialElements}
       </ul>

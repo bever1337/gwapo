@@ -3,7 +3,7 @@ const { pouch } = require("./common");
 const BATCH_SIZE = 50;
 const BATCH_STEP = 5;
 const BATCH_TASK_MINIMUM_LENGTH = 1000;
-const ITEMS_URL = "https://api.guildwars2.com/v2/items";
+const SKINS_URL = "https://api.guildwars2.com/v2/skins";
 
 const gatekeptFetch = (requestInfo, requestInit) => {
   const fetchCtor = () =>
@@ -28,35 +28,35 @@ async function main() {
   const fetch = await import("node-fetch").then(({ default: fetch }) => fetch);
   /** Fetch no faster than 1 second */
 
-  console.log("Fetching item indices...");
+  console.log("Fetching skin indices...");
   /** @type {integer[]} */
-  const itemIds = await fetch(ITEMS_URL).then((response) => response.json());
-  console.log(`Found ${itemIds.length} items.`);
+  const skinIds = await fetch(SKINS_URL).then((response) => response.json());
+  console.log(`Found ${skinIds.length} skins.`);
   console.log(`Batch size ${BATCH_SIZE}.`);
-  console.log(`${Math.ceil(itemIds.length / BATCH_SIZE)} fetches required.`);
+  console.log(`${Math.ceil(skinIds.length / BATCH_SIZE)} fetches required.`);
 
-  for (let i = 0; i < itemIds.length; i += BATCH_SIZE * BATCH_STEP) {
+  for (let i = 0; i < skinIds.length; i += BATCH_SIZE * BATCH_STEP) {
     console.log(
-      `Fetched ${i} items so far. ${((i / itemIds.length) * 100).toFixed(
+      `Fetched ${i} skins so far. ${((i / skinIds.length) * 100).toFixed(
         2
       )}% complete`
     );
     const batch = [];
     for (
       let j = i;
-      j < Math.min(i + BATCH_STEP * BATCH_SIZE, itemIds.length);
+      j < Math.min(i + BATCH_STEP * BATCH_SIZE, skinIds.length);
       j += BATCH_SIZE
     ) {
-      const itemsUrl = `${ITEMS_URL}?ids=${itemIds
+      const skinsBatchUrl = `${SKINS_URL}?ids=${skinIds
         .slice(j, j + BATCH_SIZE)
         .join(",")}`;
       batch.push(
-        gatekeptFetch(itemsUrl).then((itemsList) =>
+        gatekeptFetch(skinsBatchUrl).then((skinsList) =>
           pouch.bulkDocs(
-            itemsList.map((item) => ({
-              ...item,
-              _id: `items_${item.id}`,
-              $id: "gwapo/items",
+            skinsList.map((skin) => ({
+              ...skin,
+              _id: `skins_${skin.id}`,
+              $id: "gwapo/skins",
             }))
           )
         )
