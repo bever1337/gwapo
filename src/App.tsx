@@ -10,29 +10,26 @@ import { pouch } from "./features/pouch";
 import { Vault } from "./routes/vault";
 import { VaultParent } from "./routes/vault/parent";
 import { store } from "./store";
+import { loadDatabase } from "./store/api/load-database";
 
 const appStore = store();
 
+function Thing() {
+  const [trigger] = loadDatabase.useMutation({});
+  useEffect(() => {
+    const foo = trigger({});
+    return () => {
+      foo.abort();
+    };
+  }, [trigger]);
+  return null;
+}
+
 export function App() {
-  const [ready, setReady] = useState(true);
-  // useEffect(() => {
-  //   pouch
-  //     .load(process.env.PUBLIC_URL + "/dump.txt")
-  //     .then(() =>
-  //       pouch.createIndex({
-  //         index: { fields: ["$id", "rarity", "type"] },
-  //       })
-  //     )
-  //     .then(() => {
-  //       setReady(true);
-  //     })
-  //     .catch((err) => {
-  //       console.warn("went wrong", err);
-  //     });
-  // }, []);
   return (
     <Provider store={appStore}>
       <BrowserRouter basename={process.env.PUBLIC_URL}>
+        <Thing />
         <nav>
           <ul>
             <li>
@@ -50,7 +47,7 @@ export function App() {
           </ul>
         </nav>
         <hr />
-        {ready ? (
+        {
           <Routes>
             <Route index element={<p>hello</p>} />
             {/* <Route element={<MapsContainer />} path="maps" /> */}
@@ -66,7 +63,7 @@ export function App() {
               />
             </Route>
           </Routes>
-        ) : null}
+        }
       </BrowserRouter>
     </Provider>
   );
