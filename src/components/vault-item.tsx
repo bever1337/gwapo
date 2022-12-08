@@ -1,10 +1,24 @@
-import { AccountBankItem } from "../store/api/read-account-bank";
 import materialsClasses from "./material.module.css";
 
-export function VaultItem(props: { accountBankItem: AccountBankItem | null }) {
+import type { AccountBankItem } from "../store/api/read-account-bank";
+import type { Item } from "../types/item";
+
+export function VaultItem(props: {
+  accountBankItem: AccountBankItem | null;
+  item?: Item;
+}) {
   return (
     <li className={[materialsClasses["material__item"]].join(" ")}>
-      {props.accountBankItem?.id ?? "x"}
+      <img
+        className={[materialsClasses["material__img"]].join(" ")}
+        alt={props.item?.name ?? ""}
+        src={props.item?.icon}
+      />
+      {typeof props.accountBankItem?.count === "number" ? (
+        <span className={[materialsClasses["material__count"]].join(" ")}>
+          {props.accountBankItem.count}
+        </span>
+      ) : null}
     </li>
   );
 }

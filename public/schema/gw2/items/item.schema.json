@@ -1,0 +1,220 @@
+{
+  "$id": "gw2/items/item",
+  "properties": {
+    "id": {
+      "description": "The item id.",
+      "type": "number"
+    },
+    "chat_link": {
+      "description": "The chat link.",
+      "type": "string"
+    },
+    "name": {
+      "description": "The item name.",
+      "type": "string"
+    },
+    "icon": {
+      "description": "full icon URL.",
+      "type": "string"
+    },
+    "description": {
+      "description": "The item description.",
+      "type": "string"
+    },
+    "type": {
+      "description": "The item type.",
+      "oneOf": [
+        { "const": "Armor", "description": "Armor" },
+        { "const": "Back", "description": "Back item" },
+        { "const": "Bag", "description": "Bags" },
+        { "const": "Consumable", "description": "Consumables" },
+        { "const": "Container", "description": "Containers" },
+        { "const": "CraftingMaterial", "description": "Crafting materials" },
+        {
+          "const": "Gathering",
+          "description": "Gathering tools, baits and lures"
+        },
+        { "const": "Gizmo", "description": "Gizmos" },
+        {
+          "const": "JadeTechModule",
+          "description": "Sensory Array and Service Chip modules"
+        },
+        { "const": "Key" },
+        { "const": "MiniPet", "description": "Miniatures" },
+        { "const": "PowerCore", "description": "Power Cores" },
+        { "const": "Tool", "description": "Salvage kits" },
+        { "const": "Trait", "description": "Trait guides" },
+        { "const": "Trinket", "description": "Trinkets" },
+        { "const": "Trophy", "description": "Trophies" },
+        { "const": "UpgradeComponent", "description": "Upgrade components" },
+        { "const": "Weapon", "description": "Weapons" }
+      ]
+    },
+    "rarity": {
+      "description": "The item rarity.",
+      "oneOf": [
+        { "const": "Junk" },
+        { "const": "Basic" },
+        { "const": "Fine" },
+        { "const": "Masterwork" },
+        { "const": "Rare" },
+        { "const": "Exotic" },
+        { "const": "Ascended" },
+        { "const": "Legendary" }
+      ]
+    },
+    "level": {
+      "type": "number",
+      "description": "The required level."
+    },
+    "vendor_value": {
+      "type": "number",
+      "description": "The value in coins when selling to a vendor. (Can be non-zero even when the item has the NoSell flag.)"
+    },
+    "default_skin": {
+      "type": "number",
+      "description": "The default skin id."
+    },
+    "flags": {
+      "description": "Flags applying to the item.",
+      "items": {
+        "oneOf": [
+          {
+            "const": "AccountBindOnUse",
+            "description": "Account bound on use"
+          },
+          {
+            "const": "AccountBound",
+            "description": "Account bound on acquire"
+          },
+          { "const": "Attuned", "description": "If the item is attuned" },
+          {
+            "const": "BulkConsume",
+            "description": "If the item can be bulk consumed"
+          },
+          {
+            "const": "DeleteWarning",
+            "description": "If the item will prompt the player with a warning when deleting"
+          },
+          {
+            "const": "HideSuffix",
+            "description": "Hide the suffix of the upgrade component"
+          },
+          { "const": "Infused", "description": "If the item is infused" },
+          { "const": "MonsterOnly" },
+          {
+            "const": "NoMysticForge",
+            "description": "Not usable in the Mystic Forge"
+          },
+          { "const": "NoSalvage", "description": "Not salvageable" },
+          { "const": "NoSell", "description": "Not sellable" },
+          { "const": "NotUpgradeable", "description": "Not upgradeable" },
+          {
+            "const": "NoUnderwater",
+            "description": "Not available underwater"
+          },
+          {
+            "const": "SoulbindOnAcquire",
+            "description": "Soulbound on acquire"
+          },
+          { "const": "SoulBindOnUse", "description": "Soulbound on use" },
+          { "const": "Tonic", "description": "If the item is a tonic" },
+          { "const": "Unique", "description": "Unique" }
+        ]
+      },
+      "type": "array"
+    },
+    "game_types": {
+      "description": "The game types in which the item is usable. At least one game type is specified.",
+      "type": "array",
+      "items": {
+        "oneOf": [
+          { "const": "Activity", "description": "Usable in activities" },
+          { "const": "Dungeon", "description": "Usable in dungeons" },
+          { "const": "Pve", "description": "Usable in general PvE" },
+          { "const": "Pvp", "description": "Usable in PvP" },
+          {
+            "const": "PvpLobby",
+            "description": "Usable in the Heart of the Mists"
+          },
+          { "const": "Wvw", "description": "Usable in World vs. World" }
+        ]
+      }
+    },
+    "restrictions": {
+      "description": "Restrictions applied to the item.",
+      "type": "array",
+      "items": {
+        "oneOf": [
+          { "const": "Asura" },
+          { "const": "Charr" },
+          { "const": "Female" },
+          { "const": "Human" },
+          { "const": "Norn" },
+          { "const": "Sylvari" },
+          { "const": "Elementalist" },
+          { "const": "Engineer" },
+          { "const": "Guardian" },
+          { "const": "Mesmer" },
+          { "const": "Necromancer" },
+          { "const": "Ranger" },
+          { "const": "Thief" },
+          { "const": "Warrior" }
+        ]
+      }
+    },
+    "upgrades_into": {
+      "description": "Lists what items this item can be upgraded into, and the method of upgrading.",
+      "items": {
+        "properties": {
+          "item_id": {
+            "description": "The item ID that results from performing the upgrade.",
+            "type": "number"
+          },
+          "upgrade": {
+            "oneOf": [{ "const": "Attunement" }, { "const": "Infusion" }]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "upgrades_from": {
+      "description": "Lists what items this item can be upgraded from, and the method of upgrading. See upgrades_into for format.",
+      "items": {
+        "properties": {
+          "item_id": {
+            "description": "The item ID that resulted from performing the upgrade.",
+            "type": "number"
+          },
+          "upgrade": {
+            "oneOf": [{ "const": "Attunement" }, { "const": "Infusion" }]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "details": {
+      "additionalProperties": true,
+      "description": "Additional item details if applicable, depending on the item type",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "chat_link",
+    "id",
+    "flags",
+    "game_types",
+    "level",
+    "name",
+    "rarity",
+    "restrictions",
+    "type",
+    "vendor_value"
+  ],
+  "type": "object"
+}

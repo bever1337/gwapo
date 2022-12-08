@@ -4,19 +4,14 @@ import { Link, Route, Routes } from "react-router-dom";
 import classes from "./material.module.css";
 
 import type { AccountMaterial } from "../store/api/read-account-materials";
-
-interface IMaterial {
-  icon: `https://${string}`;
-  id: number;
-  name: string;
-}
+import type { Item } from "../types/item";
 
 export function Material({
   accountMaterial,
   material,
 }: {
   accountMaterial?: AccountMaterial;
-  material: IMaterial;
+  material: Item;
 }) {
   // const [items, setItems] = useState<Material[]>([]);
   // useEffect(() => {

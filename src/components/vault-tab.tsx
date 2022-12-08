@@ -1,58 +1,48 @@
-import { useEffect, useState } from "react";
+import { skipToken } from "@reduxjs/toolkit/dist/query";
+import { useState } from "react";
 
 import materialsClasses from "./materials.module.css";
 import { VaultItem } from "./vault-item";
 
-import { pouch } from "../features/pouch";
 import type { AccountBankItem } from "../store/api/read-account-bank";
-import { useAppSelector } from "../store/hooks";
+import { readItems } from "../store/api/read-items";
 
 const TRIANGLE_CLOSED = "\u25B2";
 const TRIANGLE_OPEN = "\u25BC";
-
-interface IMaterial {
-  icon: `https://${string}`;
-  id: number;
-  name: string;
-}
 
 export function VaultTab(props: {
   accountBankItems: (AccountBankItem | null)[];
   bankTab: number;
 }) {
   const [collapsed, setCollapsed] = useState(false);
-  const [items, setItems] = useState<IMaterial[]>([]);
+  const skip = props.accountBankItems.length === 0;
+  const { data: items } = readItems.useQuery(
+    skip
+      ? skipToken
+      : {
+          ids: props.accountBankItems.reduce(
+            (acc, item) => (item ? acc.concat([item.id]) : acc),
+            [] as number[]
+          ),
+        },
+    { skip }
+  );
   const accountBankTabItemsElements = props.accountBankItems.map(
     (accountBankTabItem, index) => (
       // Warning: account bank items do not have any unique identifiers
       // Features like filtering and sorting will not work until each item has a uid
       // For now, we can assume this is safe because the list is static
-      <VaultItem accountBankItem={accountBankTabItem} key={index} />
+      <VaultItem
+        accountBankItem={accountBankTabItem}
+        item={
+          accountBankTabItem
+            ? items?.entities?.[accountBankTabItem.id]
+            : undefined
+        }
+        key={index}
+      />
     )
   );
-  useEffect(() => {
-    pouch
-      .allDocs({
-        keys: props.accountBankItems.reduce(
-          (acc, accountBankTabItem, index, collection) =>
-            accountBankTabItem &&
-            collection.findIndex(
-              (item) => item?.id === accountBankTabItem.id
-            ) === index
-              ? acc.concat([`items_${accountBankTabItem.id}`])
-              : acc,
-          [] as string[]
-        ),
-        include_docs: true,
-      })
-      .then((allDocsResponse) => {
-        setItems(
-          allDocsResponse.rows.map((row) => row.doc as unknown as IMaterial)
-        );
-      })
-      .catch(console.warn);
-  }, [props.accountBankItems]);
-  console.log("iutems", items);
   return (
     <section
       className={[materialsClasses["materials__inline-wrapper"]].join(" ")}

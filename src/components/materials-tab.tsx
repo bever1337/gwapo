@@ -1,24 +1,12 @@
-import React, { useEffect, useState } from "react";
+import { skipToken } from "@reduxjs/toolkit/dist/query";
+import React, { useState } from "react";
 
 import { Material } from "./material";
 import classes from "./materials.module.css";
 
-import { pouch } from "../features/pouch";
-
 import type { AccountMaterial } from "../store/api/read-account-materials";
-
-interface IMaterials {
-  id: number;
-  items: number[];
-  name: string;
-  order: number;
-}
-
-interface IMaterial {
-  icon: `https://${string}`;
-  id: number;
-  name: string;
-}
+import { readItems } from "../store/api/read-items";
+import type { Materials } from "../store/api/read-materials";
 
 const TRIANGLE_CLOSED = "\u25B2";
 const TRIANGLE_OPEN = "\u25BC";
@@ -27,30 +15,30 @@ export function MaterialsTab({
   accountMaterials,
   materials,
 }: {
-  accountMaterials: { [index: number]: AccountMaterial };
-  materials: IMaterials;
+  accountMaterials?: { [index: number]: AccountMaterial };
+  materials: Materials;
 }) {
   const [collapsed, setCollapsed] = useState(false);
-  const [items, setItems] = useState<IMaterial[]>([]);
-  useEffect(() => {
-    pouch
-      .allDocs({
-        keys: materials.items.map((itemId) => `items_${itemId}`),
-        include_docs: true,
-      })
-      .then((allDocsResponse) => {
-        setItems(
-          allDocsResponse.rows.map((row) => row.doc as unknown as IMaterial)
-        );
-      })
-      .catch(console.warn);
-  }, [materials]);
+
+  const skip = materials.items.length === 0;
+  const { data: items } = readItems.useQuery(
+    skip
+      ? skipToken
+      : {
+          ids: materials.items.reduce(
+            (acc, item) => (item ? acc.concat([item]) : acc),
+            [] as number[]
+          ),
+        },
+    { skip }
+  );
+
   // console.log(materials.name, accountMaterials);
-  const materialElements = items.map((item) => (
+  const materialElements = items?.ids.map((itemId) => (
     <Material
-      accountMaterial={accountMaterials[item.id]}
-      key={item.id}
-      material={item}
+      accountMaterial={accountMaterials?.[itemId as number]}
+      key={itemId}
+      material={items.entities[itemId]!}
     />
   ));
 

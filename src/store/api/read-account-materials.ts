@@ -1,10 +1,8 @@
 import { createSelector } from "@reduxjs/toolkit";
 
 import { api } from "../api";
-// import { listenerMiddleware } from "../listener-middleware";
 import { makeSelectIsInScope } from "../selectors";
 
-// import type { AccessToken } from "../../types/token";
 import { Scope } from "../../types/token";
 
 interface ReadAccountMaterialsArguments {}
@@ -54,6 +52,7 @@ export const injectedApi = api.injectEndpoints({
 
 export const readAccountMaterials = injectedApi.endpoints.readAccountMaterials;
 export const selectReadAccountMaterialsInScope = makeSelectIsInScope(scopes);
+// An entity adapter would make this data jive with `read-materials`
 export const selectAccountMaterialsByCategory = createSelector(
   readAccountMaterials.select({}),
   (queryResult) =>
@@ -64,9 +63,6 @@ export const selectAccountMaterialsByCategory = createSelector(
           ...(acc[accountMaterial.category] ?? {}),
           [accountMaterial.id]: accountMaterial,
         },
-        // [accountMaterial.category]: (
-        //   acc[accountMaterial.category] ?? []
-        // ).concat([accountMaterial]),
       }),
       {} as { [index: number]: { [index: number]: AccountMaterial } }
     )

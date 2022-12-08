@@ -1,11 +1,8 @@
 import { createSelector } from "@reduxjs/toolkit";
 
-import type { RootState } from "..";
 import { api } from "../api";
-// import { listenerMiddleware } from "../listener-middleware";
 import { makeSelectIsInScope } from "../selectors";
 
-// import type { AccessToken } from "../../types/token";
 import { Scope } from "../../types/token";
 
 export interface ReadAccountBankArguments {}

@@ -1,5 +1,4 @@
-import { skipToken } from "@reduxjs/toolkit/dist/query";
-import React, { Fragment, useEffect, useState } from "react";
+import { Fragment } from "react";
 import { useSelector } from "react-redux";
 
 import { MaterialsTab } from "./materials-tab";
@@ -9,54 +8,27 @@ import {
   selectReadAccountMaterialsInScope,
   selectAccountMaterialsByCategory,
 } from "../store/api/read-account-materials";
-import { makeSelectIsInScope } from "../store/selectors";
-
-import { pouch } from "../features/pouch";
+import { readMaterials } from "../store/api/read-materials";
 
 const queryCacheArguments = {};
 
-interface IMaterials {
-  id: number;
-  items: number[];
-  name: string;
-  order: number;
-}
-
 export function MaterialsContainer() {
-  const [items, setItems] = useState<IMaterials[]>([]);
-  useEffect(() => {
-    pouch
-      .find({
-        selector: {
-          $id: { $eq: "gwapo/materials" },
-        },
-        fields: ["id", "items", "name", "order"],
-      })
-      .then(({ docs }) => {
-        setItems(docs as unknown as IMaterials[]);
-      })
-      .catch(console.warn);
-  }, []);
+  const { data: materials } = readMaterials.useQuery({});
   const skip = !useSelector(selectReadAccountMaterialsInScope);
-  const readAccountMaterialsQuery = readAccountMaterials.useQuery(
-    queryCacheArguments,
-    { skip }
-  );
+  readAccountMaterials.useQuery(queryCacheArguments, { skip });
   const accountMaterialsByCategory = useSelector(
     selectAccountMaterialsByCategory
   );
   return (
     <Fragment>
       <h1>Materials Storage</h1>
-      {items
-        .sort((a, b) => a.order - b.order)
-        .map((materials) => (
-          <MaterialsTab
-            key={materials.id}
-            accountMaterials={accountMaterialsByCategory[materials.id] ?? []}
-            materials={materials}
-          />
-        ))}
+      {materials?.ids.map((materialId) => (
+        <MaterialsTab
+          key={materialId}
+          accountMaterials={accountMaterialsByCategory[materialId as number]}
+          materials={materials.entities[materialId]!}
+        />
+      ))}
     </Fragment>
   );
 }
