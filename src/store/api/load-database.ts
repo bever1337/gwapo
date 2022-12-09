@@ -1,54 +1,45 @@
+import type { BaseQueryApi } from "@reduxjs/toolkit/src/query/baseQueryTypes";
 import { api } from "../api";
-
-import { pouch } from "../../features/pouch";
+import { PouchDB } from "../../features/pouch";
+import { TransformBatches } from "../../features/streams/batch";
+import { TransformNdj } from "../../features/streams/ndj";
 
 export interface LoadDatabaseArguments {}
 
 export type LoadDatabaseResult = null;
 
+interface DumpHeader {
+  version: string;
+  db_type: string;
+  start_time: string;
+  db_info: {
+    doc_count: number;
+    update_seq: number;
+    backend_adapter: string;
+    db_name: string;
+    auto_compaction: boolean;
+    adapter: string;
+  };
+}
+
+interface DumpSequence {
+  seq: number;
+}
+
+interface DumpDocs {
+  docs: { _id: string; _rev: string; [key: string]: any }[];
+}
+
+type DumpNdj = DumpHeader | DumpSequence | DumpDocs;
+
 export const injectedApi = api.injectEndpoints({
   endpoints(build) {
     return {
       loadDatabase: build.mutation<LoadDatabaseResult, LoadDatabaseArguments>({
-        queryFn(queryArguments, queryApi) {
-          return fetch(`${process.env.PUBLIC_URL}/dump.txt`)
-            .then((response) => {
-              if (!response.body) {
-                return Promise.reject(new Error("Invalid response"));
-              }
-              const writeToPouchStream = new WritableStream({
-                write(dump: any[], controller) {
-                  const reduced = dump.reduce(
-                    (accLines, line) =>
-                      !!line.docs ? accLines.concat(line.docs) : accLines,
-                    []
-                  );
-
-                  return pouch
-                    .bulkDocs(reduced, {
-                      new_edits: false,
-                    })
-                    .then((bulkDocsResponses) => {
-                      return Promise.resolve();
-                    })
-                    .catch((reason) => {
-                      return Promise.reject();
-                    });
-                },
-              });
-              queryApi.signal.addEventListener("abort", () => {
-                writeToPouchStream.abort();
-              });
-
-              return response.body
-                .pipeThrough(new TransformStream(new TransformJsonNewlines()))
-                .pipeThrough(new TransformStream(new TransformBatches()))
-                .pipeTo(writeToPouchStream);
-            })
-
-            .then(() => ({ data: null, error: undefined }))
-            .catch((reason) => ({ data: undefined, error: reason.toString() }));
+        invalidatesTags() {
+          return [{ type: "internal/pouches", id: "LIST" }];
         },
+        queryFn,
       }),
     };
   },
@@ -56,49 +47,75 @@ export const injectedApi = api.injectEndpoints({
 
 export const loadDatabase = injectedApi.endpoints.loadDatabase;
 
-class TransformJsonNewlines {
-  buffer: string = "";
-  decoder: TextDecoder = new TextDecoder();
+function queryFn(
+  queryArguments: LoadDatabaseArguments,
+  queryApi: BaseQueryApi
+) {
+  return fetch(`${process.env.PUBLIC_URL}/dump.txt`)
+    .then((response) => {
+      if (!response.body) {
+        return Promise.reject(new Error("Invalid response"));
+      }
 
-  transform(
-    chunkBytes: Uint8Array,
-    controller: TransformStreamDefaultController
-  ) {
-    (
-      this.buffer +
-      this.decoder.decode(chunkBytes).replace(/\r\n/g, "\n").replace(/\r/, "")
-    )
-      .split("\n")
-      .forEach((line, index, collection) => {
-        try {
-          const parsed = JSON.parse(line);
-          controller.enqueue(parsed);
-        } catch (parserError) {
-          if (index + 1 === collection.length) {
-            // last string from split MAY be non-terminated line
-            this.buffer = line;
-          }
-        }
+      const pouches = new PouchDB("gwapo-db", {
+        adapter: "indexeddb",
       });
-  }
-}
 
-class TransformBatches {
-  batchSize: number = 420;
-  batch: any[] = [];
+      let pouch: PouchDB.Database | undefined;
+      let dumpMeta: DumpHeader & {
+        _id: string;
+        $id: string;
+        // seq: number;
+      };
+      const createPouchTransformer = {
+        transform(dump, controller) {
+          if ("version" in dump) {
+            dumpMeta = {
+              ...dump,
+              _id: `dump_${dump.start_time}`,
+              $id: "dump",
+              // seq: 0,
+            };
+            pouch = new PouchDB(dumpMeta._id!, {
+              adapter: "indexeddb",
+            });
+          } else if ("docs" in dump) {
+            controller.enqueue(dump.docs);
+          }
+        },
+      } as Transformer<DumpNdj, DumpDocs["docs"]>;
 
-  flush(controller: TransformStreamDefaultController) {
-    if (this.batch.length > 0) {
-      controller.enqueue(this.batch);
-      this.batch = [];
-    }
-  }
+      const sinkToPouchWriter = new WritableStream({
+        write(dump, controller) {
+          if (!pouch) {
+            controller.error("No database headers");
+            return Promise.resolve();
+          }
+          return pouch
+            .bulkDocs(dump, {
+              new_edits: false,
+            })
+            .then((bulkDocsResponses) => {
+              return Promise.resolve();
+            })
+            .catch((reason) => {
+              return Promise.resolve();
+            });
+        },
+      } as UnderlyingSink<DumpDocs["docs"]>);
+      queryApi.signal.addEventListener("abort", () => {
+        sinkToPouchWriter.abort();
+      });
 
-  transform(chunk: any, controller: TransformStreamDefaultController) {
-    this.batch.push(chunk);
-    if (this.batch.length >= this.batchSize) {
-      controller.enqueue(this.batch);
-      this.batch = [];
-    }
-  }
+      return response.body
+        .pipeThrough(new TransformStream(new TransformNdj()))
+        .pipeThrough(new TransformStream(createPouchTransformer))
+        .pipeThrough(new TransformStream(new TransformBatches()))
+        .pipeTo(sinkToPouchWriter)
+        .then(() => {
+          return pouches.put(dumpMeta);
+        });
+    })
+    .then(() => ({ data: null, error: undefined }))
+    .catch((reason) => ({ data: undefined, error: reason.toString() }));
 }

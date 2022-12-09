@@ -45,5 +45,10 @@ export const api = createApi({
   baseQuery,
   endpoints: () => ({}),
   reducerPath: "cache",
-  tagTypes: ["access_token"],
+  tagTypes: [
+    // Internal
+    "internal/pouches",
+    // Gw2
+    "access_token",
+  ],
 });
