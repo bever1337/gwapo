@@ -3,7 +3,7 @@ import React, { Fragment, useEffect, useState } from "react";
 // import { useSelector } from "react-redux";
 
 import classes from "./materials.module.css";
-import { Skin } from "./skin";
+import { Skin } from "../../components/skin";
 
 // import {
 //   readAccountMaterials,
@@ -21,7 +21,7 @@ interface ISkins {
   rarity: string;
 }
 
-export function WardrobeStorageContainer() {
+export function WardrobeStorage() {
   const [skins, setSkins] = useState<ISkins[]>([]);
   useEffect(() => {
     // pouch

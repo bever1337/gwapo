@@ -3,9 +3,8 @@ import { Provider } from "react-redux";
 import { BrowserRouter, Link, Routes, Route } from "react-router-dom";
 
 import { Authenticator } from "./components/authenticator";
-// import { MapsContainer } from "./components/maps-container";
-import { MaterialsContainer } from "./components/materials-container";
-import { WardrobeStorageContainer } from "./components/wardrobe-storage-container";
+import { Materials } from "./routes/vault/materials";
+import { WardrobeStorage } from "./routes/vault/wardrobe-storage";
 import { Vault } from "./routes/vault";
 import { VaultParent } from "./routes/vault/parent";
 import { store } from "./store";
@@ -48,18 +47,11 @@ export function App() {
         <hr />
         {
           <Routes>
-            <Route index element={<p>hello</p>} />
-            {/* <Route element={<MapsContainer />} path="maps" /> */}
+            <Route index element={<p>hello, world</p>} />
             <Route element={<VaultParent />} path="/vault">
               <Route element={<Vault />} index />
-              <Route
-                element={<MaterialsContainer />}
-                path="materials-storage/*"
-              />
-              <Route
-                element={<WardrobeStorageContainer />}
-                path="wardrobe-storage/*"
-              />
+              <Route element={<Materials />} path="materials-storage/*" />
+              <Route element={<WardrobeStorage />} path="wardrobe-storage/*" />
             </Route>
           </Routes>
         }

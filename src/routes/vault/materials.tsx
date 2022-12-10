@@ -1,18 +1,18 @@
 import { Fragment } from "react";
 import { useSelector } from "react-redux";
 
-import { MaterialsTab } from "./materials-tab";
+import { MaterialsTab } from "../../components/materials-tab";
 
 import {
   readAccountMaterials,
   selectReadAccountMaterialsInScope,
   selectAccountMaterialsByCategory,
-} from "../store/api/read-account-materials";
-import { readMaterials } from "../store/api/read-materials";
+} from "../../store/api/read-account-materials";
+import { readMaterials } from "../../store/api/read-materials";
 
 const queryCacheArguments = {};
 
-export function MaterialsContainer() {
+export function Materials() {
   const { data: materials } = readMaterials.useQuery({});
   const skip = !useSelector(selectReadAccountMaterialsInScope);
   readAccountMaterials.useQuery(queryCacheArguments, { skip });
