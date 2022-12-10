@@ -1,5 +1,7 @@
 /** Streaming newline-delimited JSON */
-export class TransformNdj implements Transformer<Uint8Array, any> {
+export class NewlineDelimitedJsonTransformer
+  implements Transformer<Uint8Array, any>
+{
   buffer: string = "";
   decoder: TextDecoder = new TextDecoder();
 
@@ -21,6 +23,8 @@ export class TransformNdj implements Transformer<Uint8Array, any> {
             // last string from split is non-terminated line
             // if input is bad, this COULD result in a parsing error on the first line of the next transform call
             this.buffer = line;
+          } else {
+            throw parserError;
           }
         }
       });

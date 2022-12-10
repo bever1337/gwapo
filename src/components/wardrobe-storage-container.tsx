@@ -12,8 +12,6 @@ import { Skin } from "./skin";
 // } from "../store/api/read-account-materials";
 // import { makeSelectIsInScope } from "../store/selectors";
 
-import { pouch } from "../features/pouch";
-
 const queryCacheArguments = {};
 
 interface ISkins {
@@ -26,17 +24,17 @@ interface ISkins {
 export function WardrobeStorageContainer() {
   const [skins, setSkins] = useState<ISkins[]>([]);
   useEffect(() => {
-    pouch
-      .find({
-        selector: {
-          $id: { $eq: "gwapo/skins" },
-        },
-        fields: ["icon", "id", "name", "rarity", "type"],
-      })
-      .then(({ docs }) => {
-        setSkins(docs as unknown as ISkins[]);
-      })
-      .catch(console.warn);
+    // pouch
+    //   .find({
+    //     selector: {
+    //       $id: { $eq: "gwapo/skins" },
+    //     },
+    //     fields: ["icon", "id", "name", "rarity", "type"],
+    //   })
+    //   .then(({ docs }) => {
+    //     setSkins(docs as unknown as ISkins[]);
+    //   })
+    //   .catch(console.warn);
   }, []);
   // const skip = !useSelector(selectReadAccountMaterialsInScope);
   // const readAccountMaterialsQuery = readAccountMaterials.useQuery(

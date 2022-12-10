@@ -3,7 +3,7 @@ import type { EntityState } from "@reduxjs/toolkit";
 
 import { api } from "../api";
 
-import { pouch } from "../../features/pouch";
+import { PouchDB } from "../../features/pouch";
 import type { Item } from "../../types/item";
 
 export interface ReadItemsArguments {
@@ -21,6 +21,7 @@ export const injectedApi = api.injectEndpoints({
     return {
       readItems: build.query<ReadItemsResult, ReadItemsArguments>({
         queryFn({ ids }) {
+          const pouch = new PouchDB("gwapo-db");
           return pouch
             .allDocs({
               keys: ids.map((itemId) => `items_${itemId}`),

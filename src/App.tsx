@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Provider } from "react-redux";
 import { BrowserRouter, Link, Routes, Route } from "react-router-dom";
 
@@ -6,7 +6,6 @@ import { Authenticator } from "./components/authenticator";
 // import { MapsContainer } from "./components/maps-container";
 import { MaterialsContainer } from "./components/materials-container";
 import { WardrobeStorageContainer } from "./components/wardrobe-storage-container";
-import { pouch } from "./features/pouch";
 import { Vault } from "./routes/vault";
 import { VaultParent } from "./routes/vault/parent";
 import { store } from "./store";
@@ -14,12 +13,12 @@ import { loadDatabase } from "./store/api/load-database";
 
 const appStore = store();
 
-function Thing() {
+function RunDatabaseDump() {
   const [trigger] = loadDatabase.useMutation({});
   useEffect(() => {
-    const foo = trigger({});
+    const request = trigger({});
     return () => {
-      foo.abort();
+      request.abort();
     };
   }, [trigger]);
   return null;
@@ -29,7 +28,7 @@ export function App() {
   return (
     <Provider store={appStore}>
       <BrowserRouter basename={process.env.PUBLIC_URL}>
-        <Thing />
+        <RunDatabaseDump />
         <nav>
           <ul>
             <li>
