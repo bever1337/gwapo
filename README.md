@@ -1,6 +1,6 @@
 ## Getting started
 
-Gwapo is developed against NodeJS v14 LTS.
+Gwapo is developed against NodeJS v16 LTS.
 
 ```bash
 git clone git@github.com:bever1337/gwapo.git
