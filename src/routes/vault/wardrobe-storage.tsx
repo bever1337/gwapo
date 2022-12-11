@@ -2,7 +2,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 // import { useSelector } from "react-redux";
 
-import classes from "./materials.module.css";
+import classes from "../../components/materials.module.css";
 import { Skin } from "../../components/skin";
 
 // import {

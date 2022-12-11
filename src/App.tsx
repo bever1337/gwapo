@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Provider } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 import { BrowserRouter, Link, Routes, Route } from "react-router-dom";
 
 import { Authenticator } from "./components/authenticator";
@@ -9,6 +9,10 @@ import { Vault } from "./routes/vault";
 import { VaultParent } from "./routes/vault/parent";
 import { store } from "./store";
 import { loadDatabase } from "./store/api/load-database";
+import {
+  readGwapoDatabases,
+  selectProgress,
+} from "./store/api/read-gwapo-database-progress";
 
 const appStore = store();
 
@@ -23,11 +27,18 @@ function RunDatabaseDump() {
   return null;
 }
 
+function ReadDbs() {
+  readGwapoDatabases.useQuery({});
+  console.log(useSelector(selectProgress));
+  return null;
+}
+
 export function App() {
   return (
     <Provider store={appStore}>
       <BrowserRouter basename={process.env.PUBLIC_URL}>
         <RunDatabaseDump />
+        <ReadDbs />
         <nav>
           <ul>
             <li>

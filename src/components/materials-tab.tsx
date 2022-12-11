@@ -58,7 +58,6 @@ export function MaterialsTab({
           type="checkbox"
         />
       </label>
-
       <ul className={[classes["materials__list"]].join(" ")}>
         {collapsed ? null : materialElements}
       </ul>
