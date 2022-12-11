@@ -11,33 +11,24 @@ export class DumpStreamActions implements DumpToPouchSinkActions {
   private batch: DumpDocs["docs"];
   private batchSize: number;
   private pouch?: PouchDB.Database;
-  private sequence!: number;
+  private sequenceState!: number;
 
   constructor(options?: { batchSize?: number }) {
     this.batchSize = options?.batchSize ?? 100;
     this.batch = [];
   }
 
+  buffer(docs: DumpDocs["docs"]) {
+    this.batch.push(...docs);
+    return Promise.resolve();
+  }
+
   error(reason: string) {
     throw new Error(reason);
   }
 
-  flush(sequence: number, force = false) {
-    if (force) {
-      // When flush is forced, input sequence is 0
-      sequence = this.sequence;
-    } else if (sequence < this.sequence) {
-      // Stream is behind checkpoint
-      this.batch = [];
-      return Promise.resolve();
-    } else {
-      // During normal flush, update internal sequence
-      this.sequence = sequence;
-    }
-    const skipFlush = force === false && this.batch.length < this.batchSize;
-    if (skipFlush) {
-      return Promise.resolve();
-    }
+  flush() {
+    const sequence = this.sequenceState;
     const previousBatch = [...this.batch];
     this.batch = [];
     return this.pouch!.bulkDocs(previousBatch, { new_edits: false })
@@ -59,7 +50,7 @@ export class DumpStreamActions implements DumpToPouchSinkActions {
   }
 
   initialize(header: DumpHeader) {
-    const dumpDatabaseName = `@gwapo/dump/${header.start_time}`;
+    const dumpDatabaseName = `${header.db_info.db_name}/${header.start_time}`;
     this.pouch = new PouchDB(dumpDatabaseName, {
       adapter: "indexeddb",
     });
@@ -88,14 +79,47 @@ export class DumpStreamActions implements DumpToPouchSinkActions {
           if (!pouchDbResponse.ok) {
             return Promise.reject(pouchDbResponse);
           }
-          this.sequence = finalHeaderDocument.seq;
-          console.error("start at", this.sequence);
+          this.sequenceState = finalHeaderDocument.seq;
           Promise.resolve();
         });
       });
   }
 
-  async buffer(docs: DumpDocs["docs"]) {
-    this.batch.push(...docs);
+  sequence(nextSequence: number): Promise<void> {
+    // 1. If input sequence is less than the stateful sequence, bail out and return early
+    if (nextSequence < this.sequenceState) {
+      // Stream is behind checkpoint, ignore sequence
+      this.batch = [];
+      return Promise.resolve();
+    }
+    // 2. Update stateful sequence
+    this.sequenceState = nextSequence;
+    // 3. If stateful batch length is less than batch size, bail out and return early
+    const skipFlush = this.batch.length < this.batchSize;
+    if (skipFlush) {
+      return Promise.resolve();
+    }
+    // 4. Clone internal batch
+    const previousBatch = [...this.batch];
+    // 5. Empty internal batch
+    this.batch = [];
+    // 6. Put cloned batch to database
+    return this.pouch!.bulkDocs(previousBatch, { new_edits: false })
+      .then((pouchDbResponse) => {
+        if (pouchDbResponse.length > 0) {
+          return Promise.reject("Error putting flushed docs");
+        }
+        return this.pouch!.get(this.pouch!.name);
+      })
+      .then((headerDocument) => {
+        // 7. Put checkpoint change to database
+        return this.pouch!.put({ ...headerDocument, seq: nextSequence });
+      })
+      .then((pouchDbResponse) => {
+        if (!pouchDbResponse.ok) {
+          return Promise.reject(pouchDbResponse);
+        }
+        return Promise.resolve();
+      });
   }
 }

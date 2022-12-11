@@ -45,18 +45,28 @@ export enum DumpToPouchSinkState {
 }
 
 export interface DumpToPouchSinkActions {
+  /** buffers current line of docs */
+  buffer(docs: DumpDocs["docs"]): Promise<void>;
   /** throw error to the stream with reason */
   error(reason: string): void;
   /**
-   * Checks the length of the buffer, and if it is
-   * equal-to-or-larger-than the batch size, writes
-   * the buffer to the database.
+   * 1. Flushes the internal batch to database
+   * 1. Put checkpoint change from stateful sequence to database
    */
-  flush(sequence: DumpSequence["seq"], force?: boolean): Promise<void>;
+  flush(): Promise<void>;
   /** begin with Headers */
   initialize(header: DumpHeader): Promise<void>;
-  /** buffers current line of docs */
-  buffer(docs: DumpDocs["docs"]): Promise<void>;
+  /**
+   * Dump checkpoint:
+   * 1. If input sequence is less than the stateful sequence, bail out and return early
+   * 1. Update stateful sequence
+   * 1. If stateful batch length is less than batch size, bail out and return early
+   * 1. Clone internal batch
+   * 1. Empty internal batch
+   * 1. Put cloned batch to database
+   * 1. Put checkpoint change to database
+   */
+  sequence(nextSequence: DumpSequence["seq"]): Promise<void>;
 }
 
 export interface DumpStateImplementation {

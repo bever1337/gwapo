@@ -15,7 +15,7 @@ export const injectedApi = api.injectEndpoints({
       readGwapoDatabases: build.query<DumpHeaderDocument, {}>({
         async onCacheEntryAdded(queryArguments, queryApi) {
           const { data: header } = await queryApi.cacheDataLoaded;
-          const dumpDatabaseName = `@gwapo/dump/${header.start_time}`;
+          const dumpDatabaseName = `${header.db_info.db_name}/${header.start_time}`;
           const observer = new PouchDB(dumpDatabaseName, {
             adapter: "indexeddb",
           }).changes({
@@ -71,7 +71,7 @@ export const injectedApi = api.injectEndpoints({
                 });
             })
             .then((header) => {
-              const dumpDatabaseName = `@gwapo/dump/${header.start_time}`;
+              const dumpDatabaseName = `${header.db_info.db_name}/${header.start_time}`;
               const pouch = new PouchDB(dumpDatabaseName, {
                 adapter: "indexeddb",
               });

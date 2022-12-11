@@ -14,7 +14,7 @@ export const Docs: DumpStateImplementation = {
     return DumpToPouchSinkState.Aborted;
   },
   async sequence(input, actions) {
-    await actions.flush(input.seq);
+    await actions.sequence(input.seq);
     return DumpToPouchSinkState.Sequence;
   },
 };

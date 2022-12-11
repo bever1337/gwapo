@@ -3,7 +3,7 @@ import type { DumpStateImplementation } from "../types";
 
 export const Sequence: DumpStateImplementation = {
   async close(actions) {
-    await actions.flush(0, true);
+    await actions.flush();
     return DumpToPouchSinkState.Aborted;
   },
   async docs(input, actions) {
