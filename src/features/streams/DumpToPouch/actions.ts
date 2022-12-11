@@ -7,11 +7,36 @@ import type {
 
 import { PouchDB } from "../../pouch";
 
+/** Internal state of a DumpStreamActions instance */
+interface DumpStreamContext {
+  /** Current dump progress */
+  seq: number;
+  db_info: {
+    /** Name used to derive dump database name, meta database name, and dump doc id */
+    db_name: string;
+  };
+  /** Timestamp when dump file was created */
+  start_time: string;
+}
+
+/** Name of dump database AND id of dump checkpoint document in meta database */
+export const toDumpDatabaseName = (header: Omit<DumpStreamContext, "seq">) =>
+  `${header.db_info.db_name}/${header.start_time}`;
+/** Name of meta database that holds dump checkpoint documents */
+export const toMetaDatabaseName = (header: Omit<DumpStreamContext, "seq">) =>
+  header.db_info.db_name;
+
 export class DumpStreamActions implements DumpToPouchSinkActions {
+  /** Internal buffering of documents */
   private batch: DumpDocs["docs"];
+  /** Minimum buffer length before changes are pushed to pouch */
   private batchSize: number;
-  private pouch?: PouchDB.Database;
-  private sequenceState!: number;
+  /** Database target for dump documents */
+  private dumpPouch?: PouchDB.Database;
+  /** Database meta info for checkpointing, deriving database names */
+  private header?: DumpStreamContext;
+  /** Database target for dump progress */
+  private metaPouch?: PouchDB.Database;
 
   constructor(options?: { batchSize?: number }) {
     this.batchSize = options?.batchSize ?? 100;
@@ -28,18 +53,18 @@ export class DumpStreamActions implements DumpToPouchSinkActions {
   }
 
   flush() {
-    const sequence = this.sequenceState;
+    const sequence = this.header!.seq;
     const previousBatch = [...this.batch];
     this.batch = [];
-    return this.pouch!.bulkDocs(previousBatch, { new_edits: false })
+    return this.dumpPouch!.bulkDocs(previousBatch, { new_edits: false })
       .then((pouchDbResponse) => {
         if (pouchDbResponse.length > 0) {
           return Promise.reject("Error putting flushed docs");
         }
-        return this.pouch!.get(this.pouch!.name);
+        return this.metaPouch!.get(toDumpDatabaseName(this.header!));
       })
       .then((headerDocument) => {
-        return this.pouch!.put({ ...headerDocument, seq: sequence });
+        return this.metaPouch!.put({ ...headerDocument, seq: sequence });
       })
       .then((pouchDbResponse) => {
         if (!pouchDbResponse.ok) {
@@ -50,50 +75,57 @@ export class DumpStreamActions implements DumpToPouchSinkActions {
   }
 
   initialize(header: DumpHeader) {
-    const dumpDatabaseName = `${header.db_info.db_name}/${header.start_time}`;
-    this.pouch = new PouchDB(dumpDatabaseName, {
+    this.dumpPouch = new PouchDB(toDumpDatabaseName(header), {
       adapter: "indexeddb",
     });
-    return this.pouch
-      .get(dumpDatabaseName)
+    this.metaPouch = new PouchDB(toMetaDatabaseName(header), {
+      adapter: "indexeddb",
+    });
+    return this.metaPouch
+      .get(toDumpDatabaseName(header))
       .then(
         // document exists, re-write contents for sanity check
-        (savedDumpHeaderDocument) => ({
-          ...savedDumpHeaderDocument,
-          ...header,
-          seq: (savedDumpHeaderDocument as any as DumpHeaderDocument)?.seq ?? 0,
-        })
+        (savedDumpHeaderDocument) =>
+          ({
+            ...savedDumpHeaderDocument,
+            ...header,
+            seq:
+              (savedDumpHeaderDocument as any as DumpHeaderDocument)?.seq ?? 0,
+          } as any as DumpHeaderDocument)
       )
       .catch(
         // document may not exist, OR ignore the error
         (reason) =>
           ({
             ...header,
-            _id: dumpDatabaseName,
+            _id: toDumpDatabaseName(header),
             $id: "dump",
             seq: 0,
           } as DumpHeaderDocument)
       )
       .then((finalHeaderDocument) => {
-        return this.pouch!.put(finalHeaderDocument).then((pouchDbResponse) => {
-          if (!pouchDbResponse.ok) {
-            return Promise.reject(pouchDbResponse);
+        return this.metaPouch!.put(finalHeaderDocument).then(
+          (pouchDbResponse) => {
+            if (!pouchDbResponse.ok) {
+              return Promise.reject(pouchDbResponse);
+            }
+            // If initialize was successful, store header for checkpointing
+            this.header = finalHeaderDocument;
+            Promise.resolve();
           }
-          this.sequenceState = finalHeaderDocument.seq;
-          Promise.resolve();
-        });
+        );
       });
   }
 
   sequence(nextSequence: number): Promise<void> {
     // 1. If input sequence is less than the stateful sequence, bail out and return early
-    if (nextSequence < this.sequenceState) {
+    if (nextSequence < this.header!.seq) {
       // Stream is behind checkpoint, ignore sequence
       this.batch = [];
       return Promise.resolve();
     }
     // 2. Update stateful sequence
-    this.sequenceState = nextSequence;
+    this.header!.seq = nextSequence;
     // 3. If stateful batch length is less than batch size, bail out and return early
     const skipFlush = this.batch.length < this.batchSize;
     if (skipFlush) {
@@ -104,16 +136,16 @@ export class DumpStreamActions implements DumpToPouchSinkActions {
     // 5. Empty internal batch
     this.batch = [];
     // 6. Put cloned batch to database
-    return this.pouch!.bulkDocs(previousBatch, { new_edits: false })
+    return this.dumpPouch!.bulkDocs(previousBatch, { new_edits: false })
       .then((pouchDbResponse) => {
         if (pouchDbResponse.length > 0) {
           return Promise.reject("Error putting flushed docs");
         }
-        return this.pouch!.get(this.pouch!.name);
+        return this.metaPouch!.get(toDumpDatabaseName(this.header!));
       })
       .then((headerDocument) => {
         // 7. Put checkpoint change to database
-        return this.pouch!.put({ ...headerDocument, seq: nextSequence });
+        return this.metaPouch!.put({ ...headerDocument, seq: nextSequence });
       })
       .then((pouchDbResponse) => {
         if (!pouchDbResponse.ok) {

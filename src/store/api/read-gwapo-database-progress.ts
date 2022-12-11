@@ -8,6 +8,7 @@ import {
   DumpHeaderDocument,
 } from "../../features/streams/DumpToPouch/types";
 import { NewlineDelimitedJsonTransformer } from "../../features/streams/NewlineDelimitedJson";
+import { toDumpDatabaseName } from "../../features/streams/DumpToPouch/actions";
 
 export const injectedApi = api.injectEndpoints({
   endpoints(build) {
@@ -15,11 +16,10 @@ export const injectedApi = api.injectEndpoints({
       readGwapoDatabases: build.query<DumpHeaderDocument, {}>({
         async onCacheEntryAdded(queryArguments, queryApi) {
           const { data: header } = await queryApi.cacheDataLoaded;
-          const dumpDatabaseName = `${header.db_info.db_name}/${header.start_time}`;
-          const observer = new PouchDB(dumpDatabaseName, {
+          const observer = new PouchDB("gwapo-db", {
             adapter: "indexeddb",
           }).changes({
-            doc_ids: [dumpDatabaseName],
+            doc_ids: [toDumpDatabaseName(header)],
             include_docs: true,
             live: true,
             return_docs: true,
@@ -71,34 +71,28 @@ export const injectedApi = api.injectEndpoints({
                 });
             })
             .then((header) => {
-              const dumpDatabaseName = `${header.db_info.db_name}/${header.start_time}`;
-              const pouch = new PouchDB(dumpDatabaseName, {
-                adapter: "indexeddb",
-              });
-              return pouch
-                .get(dumpDatabaseName)
-                .then(
-                  // document exists, re-write contents for sanity check
-                  (savedDumpHeaderDocument) => ({
-                    ...savedDumpHeaderDocument,
-                    seq:
-                      (savedDumpHeaderDocument as any as DumpHeaderDocument)
-                        ?.seq ?? 0,
-                  })
-                )
-                .catch(
-                  // document may not exist, OR ignore the error
-                  () =>
-                    ({
-                      ...header,
-                      _id: `dump_${header.start_time}`,
-                      $id: "dump",
-                      seq: 0,
-                    } as DumpHeaderDocument)
-                );
+              return (
+                new PouchDB("gwapo-db", {
+                  adapter: "indexeddb",
+                }).get(
+                  toDumpDatabaseName(header)
+                ) as Promise<DumpHeaderDocument>
+              ).catch(
+                // document may not exist, OR ignore the error
+                () =>
+                  ({
+                    ...header,
+                    _id: toDumpDatabaseName(header),
+                    $id: "dump",
+                    seq: 0,
+                  } as DumpHeaderDocument)
+              );
             })
-            .then((doc) => ({
-              data: doc as any as DumpHeaderDocument,
+            .then((dumpHeaderDocument) => ({
+              data: {
+                ...dumpHeaderDocument,
+                seq: dumpHeaderDocument?.seq ?? 0,
+              },
               error: undefined,
             }));
         },

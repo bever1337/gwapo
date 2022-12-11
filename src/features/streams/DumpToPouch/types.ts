@@ -29,7 +29,7 @@ export type DumpJson = DumpHeader | DumpSequence | DumpDocs;
 /** Includes pouchDB properties */
 export type DumpHeaderDocument = DumpHeader & {
   /** CouchDB Document id */
-  _id: `dump_${string}`;
+  _id: string;
   /** Json schema id */
   $id: "dump";
   /** Dump checkpointing */

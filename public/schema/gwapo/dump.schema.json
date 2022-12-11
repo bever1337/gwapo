@@ -1,0 +1,33 @@
+{
+  "$id": "dump",
+  "additionalProperties": false,
+  "properties": {
+    "version": { "type": "string" },
+    "db_type": { "type": "string" },
+    "start_time": {
+      "format": "datet-ime",
+      "type": "string"
+    },
+    "db_info": {
+      "properties": {
+        "doc_count": { "type": "number" },
+        "update_seq": { "type": "number" },
+        "backend_adapter": { "type": "string" },
+        "db_name": { "type": "string" },
+        "auto_compaction": { "type": "boolean" },
+        "adapter": { "type": "string" }
+      },
+      "required": [
+        "doc_count",
+        "update_seq",
+        "backend_adapter",
+        "db_name",
+        "auto_compaction",
+        "adapter"
+      ],
+      "type": "object"
+    }
+  },
+  "required": ["version", "db_type", "start_time", "db_info"],
+  "type": "object"
+}
