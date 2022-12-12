@@ -80,7 +80,6 @@ export function App() {
     <Provider store={appStore}>
       {/* <RunDatabaseDump /> */}
       <Demo />
-
       <RouterProvider router={router} />
     </Provider>
   );

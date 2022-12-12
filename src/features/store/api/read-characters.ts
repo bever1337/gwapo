@@ -3,7 +3,7 @@ import { makeSelectIsInScope } from "../selectors";
 
 import { Scope } from "../../../types/token";
 
-const scopes = [Scope.Account, Scope.Inventories];
+const scopes = [Scope.Account, Scope.Characters];
 
 export const injectedApi = api.injectEndpoints({
   endpoints(build) {
