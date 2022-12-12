@@ -3,7 +3,7 @@ import type { EntityState } from "@reduxjs/toolkit";
 
 import { api } from "../api";
 
-import { PouchDB } from "../../features/pouch";
+import { PouchDB } from "../../pouch";
 
 export interface Materials {
   id: number;
@@ -28,7 +28,7 @@ export const injectedApi = api.injectEndpoints({
     return {
       readMaterials: build.query<ReadMaterialsResult, ReadMaterialsArguments>({
         queryFn() {
-          const pouch = new PouchDB("gwapo-db");
+          const pouch = new PouchDB("gwapo-db", { adapter: "indexeddb" });
           return pouch
             .find({
               selector: {

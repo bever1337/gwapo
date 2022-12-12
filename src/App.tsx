@@ -7,12 +7,12 @@ import { Materials } from "./routes/vault/materials";
 import { WardrobeStorage } from "./routes/vault/wardrobe-storage";
 import { Vault } from "./routes/vault";
 import { VaultParent } from "./routes/vault/parent";
-import { store } from "./store";
-import { loadDatabase } from "./store/api/load-database";
+import { store } from "./features/store";
+import { loadDatabase } from "./features/store/api/load-database";
 import {
   readGwapoDatabases,
   selectProgress,
-} from "./store/api/read-gwapo-database-progress";
+} from "./features/store/api/read-gwapo-database-progress";
 
 const appStore = store();
 

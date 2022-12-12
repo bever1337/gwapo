@@ -1,6 +1,6 @@
 import materialsClasses from "./material.module.css";
 
-import type { AccountBankItem } from "../store/api/read-account-bank";
+import type { AccountBankItem } from "../features/store/api/read-account-bank";
 import type { Item } from "../types/item";
 
 export function VaultItem(props: {

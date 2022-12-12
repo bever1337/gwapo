@@ -3,7 +3,7 @@ import { Link, Route, Routes } from "react-router-dom";
 
 import classes from "./material.module.css";
 
-import type { AccountMaterial } from "../store/api/read-account-materials";
+import type { AccountMaterial } from "../features/store/api/read-account-materials";
 import type { Item } from "../types/item";
 
 export function Material({

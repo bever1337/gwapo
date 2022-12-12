@@ -9,8 +9,8 @@ import { Skin } from "../../components/skin";
 //   readAccountMaterials,
 //   selectReadAccountMaterialsInScope,
 //   selectAccountMaterialsByCategory,
-// } from "../store/api/read-account-materials";
-// import { makeSelectIsInScope } from "../store/selectors";
+// } from "../features/store/api/read-account-materials";
+// import { makeSelectIsInScope } from "../features/store/selectors";
 
 const queryCacheArguments = {};
 

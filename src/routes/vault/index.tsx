@@ -6,7 +6,7 @@ import {
   readAccountBank,
   selectReadAccountBankInScope,
   selectAccountBankWithTabs,
-} from "../../store/api/read-account-bank";
+} from "../../features/store/api/read-account-bank";
 
 const queryCacheArguments = {};
 

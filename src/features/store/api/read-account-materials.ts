@@ -3,7 +3,7 @@ import { createSelector } from "@reduxjs/toolkit";
 import { api } from "../api";
 import { makeSelectIsInScope } from "../selectors";
 
-import { Scope } from "../../types/token";
+import { Scope } from "../../../types/token";
 
 interface ReadAccountMaterialsArguments {}
 

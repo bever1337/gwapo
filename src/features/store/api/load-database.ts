@@ -1,8 +1,10 @@
 import type { BaseQueryApi } from "@reduxjs/toolkit/src/query/baseQueryTypes";
+
 import { api } from "../api";
-import { DumpToPouchSink } from "../../features/streams/DumpToPouch";
-import { DumpStreamActions } from "../../features/streams/DumpToPouch/actions";
-import { NewlineDelimitedJsonTransformer } from "../../features/streams/NewlineDelimitedJson";
+
+import { DumpToPouchSink } from "../../streams/DumpToPouch";
+import { DumpStreamActions } from "../../streams/DumpToPouch/actions";
+import { NewlineDelimitedJsonTransformer } from "../../streams/NewlineDelimitedJson";
 
 export interface LoadDatabaseArguments {}
 

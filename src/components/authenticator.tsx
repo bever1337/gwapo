@@ -1,6 +1,6 @@
 import React from "react";
 
-import { readTokenInfo } from "../store/api/read-token-info";
+import { readTokenInfo } from "../features/store/api/read-token-info";
 
 export function Authenticator() {
   const [initiate, result] = readTokenInfo.useMutation();

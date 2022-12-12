@@ -2,13 +2,13 @@ import { createSelector } from "@reduxjs/toolkit";
 
 import { api } from "../api";
 
-import { PouchDB } from "../../features/pouch";
+import { PouchDB } from "../../pouch";
 import {
   DumpHeader,
   DumpHeaderDocument,
-} from "../../features/streams/DumpToPouch/types";
-import { NewlineDelimitedJsonTransformer } from "../../features/streams/NewlineDelimitedJson";
-import { toDumpDatabaseName } from "../../features/streams/DumpToPouch/actions";
+} from "../../streams/DumpToPouch/types";
+import { NewlineDelimitedJsonTransformer } from "../../streams/NewlineDelimitedJson";
+import { toDumpDatabaseName } from "../../streams/DumpToPouch/actions";
 
 export const injectedApi = api.injectEndpoints({
   endpoints(build) {

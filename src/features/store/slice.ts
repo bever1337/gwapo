@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import { setAccess } from "./actions";
 
-import type { AccessToken } from "../types/token";
+import type { AccessToken } from "../../types/token";
 
 // import { configureClient, resetClient } from "./actions";
 // import { initialState } from "./initial-state";

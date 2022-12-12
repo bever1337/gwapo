@@ -7,8 +7,8 @@ import {
   readAccountMaterials,
   selectReadAccountMaterialsInScope,
   selectAccountMaterialsByCategory,
-} from "../../store/api/read-account-materials";
-import { readMaterials } from "../../store/api/read-materials";
+} from "../../features/store/api/read-account-materials";
+import { readMaterials } from "../../features/store/api/read-materials";
 
 const queryCacheArguments = {};
 

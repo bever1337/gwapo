@@ -6,7 +6,7 @@ import type {
 } from "@reduxjs/toolkit/query/react";
 import type { BaseQueryApi } from "@reduxjs/toolkit/src/query/baseQueryTypes";
 
-import type { Scope } from "../types/token";
+import type { Scope } from "../../types/token";
 
 import type { RootState } from ".";
 

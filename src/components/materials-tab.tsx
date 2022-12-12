@@ -4,9 +4,9 @@ import React, { useState } from "react";
 import { Material } from "./material";
 import classes from "./materials.module.css";
 
-import type { AccountMaterial } from "../store/api/read-account-materials";
-import { readItems } from "../store/api/read-items";
-import type { Materials } from "../store/api/read-materials";
+import type { AccountMaterial } from "../features/store/api/read-account-materials";
+import { readItems } from "../features/store/api/read-items";
+import type { Materials } from "../features/store/api/read-materials";
 
 const TRIANGLE_CLOSED = "\u25B2";
 const TRIANGLE_OPEN = "\u25BC";

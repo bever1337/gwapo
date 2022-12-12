@@ -4,7 +4,7 @@ import { createSelector } from "@reduxjs/toolkit";
 import type { RootState } from ".";
 import { initialState } from "./slice";
 
-import type { Scope } from "../types/token";
+import type { Scope } from "../../types/token";
 
 const selectClient = (state: RootState) => state?.client ?? initialState;
 

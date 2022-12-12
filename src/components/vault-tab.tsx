@@ -4,8 +4,8 @@ import { useState } from "react";
 import materialsClasses from "./materials.module.css";
 import { VaultItem } from "./vault-item";
 
-import type { AccountBankItem } from "../store/api/read-account-bank";
-import { readItems } from "../store/api/read-items";
+import type { AccountBankItem } from "../features/store/api/read-account-bank";
+import { readItems } from "../features/store/api/read-items";
 
 const TRIANGLE_CLOSED = "\u25B2";
 const TRIANGLE_OPEN = "\u25BC";
