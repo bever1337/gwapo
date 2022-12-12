@@ -50,5 +50,6 @@ export const api = createApi({
     "internal/pouches",
     // Gw2
     "access_token",
+    "characters",
   ],
 });
