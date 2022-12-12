@@ -6,18 +6,24 @@ import { DumpToPouchSink } from "../../streams/DumpToPouch";
 import { DumpStreamActions } from "../../streams/DumpToPouch/actions";
 import { NewlineDelimitedJsonTransformer } from "../../streams/NewlineDelimitedJson";
 
-export interface LoadDatabaseArguments {}
+export interface LoadGwapoDatabaseDumpArguments {}
 
-export type LoadDatabaseResult = null;
+export type LoadGwapoDatabaseResult = null;
 
 export const injectedApi = api.injectEndpoints({
   endpoints(build) {
     return {
-      loadDatabase: build.mutation<LoadDatabaseResult, LoadDatabaseArguments>({
+      loadGwapoDatabaseDump: build.mutation<
+        LoadGwapoDatabaseResult,
+        LoadGwapoDatabaseDumpArguments
+      >({
         invalidatesTags() {
           return [{ type: "internal/pouches", id: "LIST" }];
         },
-        queryFn(queryArguments: LoadDatabaseArguments, queryApi: BaseQueryApi) {
+        queryFn(
+          queryArguments: LoadGwapoDatabaseDumpArguments,
+          queryApi: BaseQueryApi
+        ) {
           return fetch(`${process.env.PUBLIC_URL}/dump.txt`, {
             signal: queryApi.signal,
           })
@@ -48,4 +54,5 @@ export const injectedApi = api.injectEndpoints({
   },
 });
 
-export const loadDatabase = injectedApi.endpoints.loadDatabase;
+export const loadGwapoDatabaseDump =
+  injectedApi.endpoints.loadGwapoDatabaseDump;
