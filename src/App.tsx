@@ -10,9 +10,13 @@ import { VaultParent } from "./routes/vault/parent";
 import { store } from "./features/store";
 import { loadDatabase } from "./features/store/api/load-database";
 import {
-  readGwapoDatabases,
+  readGwapoDatabaseProgress,
   selectProgress,
 } from "./features/store/api/read-gwapo-database-progress";
+import {
+  selectBestDatabase,
+  readGwapoDatabases,
+} from "./features/store/api/read-gwapo-databases";
 
 const appStore = store();
 
@@ -28,8 +32,9 @@ function RunDatabaseDump() {
 }
 
 function ReadDbs() {
+  readGwapoDatabaseProgress.useQuery({});
   readGwapoDatabases.useQuery({});
-  console.log(useSelector(selectProgress));
+  console.debug(useSelector(selectProgress), useSelector(selectBestDatabase));
   return null;
 }
 

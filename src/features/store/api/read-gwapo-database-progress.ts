@@ -13,8 +13,12 @@ import { toDumpDatabaseName } from "../../streams/DumpToPouch/actions";
 export const injectedApi = api.injectEndpoints({
   endpoints(build) {
     return {
-      /** Reports progress for the database specified in dump.txt */
-      readGwapoDatabases: build.query<DumpHeaderDocument, {}>({
+      /**
+       * Reports progress for the database specified in dump.txt.
+       * Since only one dump.txt can be present in a deployment,
+       * there is no use-case to track progress for multiple databases.
+       */
+      readGwapoDatabaseProgress: build.query<DumpHeaderDocument, {}>({
         async onCacheEntryAdded(queryArguments, queryApi) {
           const { data: header } = await queryApi.cacheDataLoaded;
           const observer = new PouchDB("gwapo-db", {
@@ -45,6 +49,15 @@ export const injectedApi = api.injectEndpoints({
           queryApi.cacheEntryRemoved.finally(() => {
             observer.cancel();
           });
+        },
+        providesTags(result, error) {
+          if (!result || error) {
+            return [{ type: "internal/pouches", id: "LIST" }];
+          }
+          return [
+            { type: "internal/pouches", id: result._id },
+            { type: "internal/pouches", id: "LIST" },
+          ];
         },
         queryFn(queryArguments, queryApi) {
           return fetch(`${process.env.PUBLIC_URL}/dump.txt`, {
@@ -102,10 +115,11 @@ export const injectedApi = api.injectEndpoints({
   },
 });
 
-export const readGwapoDatabases = injectedApi.endpoints.readGwapoDatabases;
+export const readGwapoDatabaseProgress =
+  injectedApi.endpoints.readGwapoDatabaseProgress;
 
 export const selectProgress = createSelector(
-  readGwapoDatabases.select({}),
+  readGwapoDatabaseProgress.select({}),
   (queryResult) => {
     if (!queryResult.data) return -1;
     return Math.round(
