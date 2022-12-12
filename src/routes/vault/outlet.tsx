@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
 
-export function VaultParent() {
+export function VaultOutlet() {
   return <Outlet />;
 }

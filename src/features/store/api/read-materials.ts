@@ -1,6 +1,8 @@
 import { createEntityAdapter } from "@reduxjs/toolkit";
 import type { EntityState } from "@reduxjs/toolkit";
 
+import { getDatabaseName } from "./read-gwapo-databases";
+
 import { api } from "../api";
 
 import { PouchDB } from "../../pouch";
@@ -27,24 +29,25 @@ export const injectedApi = api.injectEndpoints({
   endpoints(build) {
     return {
       readMaterials: build.query<ReadMaterialsResult, ReadMaterialsArguments>({
-        queryFn() {
-          const pouch = new PouchDB("gwapo-db", { adapter: "indexeddb" });
-          return pouch
-            .find({
-              selector: {
-                $id: { $eq: "gwapo/materials" },
-              },
-              fields: ["id", "items", "name", "order"],
-            })
-            .then(({ docs }) => {
-              return {
-                data: materialsEntityAdapter.setAll(
-                  initialState,
-                  docs as unknown[] as Materials[]
-                ),
-                error: undefined,
-              };
-            })
+        providesTags() {
+          return [{ type: "internal/pouches", id: "LIST" }];
+        },
+        queryFn(queryArguments, queryApi) {
+          return getDatabaseName(queryApi)
+            .then((databaseName) =>
+              new PouchDB(databaseName, { adapter: "indexeddb" }).allDocs({
+                include_docs: true,
+                startkey: "materials_0",
+                endkey: "materials_\ufff0",
+              })
+            )
+            .then((response) => ({
+              data: materialsEntityAdapter.setAll(
+                initialState,
+                response.rows.map((row) => row.doc) as unknown[] as Materials[]
+              ),
+              error: undefined,
+            }))
             .catch((reason) => ({ data: undefined, error: reason }));
         },
       }),

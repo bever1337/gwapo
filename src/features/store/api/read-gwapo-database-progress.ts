@@ -17,6 +17,7 @@ export const injectedApi = api.injectEndpoints({
        * Reports progress for the database specified in dump.txt.
        * Since only one dump.txt can be present in a deployment,
        * there is no use-case to track progress for multiple databases.
+       * TODO: Changes are _really_ fast during a dump. Throttling state updates would be good.
        */
       readGwapoDatabaseProgress: build.query<DumpHeaderDocument, {}>({
         async onCacheEntryAdded(queryArguments, queryApi) {

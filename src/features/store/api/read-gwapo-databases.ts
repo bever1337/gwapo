@@ -1,6 +1,8 @@
 import { createEntityAdapter, createSelector } from "@reduxjs/toolkit";
 import type { EntityState } from "@reduxjs/toolkit";
+import type { BaseQueryApi } from "@reduxjs/toolkit/src/query/baseQueryTypes";
 
+import type { RootState } from "..";
 import { api } from "../api";
 
 import { PouchDB } from "../../pouch";
@@ -19,7 +21,7 @@ const databaseEntityAdapter = createEntityAdapter<DumpHeaderDocument>({
 });
 const databaseSelectors = databaseEntityAdapter.getSelectors();
 
-const injectedApi = api.injectEndpoints({
+export const injectedApi = api.injectEndpoints({
   endpoints(build) {
     return {
       readGwapoDatabases: build.query<EntityState<DumpHeaderDocument>, {}>({
@@ -75,3 +77,22 @@ export const selectBestDatabase = createSelector(
       return seq === doc_count;
     })
 );
+
+/** Not quite a thunk. queryFn helper to select a database name or reject if none is ready */
+export function getDatabaseName(
+  queryApi: Pick<BaseQueryApi, "dispatch" | "getState">
+) {
+  const subscription = queryApi.dispatch(readGwapoDatabases.initiate({}));
+  return subscription
+    .unwrap()
+    .then(() => selectBestDatabase(queryApi.getState() as RootState))
+    .then((bestDatabase) => {
+      if (!bestDatabase || typeof bestDatabase !== "string") {
+        return Promise.reject("No database ready");
+      }
+      return bestDatabase;
+    })
+    .finally(() => {
+      subscription.unsubscribe();
+    });
+}

@@ -25,7 +25,6 @@
     "node-fetch": "^3.2.10",
     "pouchdb": "^7.3.0",
     "pouchdb-adapter-indexeddb": "^7.3.0",
-    "pouchdb-find": "^7.3.0",
     "pouchdb-replication-stream": "^1.2.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

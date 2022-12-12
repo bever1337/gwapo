@@ -4,9 +4,8 @@ import { BrowserRouter, Link, Routes, Route } from "react-router-dom";
 
 import { Authenticator } from "./components/authenticator";
 import { Materials } from "./routes/vault/materials";
-import { WardrobeStorage } from "./routes/vault/wardrobe-storage";
 import { Vault } from "./routes/vault";
-import { VaultParent } from "./routes/vault/parent";
+import { VaultOutlet } from "./routes/vault/outlet";
 import { store } from "./features/store";
 import { updateGwapoDatabaseDump } from "./features/store/api/update-gwapo-database-dump";
 import {
@@ -31,19 +30,11 @@ function RunDatabaseDump() {
   return null;
 }
 
-function ReadDbs() {
-  readGwapoDatabaseProgress.useQuery({});
-  readGwapoDatabases.useQuery({});
-  console.debug(useSelector(selectProgress), useSelector(selectBestDatabase));
-  return null;
-}
-
 export function App() {
   return (
     <Provider store={appStore}>
       <BrowserRouter basename={process.env.PUBLIC_URL}>
-        <RunDatabaseDump />
-        <ReadDbs />
+        {/* <RunDatabaseDump /> */}
         <nav>
           <ul>
             <li>
@@ -55,19 +46,15 @@ export function App() {
             <li>
               <Link to="/vault/materials-storage">materials storage</Link>
             </li>
-            <li>
-              <Link to="/vault/wardrobe-storage">wardrobe storage</Link>
-            </li>
           </ul>
         </nav>
         <hr />
         {
           <Routes>
             <Route index element={<p>hello, world</p>} />
-            <Route element={<VaultParent />} path="/vault">
+            <Route element={<VaultOutlet />} path="/vault">
               <Route element={<Vault />} index />
               <Route element={<Materials />} path="materials-storage/*" />
-              <Route element={<WardrobeStorage />} path="wardrobe-storage/*" />
             </Route>
           </Routes>
         }

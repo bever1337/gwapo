@@ -21,19 +21,17 @@ export function MaterialsTab({
   const [collapsed, setCollapsed] = useState(false);
 
   const skip = materials.items.length === 0;
+  const queryArguments = {
+    ids: materials.items.reduce(
+      (acc, item) => (item ? acc.concat([item]) : acc),
+      [] as number[]
+    ),
+  };
   const { data: items } = readItems.useQuery(
-    skip
-      ? skipToken
-      : {
-          ids: materials.items.reduce(
-            (acc, item) => (item ? acc.concat([item]) : acc),
-            [] as number[]
-          ),
-        },
+    skip ? skipToken : queryArguments,
     { skip }
   );
 
-  // console.log(materials.name, accountMaterials);
   const materialElements = items?.ids.map((itemId) => (
     <Material
       accountMaterial={accountMaterials?.[itemId as number]}

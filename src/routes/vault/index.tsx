@@ -10,6 +10,7 @@ import {
 
 const queryCacheArguments = {};
 
+// TODO
 // Implementing a skeleton state for the bank vault is easy
 // All accounts start with 1 tab, all tabs hold 30 items
 export function Vault() {
@@ -20,6 +21,7 @@ export function Vault() {
     <Fragment>
       <h1>Account Vault</h1>
       {accountBankTabs.map((accountBankTab, accountBankTabIndex) => (
+        // TODO
         // Warning: Does not support re-ordering! Using index as key!
         <VaultTab
           accountBankItems={accountBankTab}

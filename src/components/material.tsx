@@ -13,20 +13,6 @@ export function Material({
   accountMaterial?: AccountMaterial;
   material: Item;
 }) {
-  // const [items, setItems] = useState<Material[]>([]);
-  // useEffect(() => {
-  //   pouch
-  //     .allDocs({
-  //       keys: materials.items.map((itemId) => `items_${itemId}`),
-  //       include_docs: true,
-  //     })
-  //     .then((allDocsResponse) => {
-  //       setItems(
-  //         allDocsResponse.rows.map((row) => row.doc as unknown as Material)
-  //       );
-  //     })
-  //     .catch(console.warn);
-  // }, [materials]);
   return (
     <li className={[classes["material__item"]].join(" ")}>
       <img
