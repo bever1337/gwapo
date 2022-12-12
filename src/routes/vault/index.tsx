@@ -8,27 +8,28 @@ import {
   selectAccountBankWithTabs,
 } from "../../features/store/api/read-account-bank";
 
-const queryCacheArguments = {};
+const skeletonBankTab = (
+  <VaultTab accountBankItems={new Array(30).fill(null)} bankTab={0} />
+);
 
-// TODO
-// Implementing a skeleton state for the bank vault is easy
-// All accounts start with 1 tab, all tabs hold 30 items
 export function Vault() {
   const skip = !useSelector(selectReadAccountBankInScope);
-  readAccountBank.useQuery(queryCacheArguments, { skip });
+  readAccountBank.useQuery({}, { skip });
   const accountBankTabs = useSelector(selectAccountBankWithTabs);
   return (
     <Fragment>
       <h1>Account Vault</h1>
-      {accountBankTabs.map((accountBankTab, accountBankTabIndex) => (
-        // TODO
-        // Warning: Does not support re-ordering! Using index as key!
-        <VaultTab
-          accountBankItems={accountBankTab}
-          bankTab={accountBankTabIndex}
-          key={accountBankTabIndex}
-        />
-      ))}
+      {accountBankTabs.length
+        ? accountBankTabs.map((accountBankTab, accountBankTabIndex) => (
+            // TODO
+            // Warning: Does not support re-ordering! Using index as key!
+            <VaultTab
+              accountBankItems={accountBankTab}
+              bankTab={accountBankTabIndex}
+              key={accountBankTabIndex}
+            />
+          ))
+        : skeletonBankTab}
     </Fragment>
   );
 }
