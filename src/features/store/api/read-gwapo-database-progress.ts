@@ -13,6 +13,7 @@ import { toDumpDatabaseName } from "../../streams/DumpToPouch/actions";
 export const injectedApi = api.injectEndpoints({
   endpoints(build) {
     return {
+      /** Reports progress for the database specified in dump.txt */
       readGwapoDatabases: build.query<DumpHeaderDocument, {}>({
         async onCacheEntryAdded(queryArguments, queryApi) {
           const { data: header } = await queryApi.cacheDataLoaded;
@@ -53,12 +54,12 @@ export const injectedApi = api.injectEndpoints({
               if (!response.body) {
                 return Promise.reject(new Error("Invalid response"));
               }
-              const ready = response.body
+              const bodyReader = response.body
                 .pipeThrough(
                   new TransformStream(new NewlineDelimitedJsonTransformer())
                 )
                 .getReader();
-              return ready
+              return bodyReader
                 .read()
                 .then(({ value }) => {
                   if ("version" in value) {
@@ -67,7 +68,7 @@ export const injectedApi = api.injectEndpoints({
                   return Promise.reject("Headers must be first input");
                 })
                 .finally(() => {
-                  ready.cancel();
+                  bodyReader.cancel();
                 });
             })
             .then((header) => {
