@@ -8,7 +8,7 @@ import { WardrobeStorage } from "./routes/vault/wardrobe-storage";
 import { Vault } from "./routes/vault";
 import { VaultParent } from "./routes/vault/parent";
 import { store } from "./features/store";
-import { loadGwapoDatabaseDump } from "./features/store/api/load-gwapo-database-dump";
+import { updateGwapoDatabaseDump } from "./features/store/api/update-gwapo-database-dump";
 import {
   readGwapoDatabaseProgress,
   selectProgress,
@@ -21,7 +21,7 @@ import {
 const appStore = store();
 
 function RunDatabaseDump() {
-  const [trigger] = loadGwapoDatabaseDump.useMutation({});
+  const [trigger] = updateGwapoDatabaseDump.useMutation({});
   useEffect(() => {
     const request = trigger({});
     return () => {
