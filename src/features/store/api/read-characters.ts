@@ -1,9 +1,13 @@
-import { api } from "../api";
+import { api } from ".";
 import { makeSelectIsInScope } from "../selectors";
 
 import { Scope } from "../../../types/token";
 
 const scopes = [Scope.Account, Scope.Characters];
+const scopeTags = scopes.map((scope) => ({
+  type: "access_token" as const,
+  id: scope,
+}));
 
 export const injectedApi = api.injectEndpoints({
   endpoints(build) {
@@ -14,7 +18,7 @@ export const injectedApi = api.injectEndpoints({
           scope: scopes,
         },
         providesTags() {
-          return [{ id: "LIST", type: "characters" }];
+          return [{ id: "LIST", type: "characters" }, ...scopeTags];
         },
         query(queryArguments) {
           return {

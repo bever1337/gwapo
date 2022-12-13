@@ -1,20 +1,15 @@
-// import { skipToken } from "@reduxjs/toolkit/dist/query";
-import { Fragment, useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useEffect, useRef } from "react";
 
 import { Option } from "./option";
 
 import {
   readCharacters,
-  selectReadCharactersInScope,
+  // selectReadCharactersInScope,
 } from "../../features/store/api/read-characters";
 
 export function SelectCharacter() {
   const selectElement = useRef<HTMLSelectElement>(null);
-  const { data: characters = [] } = readCharacters.useQuery(
-    {},
-    { skip: !useSelector(selectReadCharactersInScope) }
-  );
+  const { data: characters = [] } = readCharacters.useQuery({});
   useEffect(
     function bubbleCharactersChangeEvent() {
       if (characters.length) {

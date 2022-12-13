@@ -1,25 +1,19 @@
 import { Fragment, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { CharacterBag } from "../../components/CharacterBag";
 
+import { CharacterBag } from "../../components/CharacterBag";
 import { SharedInventory } from "../../components/SharedInventory";
 import { SelectCharacter } from "../../components/SelectCharacter";
 import { VaultTab } from "../../components/VaultTab";
 import {
   readAccountBank,
-  selectReadAccountBankInScope,
+  // selectReadAccountBankInScope,
   selectAccountBankWithTabs,
 } from "../../features/store/api/read-account-bank";
-import { readAccountInventory } from "../../features/store/api/read-account-inventory";
 import { readCharactersInventory } from "../../features/store/api/read-characters-inventory";
 
 export function Vault() {
-  const skip = !useSelector(selectReadAccountBankInScope);
-  readAccountBank.useQuery({}, { skip });
-  const { data: accountInventory = [] } = readAccountInventory.useQuery(
-    {},
-    { skip }
-  );
+  readAccountBank.useQuery({});
   const accountBankTabs = useSelector(selectAccountBankWithTabs);
   const [triggerReadCharactersInventory, readCharactersInventoryResult] =
     readCharactersInventory.useLazyQuery();
@@ -41,7 +35,7 @@ export function Vault() {
       >
         <SelectCharacter />
       </form>
-      <SharedInventory sharedInventory={accountInventory} />
+      <SharedInventory />
       {(readCharactersInventoryResult.data ?? []).map((bag, index) => (
         <CharacterBag bagIndex={index} characterBag={bag} key={index} />
       ))}

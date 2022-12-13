@@ -1,5 +1,4 @@
 import { createSelector } from "@reduxjs/toolkit";
-// import { skipToken } from "@reduxjs/toolkit/dist/query";
 
 import type { RootState } from ".";
 import { initialState } from "./slice";

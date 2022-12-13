@@ -1,6 +1,6 @@
 import { createSelector } from "@reduxjs/toolkit";
 
-import { api } from "../api";
+import { api } from ".";
 
 import { PouchDB } from "../../pouch";
 import {

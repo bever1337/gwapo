@@ -1,4 +1,4 @@
-import { api } from "../api";
+import { api } from ".";
 import { makeSelectIsInScope } from "../selectors";
 
 import { Scope } from "../../../types/token";
@@ -64,6 +64,10 @@ export interface Bag {
 export type ReadCharactersInventoryResult = Bag[];
 
 const scopes = [Scope.Account, Scope.Characters];
+const scopeTags = scopes.map((scope) => ({
+  type: "access_token" as const,
+  id: scope,
+}));
 
 export const injectedApi = api.injectEndpoints({
   endpoints(build) {
@@ -77,7 +81,10 @@ export const injectedApi = api.injectEndpoints({
           scope: scopes,
         },
         providesTags(result, error, queryArguments) {
-          const defaultTags = [{ id: "LIST", type: "characters" as const }];
+          const defaultTags = [
+            { id: "LIST", type: "characters" as const },
+            ...scopeTags,
+          ];
           if (result && !error) {
             defaultTags.push({
               id: queryArguments.characterName,

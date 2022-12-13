@@ -6,9 +6,9 @@ import type {
 } from "@reduxjs/toolkit/query/react";
 import type { BaseQueryApi } from "@reduxjs/toolkit/src/query/baseQueryTypes";
 
-import type { Scope } from "../../types/token";
+import type { Scope } from "../../../types/token";
 
-import type { RootState } from ".";
+import type { RootState } from "..";
 
 interface BaseQueryExtraOptions {
   baseUrl?: `https://${string}`;
@@ -33,10 +33,10 @@ const baseQuery: BaseQueryFn<
     nextArguments.url = `${extraOptions.baseUrl}${args.url}`;
   }
   if (Array.isArray(extraOptions.scope)) {
-    nextArguments.params = args.params ?? {};
+    nextArguments.params ??= {};
     nextArguments.params.access_token = (
       queryApi.getState() as RootState
-    ).client.access?.id!;
+    ).client.access?.id;
   }
   return rawBaseQuery(nextArguments, queryApi, extraOptions);
 };

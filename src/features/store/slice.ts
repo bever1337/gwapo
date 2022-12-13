@@ -1,11 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { setAccess } from "./actions";
+// Slice imports API, thus API and Endpoints may never import Slice
+import { readTokenInfo } from "./api/read-token-info";
 
 import type { AccessToken } from "../../types/token";
-
-// import { configureClient, resetClient } from "./actions";
-// import { initialState } from "./initial-state";
 
 export interface SliceState {
   access: AccessToken | null;
@@ -13,15 +11,16 @@ export interface SliceState {
 
 export const initialState: SliceState = { access: null };
 
-/* eslint-disable no-param-reassign */
 export const slice = createSlice({
   initialState,
   name: "client",
   reducers: {},
   extraReducers(builder) {
-    builder.addCase(setAccess, (state, action) => {
-      state.access = action.payload;
+    builder.addMatcher(readTokenInfo.matchFulfilled, (state, action) => {
+      state.access = {
+        ...action.payload,
+        id: action.meta.arg.originalArgs.access_token,
+      };
     });
   },
 });
-/* eslint-enable no-param-reassign */

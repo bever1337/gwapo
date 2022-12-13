@@ -3,7 +3,7 @@ import type { EntityState } from "@reduxjs/toolkit";
 import type { BaseQueryApi } from "@reduxjs/toolkit/src/query/baseQueryTypes";
 
 import type { RootState } from "..";
-import { api } from "../api";
+import { api } from ".";
 
 import { PouchDB } from "../../pouch";
 import type { DumpHeaderDocument } from "../../streams/DumpToPouch/types";

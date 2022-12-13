@@ -1,6 +1,5 @@
-import { setAccess } from "../actions";
-import { api } from "../api";
-import { listenerMiddleware } from "../listener-middleware";
+import type { EndpointDefinition } from "@reduxjs/toolkit/dist/query";
+import { api } from ".";
 
 import { AccessToken } from "../../../types/token";
 
@@ -47,15 +46,3 @@ export const injectedApi = api.injectEndpoints({
 });
 
 export const readTokenInfo = injectedApi.endpoints.readTokenInfo;
-
-listenerMiddleware.startListening({
-  effect(action, listenerApi) {
-    listenerApi.dispatch(
-      setAccess({
-        ...action.payload,
-        id: action.meta.arg.originalArgs.access_token,
-      })
-    );
-  },
-  matcher: readTokenInfo.matchFulfilled,
-});

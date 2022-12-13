@@ -1,6 +1,6 @@
 import { createSelector } from "@reduxjs/toolkit";
 
-import { api } from "../api";
+import { api } from ".";
 import { makeSelectIsInScope } from "../selectors";
 
 import { Scope } from "../../../types/token";
@@ -17,6 +17,10 @@ export interface AccountMaterial {
 type ReadAccountMaterialsResult = AccountMaterial[];
 
 const scopes = [Scope.Account, Scope.Inventories];
+const scopeTags = scopes.map((scope) => ({
+  type: "access_token" as const,
+  id: scope,
+}));
 
 export const injectedApi = api.injectEndpoints({
   endpoints(build) {
@@ -38,12 +42,7 @@ export const injectedApi = api.injectEndpoints({
           };
         },
         providesTags(result, error, queryArguments) {
-          return result
-            ? scopes.map((scope) => ({
-                type: "access_token" as const,
-                id: scope,
-              }))
-            : [];
+          return scopeTags;
         },
       }),
     };

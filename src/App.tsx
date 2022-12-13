@@ -36,12 +36,6 @@ function RunDatabaseDump() {
   return null;
 }
 
-function Demo() {
-  const skip = !useSelector(selectReadCharactersInScope);
-  readCharacters.useQuery({}, { skip });
-  return null;
-}
-
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route
@@ -79,7 +73,6 @@ export function App() {
   return (
     <Provider store={appStore}>
       {/* <RunDatabaseDump /> */}
-      <Demo />
       <RouterProvider router={router} />
     </Provider>
   );

@@ -1,6 +1,6 @@
 import type { BaseQueryApi } from "@reduxjs/toolkit/src/query/baseQueryTypes";
 
-import { api } from "../api";
+import { api } from ".";
 
 import { DumpToPouchSink } from "../../streams/DumpToPouch";
 import { DumpStreamActions } from "../../streams/DumpToPouch/actions";

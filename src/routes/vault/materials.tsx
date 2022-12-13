@@ -5,7 +5,7 @@ import { MaterialsTab } from "../../components/MaterialsTab";
 
 import {
   readAccountMaterials,
-  selectReadAccountMaterialsInScope,
+  // selectReadAccountMaterialsInScope,
   selectAccountMaterialsByCategory,
 } from "../../features/store/api/read-account-materials";
 import { readMaterials } from "../../features/store/api/read-materials";
@@ -14,8 +14,7 @@ const queryCacheArguments = {};
 
 export function Materials() {
   const { data: materials } = readMaterials.useQuery({});
-  const skip = !useSelector(selectReadAccountMaterialsInScope);
-  readAccountMaterials.useQuery(queryCacheArguments, { skip });
+  readAccountMaterials.useQuery(queryCacheArguments);
   const accountMaterialsByCategory = useSelector(
     selectAccountMaterialsByCategory
   );

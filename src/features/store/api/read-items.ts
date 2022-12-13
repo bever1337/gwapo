@@ -3,7 +3,7 @@ import type { EntityState } from "@reduxjs/toolkit";
 
 import { getDatabaseName } from "./read-gwapo-databases";
 
-import { api } from "../api";
+import { api } from ".";
 
 import { PouchDB } from "../../pouch";
 
