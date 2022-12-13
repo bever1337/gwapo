@@ -1,20 +1,18 @@
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { useState } from "react";
 
+import { AccordionControl } from "./Accordion/Control";
 import materialsClasses from "./materials.module.css";
 import { VaultItem } from "./vault-item";
 
 import type { AccountBankItem } from "../features/store/api/read-account-bank";
 import { readItems } from "../features/store/api/read-items";
 
-const TRIANGLE_CLOSED = "\u25B2";
-const TRIANGLE_OPEN = "\u25BC";
-
 export function VaultTab(props: {
   accountBankItems: (AccountBankItem | null)[];
   bankTab: number;
 }) {
-  const [collapsed, setCollapsed] = useState(false);
+  const [open, setOpen] = useState(true);
   const skip = props.accountBankItems.length === 0;
   const { data: items } = readItems.useQuery(
     skip
@@ -50,19 +48,9 @@ export function VaultTab(props: {
       <h2 className={[materialsClasses["materials__header"]].join(" ")}>
         tab {props.bankTab}
       </h2>
-      <label className={[materialsClasses["materials__control"]].join(" ")}>
-        {collapsed ? TRIANGLE_CLOSED : TRIANGLE_OPEN}
-        <input
-          checked={collapsed}
-          onChange={(event) => {
-            setCollapsed(event.target.checked);
-          }}
-          name={`collapse-${props.bankTab}`}
-          type="checkbox"
-        />
-      </label>
+      <AccordionControl onChange={setOpen} open={open} />
       <ol className={[materialsClasses["materials__list"]].join(" ")}>
-        {collapsed ? null : accountBankTabItemsElements}
+        {open ? accountBankTabItemsElements : null}
       </ol>
     </section>
   );

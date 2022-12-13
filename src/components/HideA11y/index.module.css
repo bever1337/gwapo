@@ -1,0 +1,10 @@
+.hidden {
+  position: absolute;
+  display: block;
+  height: 1px;
+  width: 1px;
+  left: -10000px;
+  right: -10000px;
+  word-break: normal !important;
+  overflow: hidden;
+}

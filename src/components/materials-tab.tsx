@@ -1,15 +1,13 @@
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import React, { useState } from "react";
 
+import { AccordionControl } from "./Accordion/Control";
 import { Material } from "./material";
 import classes from "./materials.module.css";
 
 import type { AccountMaterial } from "../features/store/api/read-account-materials";
 import { readItems } from "../features/store/api/read-items";
 import type { Materials } from "../features/store/api/read-materials";
-
-const TRIANGLE_CLOSED = "\u25B2";
-const TRIANGLE_OPEN = "\u25BC";
 
 export function MaterialsTab({
   accountMaterials,
@@ -18,7 +16,7 @@ export function MaterialsTab({
   accountMaterials?: { [index: number]: AccountMaterial };
   materials: Materials;
 }) {
-  const [collapsed, setCollapsed] = useState(false);
+  const [open, setOpen] = useState(true);
 
   const skip = materials.items.length === 0;
   const queryArguments = {
@@ -45,19 +43,9 @@ export function MaterialsTab({
       <h2 className={[classes["materials__header"]].join(" ")}>
         {materials.name}
       </h2>
-      <label className={[classes["materials__control"]].join(" ")}>
-        {collapsed ? TRIANGLE_CLOSED : TRIANGLE_OPEN}
-        <input
-          checked={collapsed}
-          onChange={(event) => {
-            setCollapsed(event.target.checked);
-          }}
-          name={`collapse-${materials.name}`}
-          type="checkbox"
-        />
-      </label>
+      <AccordionControl onChange={setOpen} open={open} />
       <ul className={[classes["materials__list"]].join(" ")}>
-        {collapsed ? null : materialElements}
+        {open ? materialElements : null}
       </ul>
     </section>
   );
