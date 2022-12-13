@@ -16,15 +16,13 @@ import { readCharactersInventory } from "../../features/store/api/read-character
 export function Vault() {
   const skip = !useSelector(selectReadAccountBankInScope);
   readAccountBank.useQuery({}, { skip });
-  const { data: accountInventory = [null, null] } =
-    readAccountInventory.useQuery({}, { skip });
+  const { data: accountInventory = [] } = readAccountInventory.useQuery(
+    {},
+    { skip }
+  );
   const accountBankTabs = useSelector(selectAccountBankWithTabs);
   const [triggerReadCharactersInventory, readCharactersInventoryResult] =
     readCharactersInventory.useLazyQuery();
-  useEffect(
-    () => console.debug(readCharactersInventoryResult),
-    [readCharactersInventoryResult]
-  );
 
   return (
     <Fragment>
