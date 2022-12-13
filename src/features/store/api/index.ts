@@ -1,3 +1,4 @@
+import { createSelector } from "@reduxjs/toolkit";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type {
   BaseQueryFn,
@@ -10,12 +11,32 @@ import type { Scope } from "../../../types/token";
 
 import type { RootState } from "..";
 
+/**
+ * It's kind of tedious to re-type a reusable queryfn
+ * gw2 api logic should be a separate base query fn that uses fetchbasequery fn internally
+ * TODO messy
+ */
+
 interface BaseQueryExtraOptions {
   baseUrl?: `https://${string}`;
   scope?: Scope[];
 }
 
 const rawBaseQuery = fetchBaseQuery();
+
+const selectInScope = createSelector(
+  (state: RootState) => state?.client ?? {},
+  (substate: RootState, scopes: Scope[]) => scopes,
+  (substate, scopes) => {
+    if (scopes.length === 0) {
+      // public api
+      return true;
+    }
+    return scopes.every(
+      (scope) => substate.access?.permissions.includes(scope) ?? false
+    );
+  }
+);
 
 const baseQuery: BaseQueryFn<
   FetchArgs,
@@ -33,10 +54,24 @@ const baseQuery: BaseQueryFn<
     nextArguments.url = `${extraOptions.baseUrl}${args.url}`;
   }
   if (Array.isArray(extraOptions.scope)) {
+    // request is Gw2 authenticated api
+    const queryIsInScope = selectInScope(
+      queryApi.getState() as RootState,
+      extraOptions.scope
+    );
+    const access_token = (queryApi.getState() as RootState).client.access?.id;
+    if (!queryIsInScope || !access_token) {
+      return {
+        data: undefined,
+        // schema matches GW2 401 responses
+        error: {
+          status: 401,
+          data: { text: "Internal - Invalid access token" },
+        },
+      };
+    }
     nextArguments.params ??= {};
-    nextArguments.params.access_token = (
-      queryApi.getState() as RootState
-    ).client.access?.id;
+    nextArguments.params.access_token = access_token;
   }
   return rawBaseQuery(nextArguments, queryApi, extraOptions);
 };
