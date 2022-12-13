@@ -1,3 +1,4 @@
+import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { useState } from "react";
 
 import { AccordionControl } from "../Accordion/Control";
@@ -7,24 +8,32 @@ import materialsClasses from "../materials.module.css";
 import { VaultItem } from "../vault-item";
 
 import { classNames } from "../../features/css/classnames";
+import type { AccountBankItem } from "../../features/store/api/read-account-bank";
 import { readItems } from "../../features/store/api/read-items";
-import type { Bag } from "../../features/store/api/read-characters-inventory";
 
-export function CharacterBag(props: { characterBag: Bag; bagIndex: number }) {
+export function VaultTab(props: {
+  accountBankItems: (AccountBankItem | null)[];
+  bankTab: number;
+}) {
   const [open, setOpen] = useState(true);
-  const { data: items } = readItems.useQuery({
-    ids: props.characterBag.inventory.reduce(
+  const skip = props.accountBankItems.length === 0;
+  const queryArguments = {
+    ids: props.accountBankItems.reduce(
       (acc, item) => (item ? acc.concat([item.id]) : acc),
       [] as number[]
     ),
-  });
+  };
+  const { data: items } = readItems.useQuery(
+    skip ? skipToken : queryArguments,
+    { skip }
+  );
   return (
     <section
-      className={classNames(materialsClasses["materials__inline-wrapper"])}
+      className={[materialsClasses["materials__inline-wrapper"]].join(" ")}
     >
       <div className={classNames(accordionClasses["tab"])}>
         <h2 className={classNames(accordionClasses["tab__heading"])}>
-          {/* todo, query DB for item name */}
+          {/* Bank tabs have no heading in GW2. Mirror that choice here */}
           {""}
         </h2>
         <AccordionControl onChange={setOpen} open={open} />
@@ -35,13 +44,13 @@ export function CharacterBag(props: { characterBag: Bag; bagIndex: number }) {
           !open && hideClasses["hide"]
         )}
       >
-        {props.characterBag.inventory.map((characterBagItem, index) => (
-          // Warning: bags do not have any unique identifiers
+        {props.accountBankItems.map((accountBankTabItem, index) => (
+          // Warning: account bank items do not have any unique identifiers
           // Features like filtering and sorting will not work until each item has a uid
           // For now, we can assume this is safe because the list is static
           <VaultItem
-            accountBankItem={characterBagItem}
-            item={items?.entities?.[characterBagItem?.id ?? ""]}
+            accountBankItem={accountBankTabItem}
+            item={items?.entities?.[accountBankTabItem?.id ?? ""]}
             key={index}
           />
         ))}

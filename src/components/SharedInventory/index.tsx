@@ -6,26 +6,27 @@ import hideClasses from "../HideA11y/index.module.css";
 import materialsClasses from "../materials.module.css";
 import { VaultItem } from "../vault-item";
 
-import { classNames } from "../../features/css/classnames";
+import type { SharedInventorySlot } from "../../features/store/api/read-account-inventory";
 import { readItems } from "../../features/store/api/read-items";
-import type { Bag } from "../../features/store/api/read-characters-inventory";
+import { classNames } from "../../features/css/classnames";
 
-export function CharacterBag(props: { characterBag: Bag; bagIndex: number }) {
+export function SharedInventory(props: {
+  sharedInventory: (SharedInventorySlot | null)[];
+}) {
   const [open, setOpen] = useState(true);
   const { data: items } = readItems.useQuery({
-    ids: props.characterBag.inventory.reduce(
+    ids: props.sharedInventory.reduce(
       (acc, item) => (item ? acc.concat([item.id]) : acc),
       [] as number[]
     ),
   });
   return (
     <section
-      className={classNames(materialsClasses["materials__inline-wrapper"])}
+      className={[materialsClasses["materials__inline-wrapper"]].join(" ")}
     >
       <div className={classNames(accordionClasses["tab"])}>
         <h2 className={classNames(accordionClasses["tab__heading"])}>
-          {/* todo, query DB for item name */}
-          {""}
+          Shared Inventory
         </h2>
         <AccordionControl onChange={setOpen} open={open} />
       </div>
@@ -35,13 +36,13 @@ export function CharacterBag(props: { characterBag: Bag; bagIndex: number }) {
           !open && hideClasses["hide"]
         )}
       >
-        {props.characterBag.inventory.map((characterBagItem, index) => (
-          // Warning: bags do not have any unique identifiers
+        {props.sharedInventory.map((sharedInventoryItem, index) => (
+          // Warning: shared inventory slots do not have any unique identifiers
           // Features like filtering and sorting will not work until each item has a uid
           // For now, we can assume this is safe because the list is static
           <VaultItem
-            accountBankItem={characterBagItem}
-            item={items?.entities?.[characterBagItem?.id ?? ""]}
+            accountBankItem={sharedInventoryItem}
+            item={items?.entities?.[sharedInventoryItem?.id ?? ""]}
             key={index}
           />
         ))}

@@ -1,5 +1,38 @@
-.control {
+/** Non-collapsing area */
+.tab {
+  align-items: flex-start;
+  background-color: black;
+  border: 1px solid black;
+  display: grid;
+  grid-template:
+    "heading control" auto
+    "aside control" auto / 1fr auto;
+  padding: 0.375rem 0.25rem;
+  margin: 0.25rem 0;
 }
 
-.control__input {
+.tab__aside {
+  grid-area: aside;
+  margin: 0;
+}
+
+.tab__control {
+  color: #f2e7cf;
+  font-size: 1rem;
+  grid-area: control;
+  user-select: none;
+}
+
+.tab__heading {
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: normal;
+  grid-area: heading;
+  margin: 0;
+}
+
+/** Preserve line-height */
+.tab__heading:empty::before {
+  content: " ";
+  display: inline-block;
 }

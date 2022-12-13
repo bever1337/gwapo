@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import { useSelector } from "react-redux";
 
-import { MaterialsTab } from "../../components/materials-tab";
+import { MaterialsTab } from "../../components/MaterialsTab";
 
 import {
   readAccountMaterials,

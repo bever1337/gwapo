@@ -2,9 +2,9 @@ import { Fragment, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { CharacterBag } from "../../components/CharacterBag";
 
-import { AccountInventory } from "../../components/AccountInventory";
+import { SharedInventory } from "../../components/SharedInventory";
 import { SelectCharacter } from "../../components/SelectCharacter";
-import { VaultTab } from "../../components/vault-tab";
+import { VaultTab } from "../../components/VaultTab";
 import {
   readAccountBank,
   selectReadAccountBankInScope,
@@ -43,10 +43,11 @@ export function Vault() {
       >
         <SelectCharacter />
       </form>
-      <AccountInventory sharedInventory={accountInventory} />
+      <SharedInventory sharedInventory={accountInventory} />
       {(readCharactersInventoryResult.data ?? []).map((bag, index) => (
         <CharacterBag bagIndex={index} characterBag={bag} key={index} />
       ))}
+      <hr style={{ margin: "2rem 0" }} />
       {accountBankTabs.map((accountBankTab, accountBankTabIndex) => (
         // TODO
         // Warning: Does not support re-ordering! Using index as key!
