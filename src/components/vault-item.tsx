@@ -21,7 +21,7 @@ export function VaultItem(props: {
         src={props.item?.icon}
       />
       {typeof props.accountBankItem?.count === "number" ? (
-        <span className={[materialClasses["material__count"]].join(" ")}>
+        <span className={classNames(materialClasses["material__count"])}>
           {props.accountBankItem.count}
         </span>
       ) : null}

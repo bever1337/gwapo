@@ -1,5 +1,6 @@
 import materialClasses from "./material.module.css";
 
+import { classNames } from "../features/css/classnames";
 import type { AccountMaterial } from "../features/store/api/read-account-materials";
 import type { Item } from "../types/item";
 
@@ -11,9 +12,9 @@ export function Material({
   material: Item;
 }) {
   return (
-    <li className={[materialClasses["material__item"]].join(" ")}>
+    <li className={classNames(materialClasses["material__item"])}>
       <img
-        className={[materialClasses["material__img"]].join(" ")}
+        className={classNames(materialClasses["material__img"])}
         alt={material.name}
         src={material.icon}
       />

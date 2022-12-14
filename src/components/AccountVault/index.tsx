@@ -51,7 +51,7 @@ export function AccountVault() {
     <Query result={readAccountBankResult}>
       <QueryUninitialized>
         <section
-          className={[materialsClasses["materials__inline-wrapper"]].join(" ")}
+          className={classNames(materialsClasses["materials__inline-wrapper"])}
         >
           <div className={classNames(accordionClasses["tab"])}>
             <h2
