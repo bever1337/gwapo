@@ -13,7 +13,7 @@ import { Authenticator } from "./components/authenticator";
 import { Materials } from "./routes/vault/materials";
 import { Vault } from "./routes/vault";
 import { VaultOutlet } from "./routes/vault/outlet";
-import { VaultOutletCharacter } from "./routes/vault/outlet-character";
+import { VaultCharacterOutlet } from "./routes/vault/outlet-character";
 import { store } from "./features/store";
 import { updateGwapoDatabaseDump } from "./features/store/api/update-gwapo-database-dump";
 import { Wardrobe } from "./routes/vault/wardrobe";
@@ -44,7 +44,7 @@ const router = createBrowserRouter(
       path="/"
     >
       <Route element={<VaultOutlet />} path="vault">
-        <Route element={<VaultOutletCharacter />}>
+        <Route element={<VaultCharacterOutlet />}>
           <Route element={<Vault />} index />
           <Route element={<Vault />} path=":characterName" />
           <Route element={<Materials />} path="materials" />
