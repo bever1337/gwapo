@@ -31,11 +31,10 @@ const mapAccountBankTabToElement = (
     key={accountBankTabIndex}
   />
 );
-const skeletonVaultTab = (
-  <VaultTab
-    accountBankItems={new Array(ITEMS_PER_TAB).fill(null)}
-    bankTab={0}
-  />
+
+const skeletonVaultTab = mapAccountBankTabToElement(
+  new Array(ITEMS_PER_TAB).fill(null),
+  0
 );
 
 export function Vault() {
