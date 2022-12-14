@@ -1,4 +1,3 @@
-import type { EndpointDefinition } from "@reduxjs/toolkit/dist/query";
 import { api } from ".";
 
 import { AccessToken } from "../../../types/token";

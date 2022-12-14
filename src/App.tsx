@@ -3,7 +3,6 @@ import { IntlProvider } from "react-intl";
 import { Provider } from "react-redux";
 import {
   createBrowserRouter,
-  Link,
   Route,
   createRoutesFromElements,
   RouterProvider,
@@ -14,8 +13,10 @@ import { Authenticator } from "./components/authenticator";
 import { Materials } from "./routes/vault/materials";
 import { Vault } from "./routes/vault";
 import { VaultOutlet } from "./routes/vault/outlet";
+import { VaultOutletCharacter } from "./routes/vault/outlet-character";
 import { store } from "./features/store";
 import { updateGwapoDatabaseDump } from "./features/store/api/update-gwapo-database-dump";
+import { Wardrobe } from "./routes/vault/wardrobe";
 
 const appStore = store();
 
@@ -35,19 +36,7 @@ const router = createBrowserRouter(
     <Route
       element={
         <Fragment>
-          <nav>
-            <ul>
-              <li>
-                <Authenticator />
-              </li>
-              <li>
-                <Link to="/vault">vault</Link>
-              </li>
-              <li>
-                <Link to="/vault/materials-storage">materials storage</Link>
-              </li>
-            </ul>
-          </nav>
+          <Authenticator />
           <hr />
           <Outlet />
         </Fragment>
@@ -55,8 +44,13 @@ const router = createBrowserRouter(
       path="/"
     >
       <Route element={<VaultOutlet />} path="vault">
-        <Route element={<Vault />} index />
-        <Route element={<Materials />} path="materials-storage/*" />
+        <Route element={<VaultOutletCharacter />}>
+          <Route element={<Vault />} index />
+          <Route element={<Vault />} path=":characterName" />
+          <Route element={<Materials />} path="materials" />
+          <Route element={<Materials />} path="materials/:characterName" />
+        </Route>
+        <Route element={<Wardrobe />} path="wardrobe" />
       </Route>
     </Route>
   ),

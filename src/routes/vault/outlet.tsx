@@ -1,24 +1,21 @@
 import { Fragment } from "react";
-import { Form, Outlet, useLocation, useSearchParams } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 
 export function VaultOutlet() {
-  const { pathname } = useLocation();
-  const [, setParams] = useSearchParams();
   return (
     <Fragment>
-      <Form
-        action={pathname}
-        id="routerMonoForm"
-        name="routerMonoForm"
-        method="get"
-        onChange={(event) => {
-          setParams(
-            new URLSearchParams(new FormData(event.currentTarget) as any)
-          );
-        }}
-      >
-        <Outlet />
-      </Form>
+      <nav>
+        <li>
+          <Link to="/vault">vault</Link>
+        </li>
+        <li>
+          <Link to="/vault/materials">materials</Link>
+        </li>
+        <li>
+          <Link to="/vault/wardrobe">wardrobe</Link>
+        </li>
+      </nav>
+      <Outlet />
     </Fragment>
   );
 }

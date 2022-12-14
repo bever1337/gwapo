@@ -6,11 +6,6 @@ import accordionClasses from "../Accordion/index.module.css";
 import elementsClasses from "../Elements/index.module.css";
 import hideClasses from "../HideA11y/index.module.css";
 import materialsClasses from "../materials.module.css";
-// import { Query } from "../Query";
-// import { QueryError } from "../Query/Error";
-// import { QueryLoading } from "../Query/Loading";
-// import { QuerySuccess } from "../Query/Success";
-// import { QueryUninitialized } from "../Query/Uninitialized";
 import { VaultItem } from "../vault-item";
 
 import { classNames } from "../../features/css/classnames";

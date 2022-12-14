@@ -1,14 +1,9 @@
 import { Fragment } from "react";
 import { useSelector } from "react-redux";
 
-import { CharacterBags } from "../../components/CharacterBags";
 import { MaterialsTab } from "../../components/MaterialsTab";
-import { SelectCharacter } from "../../components/SelectCharacter";
-import { SharedInventory } from "../../components/SharedInventory";
-
 import {
   readAccountMaterials,
-  // selectReadAccountMaterialsInScope,
   selectAccountMaterialsByCategory,
 } from "../../features/store/api/read-account-materials";
 import { readMaterials } from "../../features/store/api/read-materials";
@@ -23,11 +18,7 @@ export function Materials() {
   );
   return (
     <Fragment>
-      <h1>Materials Storage</h1>
-      <SelectCharacter />
-      <SharedInventory />
-      <CharacterBags />
-      <hr style={{ margin: "2rem 0" }} />
+      <h2>Materials Storage</h2>
       {materials?.ids.map((materialId) => (
         <MaterialsTab
           key={materialId}

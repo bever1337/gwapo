@@ -9,14 +9,13 @@ import elementsClasses from "../Elements/index.module.css";
 import materialsClasses from "../materials.module.css";
 import { Query } from "../Query";
 import { QueryError } from "../Query/Error";
+import { QueryFetching } from "../Query/Fetching";
 import { QuerySuccess } from "../Query/Success";
 import { QueryUninitialized } from "../Query/Uninitialized";
 import { VaultItem } from "../vault-item";
 
-import { readCharactersInventory } from "../../features/store/api/read-characters-inventory";
-
 import { classNames } from "../../features/css/classnames";
-import { QueryFetching } from "../Query/Fetching";
+import { readCharactersInventory } from "../../features/store/api/read-characters-inventory";
 
 const emptyCharacterBag = new Array(15)
   .fill(null)

@@ -1,5 +1,5 @@
 import itemTileClasses from "./ItemTile/index.module.css";
-import materialsClasses from "./material.module.css";
+import materialClasses from "./material.module.css";
 
 import { classNames } from "../features/css/classnames";
 import type { AccountBankItem } from "../features/store/api/read-account-bank";
@@ -10,10 +10,10 @@ export function VaultItem(props: {
   item?: Item;
 }) {
   return (
-    <li className={classNames(materialsClasses["material__item"])}>
+    <li className={classNames(materialClasses["material__item"])}>
       <img
         className={classNames(
-          materialsClasses["material__img"],
+          materialClasses["material__img"],
           itemTileClasses["tile"],
           itemTileClasses[props.item?.rarity ?? ""]
         )}
@@ -21,7 +21,7 @@ export function VaultItem(props: {
         src={props.item?.icon}
       />
       {typeof props.accountBankItem?.count === "number" ? (
-        <span className={[materialsClasses["material__count"]].join(" ")}>
+        <span className={[materialClasses["material__count"]].join(" ")}>
           {props.accountBankItem.count}
         </span>
       ) : null}

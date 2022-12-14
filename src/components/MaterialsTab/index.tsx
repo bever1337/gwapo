@@ -1,5 +1,5 @@
 import { skipToken } from "@reduxjs/toolkit/dist/query";
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { AccordionControl } from "../Accordion/Control";
 import accordionClasses from "../Accordion/index.module.css";
