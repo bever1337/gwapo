@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { CharacterBags } from "../../components/CharacterBags";
 import { MaterialsTab } from "../../components/MaterialsTab";
 import { SelectCharacter } from "../../components/SelectCharacter";
+import { SharedInventory } from "../../components/SharedInventory";
 
 import {
   readAccountMaterials,
@@ -24,6 +25,7 @@ export function Materials() {
     <Fragment>
       <h1>Materials Storage</h1>
       <SelectCharacter />
+      <SharedInventory />
       <CharacterBags />
       <hr style={{ margin: "2rem 0" }} />
       {materials?.ids.map((materialId) => (
