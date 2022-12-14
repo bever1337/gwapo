@@ -3,6 +3,8 @@
 }
 
 .material__img {
+  background-color: darkgray;
+  box-sizing: border-box;
   display: block;
   height: 4rem;
   width: 4rem;
@@ -13,10 +15,11 @@
   border: 0px;
   box-sizing: border-box;
   color: white;
+  left: 2px;
   margin: 0;
   padding: 0.25em;
   position: absolute;
   text-align: right;
-  top: 0;
-  width: 100%;
+  top: 2px;
+  width: calc(100% - 4px);
 }
