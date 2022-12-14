@@ -3,6 +3,7 @@ import React, { useState } from "react";
 
 import { AccordionControl } from "../Accordion/Control";
 import accordionClasses from "../Accordion/index.module.css";
+import elementsClasses from "../Elements/index.module.css";
 import hideClasses from "../HideA11y/index.module.css";
 import { Material } from "../material";
 import materialsClasses from "../materials.module.css";
@@ -35,28 +36,40 @@ export function MaterialsTab({
 
   return (
     <section
-      className={[materialsClasses["materials__inline-wrapper"]].join(" ")}
+      className={classNames(materialsClasses["materials__inline-wrapper"])}
     >
       <div className={classNames(accordionClasses["tab"])}>
-        <h2 className={classNames(accordionClasses["tab__heading"])}>
+        <h2
+          className={classNames(
+            accordionClasses["tab__heading"],
+            elementsClasses["no-margin"]
+          )}
+        >
           {materials.name}
         </h2>
         <AccordionControl onChange={setOpen} open={open} />
       </div>
-      <ol
+      <div
         className={classNames(
-          materialsClasses["materials__list"],
-          !open && hideClasses["hide"]
+          !open && hideClasses["hide"],
+          accordionClasses["folder"]
         )}
       >
-        {items?.ids.map((itemId) => (
-          <Material
-            accountMaterial={accountMaterials?.[itemId as number]}
-            key={itemId}
-            material={items.entities[itemId]!}
-          />
-        ))}
-      </ol>
+        <ol
+          className={classNames(
+            materialsClasses["materials__list"],
+            elementsClasses["no-margin"]
+          )}
+        >
+          {items?.ids.map((itemId) => (
+            <Material
+              accountMaterial={accountMaterials?.[itemId as number]}
+              key={itemId}
+              material={items.entities[itemId]!}
+            />
+          ))}
+        </ol>
+      </div>
     </section>
   );
 }

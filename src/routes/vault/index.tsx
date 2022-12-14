@@ -1,54 +1,33 @@
-import { Fragment, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { Fragment } from "react";
+import { FormattedMessage } from "react-intl";
 
-import { CharacterBag } from "../../components/CharacterBag";
+import { AccountVault } from "../../components/AccountVault";
+import { CharacterBags } from "../../components/CharacterBags";
 import { SharedInventory } from "../../components/SharedInventory";
 import { SelectCharacter } from "../../components/SelectCharacter";
-import { VaultTab } from "../../components/VaultTab";
-import {
-  readAccountBank,
-  // selectReadAccountBankInScope,
-  selectAccountBankWithTabs,
-} from "../../features/store/api/read-account-bank";
-import { readCharactersInventory } from "../../features/store/api/read-characters-inventory";
 
 export function Vault() {
-  readAccountBank.useQuery({});
-  const accountBankTabs = useSelector(selectAccountBankWithTabs);
-  const [triggerReadCharactersInventory, readCharactersInventoryResult] =
-    readCharactersInventory.useLazyQuery();
-
   return (
     <Fragment>
-      <h1>Account Vault</h1>
-      <form
+      <h1>
+        <FormattedMessage defaultMessage="Account Vault" />
+      </h1>
+      {/* <form
         onChange={(event) => {
           const characterName = new FormData(
             (event.target as HTMLInputElement | HTMLSelectElement).form!
-          ).get("SelectCharacter");
+          ).get("select_character");
           if (characterName) {
-            triggerReadCharactersInventory({
-              characterName: characterName as string,
-            });
+            setCharacterName(characterName as string);
           }
         }}
-      >
-        <SelectCharacter />
-      </form>
+      > */}
+      <SelectCharacter />
+      {/* </form> */}
       <SharedInventory />
-      {(readCharactersInventoryResult.data ?? []).map((bag, index) => (
-        <CharacterBag bagIndex={index} characterBag={bag} key={index} />
-      ))}
+      <CharacterBags />
       <hr style={{ margin: "2rem 0" }} />
-      {accountBankTabs.map((accountBankTab, accountBankTabIndex) => (
-        // TODO
-        // Warning: Does not support re-ordering! Using index as key!
-        <VaultTab
-          accountBankItems={accountBankTab}
-          bankTab={accountBankTabIndex}
-          key={accountBankTabIndex}
-        />
-      ))}
+      <AccountVault />
     </Fragment>
   );
 }

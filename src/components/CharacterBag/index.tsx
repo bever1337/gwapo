@@ -3,8 +3,14 @@ import { useState } from "react";
 
 import { AccordionControl } from "../Accordion/Control";
 import accordionClasses from "../Accordion/index.module.css";
+import elementsClasses from "../Elements/index.module.css";
 import hideClasses from "../HideA11y/index.module.css";
 import materialsClasses from "../materials.module.css";
+// import { Query } from "../Query";
+// import { QueryError } from "../Query/Error";
+// import { QueryLoading } from "../Query/Loading";
+// import { QuerySuccess } from "../Query/Success";
+// import { QueryUninitialized } from "../Query/Uninitialized";
 import { VaultItem } from "../vault-item";
 
 import { classNames } from "../../features/css/classnames";
@@ -28,33 +34,48 @@ export function CharacterBag(props: {
     skip ? skipToken : queryArguments,
     { skip }
   );
+  if (props.characterBag === null) {
+    return null;
+  }
   return (
     <section
       className={classNames(materialsClasses["materials__inline-wrapper"])}
     >
       <div className={classNames(accordionClasses["tab"])}>
-        <h2 className={classNames(accordionClasses["tab__heading"])}>
+        <h2
+          className={classNames(
+            accordionClasses["tab__heading"],
+            elementsClasses["no-margin"]
+          )}
+        >
           {items?.entities[props.characterBag?.id ?? ""]?.name ?? ""}
         </h2>
         <AccordionControl onChange={setOpen} open={open} />
       </div>
-      <ol
+      <div
         className={classNames(
-          materialsClasses["materials__list"],
-          !open && hideClasses["hide"]
+          !open && hideClasses["hide"],
+          accordionClasses["folder"]
         )}
       >
-        {props.characterBag?.inventory.map((characterBagItem, index) => (
-          // Warning: bags do not have any unique identifiers
-          // Features like filtering and sorting will not work until each item has a uid
-          // For now, we can assume this is safe because the list is static
-          <VaultItem
-            accountBankItem={characterBagItem}
-            item={items?.entities?.[characterBagItem?.id ?? ""]}
-            key={index}
-          />
-        ))}
-      </ol>
+        <ol
+          className={classNames(
+            materialsClasses["materials__list"],
+            elementsClasses["no-margin"]
+          )}
+        >
+          {props.characterBag?.inventory.map((characterBagItem, index) => (
+            // Warning: bags do not have any unique identifiers
+            // Features like filtering and sorting will not work until each item has a uid
+            // For now, we can assume this is safe because the list is static
+            <VaultItem
+              accountBankItem={characterBagItem}
+              item={items?.entities?.[characterBagItem?.id ?? ""]}
+              key={index}
+            />
+          ))}
+        </ol>
+      </div>
     </section>
   );
 }

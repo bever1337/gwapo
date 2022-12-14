@@ -1,9 +1,11 @@
 .materials__inline-wrapper {
-  align-items: center;
-  display: grid;
-  grid-template: "header input" auto "list list" auto / 1fr auto;
-  /* (number of column gaps * gap width) + (column width * number of columns) */
-  max-width: calc(calc(9 * 0.25rem) + calc(4rem * 10));
+  max-width: calc(
+    /* margin */ 1rem +
+      calc(
+        calc(/* column gaps */ 9 * 0.25rem) +
+          calc(/* number of columns */ 10 * 4rem)
+      )
+  );
 }
 
 .materials__list {
@@ -12,7 +14,6 @@
   grid-template-columns: repeat(auto-fill, 4rem);
   justify-content: flex-start;
   list-style: none;
-  margin: 0;
   padding: 0;
 }
 

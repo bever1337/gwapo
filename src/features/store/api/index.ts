@@ -38,13 +38,7 @@ const selectInScope = createSelector(
   }
 );
 
-const baseQuery: BaseQueryFn<
-  FetchArgs,
-  unknown,
-  FetchBaseQueryError,
-  BaseQueryExtraOptions,
-  {}
-> = function baseQuery(
+function baseQuery(
   args: FetchArgs,
   queryApi: BaseQueryApi,
   extraOptions: BaseQueryExtraOptions
@@ -74,7 +68,7 @@ const baseQuery: BaseQueryFn<
     nextArguments.params.access_token = access_token;
   }
   return rawBaseQuery(nextArguments, queryApi, extraOptions);
-};
+}
 
 export const api = createApi({
   baseQuery,

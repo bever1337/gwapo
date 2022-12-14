@@ -35,10 +35,10 @@ export function AccordionControl({
       <input
         checked={open}
         className={classNames(hideClasses["hide"])}
+        form="noop"
         onChange={(event) => {
           onChange(event.target.checked);
         }}
-        name={`collapse-sharedInventory`}
         type="checkbox"
       />
     </label>

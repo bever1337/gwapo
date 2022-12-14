@@ -1,10 +1,9 @@
 import { Fragment, useEffect } from "react";
-import { Provider, useSelector } from "react-redux";
+import { IntlProvider } from "react-intl";
+import { Provider } from "react-redux";
 import {
-  BrowserRouter,
   createBrowserRouter,
   Link,
-  Routes,
   Route,
   createRoutesFromElements,
   RouterProvider,
@@ -17,11 +16,6 @@ import { Vault } from "./routes/vault";
 import { VaultOutlet } from "./routes/vault/outlet";
 import { store } from "./features/store";
 import { updateGwapoDatabaseDump } from "./features/store/api/update-gwapo-database-dump";
-
-import {
-  readCharacters,
-  selectReadCharactersInScope,
-} from "./features/store/api/read-characters";
 
 const appStore = store();
 
@@ -72,8 +66,10 @@ const router = createBrowserRouter(
 export function App() {
   return (
     <Provider store={appStore}>
-      {/* <RunDatabaseDump /> */}
-      <RouterProvider router={router} />
+      <IntlProvider defaultLocale="en-US" locale="en-US">
+        {/* <RunDatabaseDump /> */}
+        <RouterProvider router={router} />
+      </IntlProvider>
     </Provider>
   );
 }

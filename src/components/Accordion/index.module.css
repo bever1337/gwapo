@@ -8,12 +8,12 @@
     "heading control" auto
     "aside control" auto / 1fr auto;
   padding: 0.375rem 0.25rem;
-  margin: 0.25rem 0;
+  /** margins are gross, but this preserves whitespace when folder disappears */
+  margin: 0.5rem 0;
 }
 
 .tab__aside {
   grid-area: aside;
-  margin: 0;
 }
 
 .tab__control {
@@ -28,11 +28,17 @@
   font-size: 1rem;
   font-weight: normal;
   grid-area: heading;
-  margin: 0;
 }
 
 /** Preserve line-height */
 .tab__heading:empty::before {
   content: " ";
   display: inline-block;
+}
+
+/** Collapse area */
+.folder {
+  box-sizing: border-box;
+  min-height: 4rem;
+  padding: 0 0.5rem 0.5rem 0.5rem;
 }
