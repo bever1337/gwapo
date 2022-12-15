@@ -7,26 +7,21 @@ import { PouchDB } from "../../pouch";
 export const injectedApi = api.injectEndpoints({
   endpoints(build) {
     return {
-      demo: build.query<any, {}>({
+      readArmorSlots: build.query<string[], {}>({
         providesTags() {
           return [{ type: "internal/pouches", id: "LIST" }];
         },
         async queryFn(queryArguments, queryApi) {
           return getDatabaseName(queryApi)
-            .then(
-              (databaseName) =>
-                new PouchDB(databaseName, { adapter: "indexeddb" }).query(
-                  "gw2_skins/types",
-                  { group: true }
-                )
-              // .allDocs({
-              //   keys: ids.map((itemId) => `items_${itemId}`),
-              //   include_docs: true,
-              // })
+            .then((databaseName) =>
+              new PouchDB(databaseName, { adapter: "indexeddb" }).query(
+                "gw2_skins/armor_slots",
+                { group: true }
+              )
             )
             .then((allDocsResponse) => {
               return {
-                data: allDocsResponse,
+                data: allDocsResponse.rows.map((row) => row.key),
                 error: undefined,
               };
             })
@@ -37,4 +32,4 @@ export const injectedApi = api.injectEndpoints({
   },
 });
 
-export const demo = injectedApi.endpoints.demo;
+export const readArmorSlots = injectedApi.endpoints.readArmorSlots;

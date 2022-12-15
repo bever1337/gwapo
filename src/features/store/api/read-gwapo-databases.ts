@@ -14,8 +14,8 @@ const databaseEntityAdapter = createEntityAdapter<DumpHeaderDocument>({
   },
   sortComparer(headerA, headerB) {
     return (
-      new Date(headerB.start_time).getMilliseconds() -
-      new Date(headerA.start_time).getMilliseconds()
+      new Date(headerB.start_time).getTime() -
+      new Date(headerA.start_time).getTime()
     );
   },
 });
@@ -46,17 +46,19 @@ export const injectedApi = api.injectEndpoints({
               conflicts: false,
               include_docs: true,
             })
-            .then((documents) => ({
-              data: documents.rows.reduce((acc, row) => {
-                if ((row.doc as any)?.$id !== "dump") {
-                  return acc;
-                }
-                return databaseEntityAdapter.setOne(
-                  acc,
-                  row.doc as any as DumpHeaderDocument
-                );
-              }, databaseEntityAdapter.getInitialState()),
-            }));
+            .then((documents) => {
+              return {
+                data: documents.rows.reduce((acc, row) => {
+                  if ((row.doc as any)?.$id !== "dump") {
+                    return acc;
+                  }
+                  return databaseEntityAdapter.setOne(
+                    acc,
+                    row.doc as any as DumpHeaderDocument
+                  );
+                }, databaseEntityAdapter.getInitialState()),
+              };
+            });
         },
       }),
     };
@@ -68,14 +70,15 @@ export const readGwapoDatabases = injectedApi.endpoints.readGwapoDatabases;
 /** Selects the newest database with 100% data available */
 export const selectBestDatabase = createSelector(
   readGwapoDatabases.select({}),
-  (queryResult) =>
-    queryResult.data?.ids.find((databaseName) => {
+  (queryResult) => {
+    return queryResult.data?.ids.find((databaseName) => {
       const {
         seq,
         db_info: { doc_count },
       } = databaseSelectors.selectById(queryResult.data!, databaseName)!;
       return seq === doc_count;
-    })
+    });
+  }
 );
 
 /** Not quite a thunk. queryFn helper to select a database name or reject if none is ready */

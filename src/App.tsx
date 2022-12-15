@@ -18,7 +18,10 @@ import { Materials } from "./routes/vault/materials";
 import { VaultOutlet } from "./routes/vault/outlet";
 import { VaultCharacterOutlet } from "./routes/vault/outlet-character";
 import { VaultWallet } from "./routes/vault/wallet";
-import { Wardrobe } from "./routes/vault/wardrobe";
+import { WardrobeIndex } from "./routes/vault/wardrobe";
+import { WardrobeArmor } from "./routes/vault/wardrobe/armor";
+import { WardrobeOutlet } from "./routes/vault/wardrobe/outlet";
+import { ArmorWeightClass } from "./routes/vault/wardrobe/weight-class";
 
 const appStore = store();
 
@@ -72,7 +75,11 @@ const router = createBrowserRouter(
           <Route element={<Materials />} path="materials/:characterName" />
         </Route>
         <Route element={<VaultWallet />} path="wallet" />
-        <Route element={<Wardrobe />} path="wardrobe" />
+        <Route element={<WardrobeOutlet />} path="wardrobe">
+          <Route element={<WardrobeIndex />} index />
+          <Route element={<WardrobeArmor />} path="armor" />
+          <Route element={<ArmorWeightClass />} path="armor/:weightClass" />
+        </Route>
       </Route>
     </Route>
   ),

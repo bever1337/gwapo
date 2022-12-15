@@ -1,10 +1,7 @@
-import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 
 import currencyClasses from "../../components/Currency/index.module.css";
 import elementsClasses from "../../components/Elements/index.module.css";
-import itemTileClasses from "../../components/ItemTile/index.module.css";
-import materialClasses from "../../components/material.module.css";
 import { Query } from "../../components/Query";
 import { QueryError } from "../../components/Query/Error";
 import { QueryLoading } from "../../components/Query/Loading";
