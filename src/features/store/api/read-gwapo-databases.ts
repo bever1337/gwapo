@@ -14,8 +14,8 @@ const databaseEntityAdapter = createEntityAdapter<DumpHeaderDocument>({
   },
   sortComparer(headerA, headerB) {
     return (
-      new Date(headerA.start_time).getMilliseconds() -
-      new Date(headerB.start_time).getMilliseconds()
+      new Date(headerB.start_time).getMilliseconds() -
+      new Date(headerA.start_time).getMilliseconds()
     );
   },
 });
@@ -90,6 +90,7 @@ export function getDatabaseName(
       if (!bestDatabase || typeof bestDatabase !== "string") {
         return Promise.reject("No database ready");
       }
+      console.debug("bestDatabase", bestDatabase);
       return bestDatabase;
     })
     .finally(() => {

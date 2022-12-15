@@ -18,7 +18,9 @@ export function Material({
         alt={material.name}
         src={material.icon}
       />
-      {accountMaterial?.count}
+      <span className={classNames(materialClasses["material__count"])}>
+        {accountMaterial?.count}
+      </span>
     </li>
   );
 }

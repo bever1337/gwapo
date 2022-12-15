@@ -38,34 +38,41 @@ export function SelectCharacter() {
 
   return (
     <Query result={readCharactersResult}>
-      <QueryUninitialized>
-        <FormattedMessage defaultMessage="GWAPO is waiting to load your characters." />
-      </QueryUninitialized>
-      <QueryError>
-        <p className={classNames(elementsClasses["no-margin"])}>
-          {authenticationError ? (
-            <FormattedMessage defaultMessage="Please provide GWAPO an API token with the necessary scopes." />
-          ) : (
-            <FormattedMessage defaultMessage="GWAPO encountered an error loading your characters." />
-          )}
-        </p>
-      </QueryError>
-      <QueryLoading>
-        <FormattedMessage defaultMessage="GWAPO is loading your characters." />
-      </QueryLoading>
-      <QuerySuccess>
-        <select
-          form="routerMonoForm"
-          name="select_character"
-          onChange={noop}
-          ref={selectElement}
-          value={characterName}
-        >
-          {readCharactersResult.data?.map((characterName) => (
-            <Option key={characterName} characterName={characterName} />
-          )) ?? null}
-        </select>
-      </QuerySuccess>
+      <nav>
+        <QueryUninitialized>
+          <FormattedMessage defaultMessage="GWAPO is waiting to load your characters." />
+        </QueryUninitialized>
+        <QueryError>
+          <p className={classNames(elementsClasses["no-margin"])}>
+            {authenticationError ? (
+              <FormattedMessage defaultMessage="Please provide GWAPO an API token with the necessary scopes." />
+            ) : (
+              <FormattedMessage defaultMessage="GWAPO encountered an error loading your characters." />
+            )}
+          </p>
+        </QueryError>
+        <QueryLoading>
+          <FormattedMessage defaultMessage="GWAPO is loading your characters." />
+        </QueryLoading>
+        <QuerySuccess>
+          <ol>
+            {readCharactersResult.data?.map((characterName) => (
+              <li key={characterName}>{characterName}</li>
+            ))}
+          </ol>
+          <select
+            form="routerMonoForm"
+            name="select_character"
+            onChange={noop}
+            ref={selectElement}
+            value={characterName}
+          >
+            {readCharactersResult.data?.map((characterName) => (
+              <Option key={characterName} characterName={characterName} />
+            )) ?? null}
+          </select>
+        </QuerySuccess>
+      </nav>
     </Query>
   );
 }

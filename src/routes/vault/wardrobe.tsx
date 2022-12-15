@@ -4,9 +4,9 @@ import { FormattedMessage } from "react-intl";
 export function Wardrobe() {
   return (
     <Fragment>
-      <h1>
+      <h2>
         <FormattedMessage defaultMessage="Wardrobe Storage" />
-      </h1>
+      </h2>
     </Fragment>
   );
 }

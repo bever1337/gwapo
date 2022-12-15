@@ -1,5 +1,5 @@
 import { Fragment, useEffect } from "react";
-import { IntlProvider } from "react-intl";
+import { FormattedMessage, IntlProvider } from "react-intl";
 import { Provider } from "react-redux";
 import {
   createBrowserRouter,
@@ -7,15 +7,17 @@ import {
   createRoutesFromElements,
   RouterProvider,
   Outlet,
+  Link,
 } from "react-router-dom";
 
 import { Authenticator } from "./components/authenticator";
-import { Materials } from "./routes/vault/materials";
-import { Vault } from "./routes/vault";
-import { VaultOutlet } from "./routes/vault/outlet";
-import { VaultCharacterOutlet } from "./routes/vault/outlet-character";
 import { store } from "./features/store";
 import { updateGwapoDatabaseDump } from "./features/store/api/update-gwapo-database-dump";
+import { Vault } from "./routes/vault";
+import { Materials } from "./routes/vault/materials";
+import { VaultOutlet } from "./routes/vault/outlet";
+import { VaultCharacterOutlet } from "./routes/vault/outlet-character";
+import { VaultWallet } from "./routes/vault/wallet";
 import { Wardrobe } from "./routes/vault/wardrobe";
 
 const appStore = store();
@@ -43,6 +45,25 @@ const router = createBrowserRouter(
       }
       path="/"
     >
+      <Route
+        element={
+          <Fragment>
+            <nav>
+              <Link to="/vault">
+                <img
+                  alt=""
+                  src={
+                    process.env.PUBLIC_URL + "/icons/Finance/safe-2-fill.svg"
+                  }
+                  style={{ height: "2rem", width: "2rem" }}
+                />
+                <FormattedMessage defaultMessage="Vault" />
+              </Link>
+            </nav>
+          </Fragment>
+        }
+        index
+      />
       <Route element={<VaultOutlet />} path="vault">
         <Route element={<VaultCharacterOutlet />}>
           <Route element={<Vault />} index />
@@ -50,6 +71,7 @@ const router = createBrowserRouter(
           <Route element={<Materials />} path="materials" />
           <Route element={<Materials />} path="materials/:characterName" />
         </Route>
+        <Route element={<VaultWallet />} path="wallet" />
         <Route element={<Wardrobe />} path="wardrobe" />
       </Route>
     </Route>
@@ -61,7 +83,7 @@ export function App() {
   return (
     <Provider store={appStore}>
       <IntlProvider defaultLocale="en-US" locale="en-US">
-        {/* <RunDatabaseDump /> */}
+        <RunDatabaseDump />
         <RouterProvider router={router} />
       </IntlProvider>
     </Provider>

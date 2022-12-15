@@ -1,0 +1,37 @@
+.currency {
+  align-items: center;
+  background-color: transparent;
+  display: grid;
+  gap: 0.5rem;
+  grid-template:
+    "name image" auto
+    "amount image" auto / 1fr auto;
+  list-style: none;
+  padding: 0.5rem;
+}
+
+@media screen and (min-width: 32rem) {
+  .currency {
+    grid-template: "name amount image" auto / 1fr auto auto;
+    max-width: 32rem;
+  }
+}
+
+.currency:nth-child(odd) {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.currency__amount {
+  grid-area: amount;
+  text-align: right;
+}
+
+.currency__img {
+  grid-area: image;
+  height: 3rem;
+  width: 3rem;
+}
+
+.currency__name {
+  grid-area: name;
+}
