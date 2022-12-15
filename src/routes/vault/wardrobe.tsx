@@ -1,9 +1,12 @@
 import { Fragment } from "react";
+import { FormattedMessage } from "react-intl";
 
 export function Wardrobe() {
   return (
     <Fragment>
-      <h2>wardrobe storage</h2>
+      <h1>
+        <FormattedMessage defaultMessage="Wardrobe Storage" />
+      </h1>
     </Fragment>
   );
 }

@@ -47,6 +47,9 @@ export function Vault() {
 
   return (
     <Query result={readAccountBankResult}>
+      <h2>
+        <FormattedMessage defaultMessage="Bank" />
+      </h2>
       <QueryUninitialized>
         <section
           className={classNames(materialsClasses["materials__inline-wrapper"])}

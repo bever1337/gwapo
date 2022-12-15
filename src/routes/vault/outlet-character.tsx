@@ -1,5 +1,4 @@
 import { Fragment } from "react";
-import { FormattedMessage } from "react-intl";
 import { Form, Outlet, useLocation, useSearchParams } from "react-router-dom";
 
 import { CharacterBags } from "../../components/CharacterBags";
@@ -22,9 +21,6 @@ export function VaultCharacterOutlet() {
           );
         }}
       >
-        <h1>
-          <FormattedMessage defaultMessage="Account Vault" />
-        </h1>
         <SelectCharacter />
         <SharedInventory />
         <CharacterBags />

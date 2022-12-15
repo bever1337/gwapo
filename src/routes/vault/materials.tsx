@@ -1,4 +1,5 @@
 import { Fragment } from "react";
+import { FormattedMessage } from "react-intl";
 import { useSelector } from "react-redux";
 
 import { MaterialsTab } from "../../components/MaterialsTab";
@@ -18,7 +19,9 @@ export function Materials() {
   );
   return (
     <Fragment>
-      <h2>Materials Storage</h2>
+      <h2>
+        <FormattedMessage defaultMessage="Materials Storage" />
+      </h2>
       {materials?.ids.map((materialId) => (
         <MaterialsTab
           key={materialId}
