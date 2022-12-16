@@ -26,12 +26,13 @@ export function SharedInventory() {
       [] as number[]
     ),
   };
-  const [open, setOpen] = useState(true);
   const skipReadItemsQuery = readItemsQueryArguments.ids.length === 0;
   const readItemsResult = readItems.useQuery(
     skipReadItemsQuery ? skipToken : readItemsQueryArguments,
     { skip: skipReadItemsQuery }
   );
+  const [open, setOpen] = useState(true);
+  const accordionDisabled = readAccountInventoryResult.isError;
   const authenticationError =
     readAccountInventoryResult.error &&
     "status" in readAccountInventoryResult.error &&
@@ -51,14 +52,15 @@ export function SharedInventory() {
           >
             <FormattedMessage defaultMessage="Shared Inventory" />
           </h2>
-          <AccordionControl
-            onChange={readAccountInventoryResult.isError ? () => {} : setOpen}
-            open={readAccountInventoryResult.isError || open}
-          />
+          {accordionDisabled ? null : (
+            <AccordionControl onChange={setOpen} open={open} />
+          )}
         </div>
         <div
           className={classNames(
-            !open && hideClasses["hide"],
+            accordionDisabled === false &&
+              open === false &&
+              hideClasses["hide"],
             accordionClasses["folder"]
           )}
         >

@@ -2,7 +2,6 @@ import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { FormattedMessage } from "react-intl";
 import { useLocation } from "react-router-dom";
 
-import { AccordionControl } from "../Accordion/Control";
 import accordionClasses from "../Accordion/index.module.css";
 import { CharacterBag } from "../CharacterBag";
 import elementsClasses from "../Elements/index.module.css";
@@ -49,7 +48,6 @@ export function CharacterBags() {
             >
               {""}
             </h2>
-            <AccordionControl onChange={() => {}} open={true} />
           </div>
           <div className={classNames(accordionClasses["folder"])}>
             <p className={classNames(elementsClasses["no-margin"])}>
@@ -71,7 +69,6 @@ export function CharacterBags() {
             >
               {""}
             </h2>
-            <AccordionControl onChange={() => {}} open={true} />
           </div>
           <div className={classNames(accordionClasses["folder"])}>
             <p className={classNames(elementsClasses["no-margin"])}>
@@ -97,7 +94,6 @@ export function CharacterBags() {
             >
               {""}
             </h2>
-            <AccordionControl onChange={() => {}} open={true} />
           </div>
           <div className={classNames(accordionClasses["folder"])}>
             <ol className={classNames(materialsClasses["materials__list"])}>
