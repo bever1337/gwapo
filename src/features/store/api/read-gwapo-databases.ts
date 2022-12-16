@@ -74,9 +74,9 @@ export const selectBestDatabase = createSelector(
     return queryResult.data?.ids.find((databaseName) => {
       const {
         seq,
-        db_info: { doc_count },
+        db_info: { update_seq },
       } = databaseSelectors.selectById(queryResult.data!, databaseName)!;
-      return seq === doc_count;
+      return seq === update_seq;
     });
   }
 );

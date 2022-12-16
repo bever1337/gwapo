@@ -1,22 +1,14 @@
+import { createEntityAdapter } from "@reduxjs/toolkit";
+import type { EntityState } from "@reduxjs/toolkit";
+
 import { api } from ".";
 import { getDatabaseName } from "./read-gwapo-databases";
 
 import { PouchDB } from "../../pouch";
 
-export interface ArmorSkin {
+export interface Skin {
   description?: string;
-  details: {
-    dye_slots: {}[];
-    type:
-      | "Boots"
-      | "Coat"
-      | "Gloves"
-      | "Helm"
-      | "HelmAquatic"
-      | "Leggings"
-      | "Shoulders";
-    weight_class: "Clothing" | "Heavy" | "Light" | "Medium";
-  };
+  details?: any;
   flags: ("ShowInWardrobe" | "NoCost" | "HideIfLocked" | "OverrideRarity")[];
   icon: string;
   id: number;
@@ -26,10 +18,12 @@ export interface ArmorSkin {
   type: "Armor";
 }
 
+export const skinAdapter = createEntityAdapter<Skin>();
+
 export const injectedApi = api.injectEndpoints({
   endpoints(build) {
     return {
-      readArmorSlots: build.query<string[], {}>({
+      demo: build.query<EntityState<Skin>, { type: string }>({
         providesTags() {
           return [{ type: "internal/pouches", id: "LIST" }];
         },
@@ -37,13 +31,16 @@ export const injectedApi = api.injectEndpoints({
           return getDatabaseName(queryApi)
             .then((databaseName) =>
               new PouchDB(databaseName, { adapter: "indexeddb" }).query(
-                "gw2_skins/armor_slots",
-                { group: true }
+                "gw2_skins/detailed_type",
+                { key: queryArguments.type, include_docs: false }
               )
             )
             .then((allDocsResponse) => {
               return {
-                data: allDocsResponse.rows.map((row) => row.key),
+                data: allDocsResponse.rows.reduce(
+                  (acc, row) => skinAdapter.setOne(acc, row.value as any),
+                  skinAdapter.getInitialState()
+                ),
                 error: undefined,
               };
             })
@@ -54,4 +51,4 @@ export const injectedApi = api.injectEndpoints({
   },
 });
 
-export const readArmorSlots = injectedApi.endpoints.readArmorSlots;
+export const demo = injectedApi.endpoints.demo;

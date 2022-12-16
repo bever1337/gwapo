@@ -1,35 +1,26 @@
+import { createEntityAdapter } from "@reduxjs/toolkit";
+import type { EntityState } from "@reduxjs/toolkit";
+
 import { api } from ".";
 import { getDatabaseName } from "./read-gwapo-databases";
 
 import { PouchDB } from "../../pouch";
 
-export interface ArmorSkin {
-  description?: string;
-  details: {
-    dye_slots: {}[];
-    type:
-      | "Boots"
-      | "Coat"
-      | "Gloves"
-      | "Helm"
-      | "HelmAquatic"
-      | "Leggings"
-      | "Shoulders";
-    weight_class: "Clothing" | "Heavy" | "Light" | "Medium";
-  };
-  flags: ("ShowInWardrobe" | "NoCost" | "HideIfLocked" | "OverrideRarity")[];
-  icon: string;
-  id: number;
-  name: string;
-  rarity: string;
-  restrictions: string[];
-  type: "Armor";
-}
+export const skinTypesAdapter = createEntityAdapter<{
+  id: string;
+  subtypes: string[];
+}>();
 
 export const injectedApi = api.injectEndpoints({
   endpoints(build) {
     return {
-      readArmorSlots: build.query<string[], {}>({
+      readSkinTypes: build.query<
+        EntityState<{
+          id: string;
+          subtypes: string[];
+        }>,
+        {}
+      >({
         providesTags() {
           return [{ type: "internal/pouches", id: "LIST" }];
         },
@@ -37,13 +28,20 @@ export const injectedApi = api.injectEndpoints({
           return getDatabaseName(queryApi)
             .then((databaseName) =>
               new PouchDB(databaseName, { adapter: "indexeddb" }).query(
-                "gw2_skins/armor_slots",
+                "gw2_skins/types_with_detail",
                 { group: true }
               )
             )
             .then((allDocsResponse) => {
               return {
-                data: allDocsResponse.rows.map((row) => row.key),
+                data: allDocsResponse.rows.reduce(
+                  (acc, row) =>
+                    skinTypesAdapter.setOne(acc, {
+                      id: row.key as string,
+                      subtypes: row.value,
+                    }),
+                  skinTypesAdapter.getInitialState()
+                ),
                 error: undefined,
               };
             })
@@ -54,4 +52,4 @@ export const injectedApi = api.injectEndpoints({
   },
 });
 
-export const readArmorSlots = injectedApi.endpoints.readArmorSlots;
+export const readSkinTypes = injectedApi.endpoints.readSkinTypes;

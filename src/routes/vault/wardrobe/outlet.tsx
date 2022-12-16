@@ -1,13 +1,18 @@
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
-import { Link, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
-import { readArmorWeightClasses } from "../../../features/store/api/read-armor-weight-classes";
-import { readArmorSlots } from "../../../features/store/api/read-armor-slots";
+import { WardrobeCategoryNavigation } from "../../../components/WardrobeTab/CategoryNavigation";
+import {
+  readSkinTypes,
+  skinTypesAdapter,
+} from "../../../features/store/api/read-skin-types";
+
+const initialState = skinTypesAdapter.getInitialState();
 
 export function WardrobeOutlet() {
-  readArmorSlots.useQuerySubscription({});
-  const readArmorWeightClassesResult = readArmorWeightClasses.useQuery({});
+  const { data: skinTypes = initialState } = readSkinTypes.useQuery({});
+  // const readArmorWeightClassesResult = readArmorWeightClasses.useQuery({});
   return (
     <Fragment>
       <h2>
@@ -15,18 +20,14 @@ export function WardrobeOutlet() {
       </h2>
       <nav>
         <ul>
-          <li>
-            <Link to="/vault/wardrobe/armor">armor</Link>
-            <ul>
-              {readArmorWeightClassesResult.data?.map((weightClass) => (
-                <li key={weightClass}>
-                  <Link to={`/vault/wardrobe/armor/${weightClass}`}>
-                    {weightClass}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </li>
+          {skinTypes.ids.map((skinType) => (
+            <li key={skinType}>
+              <WardrobeCategoryNavigation
+                skinType={skinType as string}
+                subtypes={skinTypes.entities[skinType]?.subtypes ?? []}
+              />
+            </li>
+          ))}
         </ul>
       </nav>
       <Outlet />
