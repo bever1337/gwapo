@@ -2,7 +2,6 @@ import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { Fragment } from "react";
 import { useSearchParams } from "react-router-dom";
 
-import { AccordionControl } from "../../../../components/Accordion/Control";
 import accordionClasses from "../../../../components/Accordion/index.module.css";
 import elementsClasses from "../../../../components/Elements/index.module.css";
 import materialClasses from "../../../../components/material.module.css";
@@ -36,7 +35,6 @@ export function Weapon() {
           >
             {weaponType}
           </h3>
-          <AccordionControl onChange={() => {}} open />
         </div>
         <div className={classNames(accordionClasses["folder"])}>
           <ul

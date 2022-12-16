@@ -1,7 +1,6 @@
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 
-import { AccordionControl } from "../../../../components/Accordion/Control";
 import accordionClasses from "../../../../components/Accordion/index.module.css";
 import elementsClasses from "../../../../components/Elements/index.module.css";
 import materialClasses from "../../../../components/material.module.css";
@@ -30,7 +29,6 @@ export function WardrobeBack() {
           >
             <FormattedMessage defaultMessage="Back" />
           </h3>
-          <AccordionControl onChange={() => {}} open />
         </div>
         <div className={classNames(accordionClasses["folder"])}>
           <ul

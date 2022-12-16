@@ -2,7 +2,6 @@ import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { Fragment } from "react";
 import { useSearchParams } from "react-router-dom";
 
-import { AccordionControl } from "../../../../components/Accordion/Control";
 import accordionClasses from "../../../../components/Accordion/index.module.css";
 import elementsClasses from "../../../../components/Elements/index.module.css";
 import materialClasses from "../../../../components/material.module.css";
@@ -37,9 +36,9 @@ export function Armor() {
               elementsClasses["no-margin"]
             )}
           >
-            {armorWeight} {armorSlot}
+            {/** CSS styles applied on empty. Doing extra work to ensure heading is empty and not a single white space */}
+            {[armorWeight, armorSlot].filter((v) => !!v).join(" ")}
           </h3>
-          <AccordionControl onChange={() => {}} open />
         </div>
         <div className={classNames(accordionClasses["folder"])}>
           <ul
