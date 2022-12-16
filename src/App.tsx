@@ -13,6 +13,7 @@ import {
 import { Authenticator } from "./components/authenticator";
 import { store } from "./features/store";
 import { updateGwapoDatabaseDump } from "./features/store/api/update-gwapo-database-dump";
+import { AppOutlet } from "./routes/outlet";
 import { Vault } from "./routes/vault";
 import { Materials } from "./routes/vault/materials";
 import { VaultOutlet } from "./routes/vault/outlet";
@@ -35,16 +36,7 @@ function RunDatabaseDump() {
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route
-      element={
-        <Fragment>
-          <Authenticator />
-          <hr />
-          <Outlet />
-        </Fragment>
-      }
-      path="/"
-    >
+    <Route element={<AppOutlet />} path="/">
       <Route
         element={
           <Fragment>
