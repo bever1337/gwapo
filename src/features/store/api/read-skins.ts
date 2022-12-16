@@ -23,7 +23,7 @@ export const skinAdapter = createEntityAdapter<Skin>();
 export const injectedApi = api.injectEndpoints({
   endpoints(build) {
     return {
-      demo: build.query<EntityState<Skin>, { type: string }>({
+      readSkins: build.query<EntityState<Skin>, { type: string }>({
         providesTags() {
           return [{ type: "internal/pouches", id: "LIST" }];
         },
@@ -51,4 +51,4 @@ export const injectedApi = api.injectEndpoints({
   },
 });
 
-export const demo = injectedApi.endpoints.demo;
+export const readSkins = injectedApi.endpoints.readSkins;

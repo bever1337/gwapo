@@ -18,11 +18,7 @@ import { Materials } from "./routes/vault/materials";
 import { VaultOutlet } from "./routes/vault/outlet";
 import { VaultCharacterOutlet } from "./routes/vault/outlet-character";
 import { VaultWallet } from "./routes/vault/wallet";
-import { WardrobeIndex } from "./routes/vault/wardrobe";
-import { WardrobeBack } from "./routes/vault/wardrobe/back";
-import { WardrobeOutlet } from "./routes/vault/wardrobe/outlet";
-import { WardrobeCategoryType } from "./routes/vault/wardrobe/_category/_type";
-import { VaultWardrobeArmorWeight } from "./routes/vault/wardrobe/armor/weight";
+import { Wardrobe } from "./routes/vault/wardrobe";
 
 const appStore = store();
 
@@ -76,14 +72,7 @@ const router = createBrowserRouter(
           <Route element={<Materials />} path="materials/:characterName" />
         </Route>
         <Route element={<VaultWallet />} path="wallet" />
-        <Route element={<WardrobeOutlet />} path="wardrobe">
-          <Route element={<WardrobeIndex />} index />
-          <Route element={<VaultWardrobeArmorWeight />} path="armor/:weight" />
-          <Route element={<WardrobeBack />} path="back/*" />
-          <Route element={<WardrobeCategoryType />} path="gathering/:type" />
-          <Route element={<WardrobeCategoryType />} path="weapon/:type" />
-          <Route element={<WardrobeIndex />} path="*" />
-        </Route>
+        <Route element={<Wardrobe />} path="wardrobe" />
       </Route>
     </Route>
   ),

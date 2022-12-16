@@ -1,26 +1,22 @@
-import { createEntityAdapter } from "@reduxjs/toolkit";
-import type { EntityState } from "@reduxjs/toolkit";
+import { createEntityAdapter, EntityState } from "@reduxjs/toolkit";
 
 import { api } from ".";
 import { getDatabaseName } from "./read-gwapo-databases";
 
 import { PouchDB } from "../../pouch";
 
-export const skinTypesAdapter = createEntityAdapter<{
+type SkinType = {
   id: string;
-  subtypes: string[];
-}>();
+  ids: string[];
+} & { [key: string]: string[] };
+
+export const skinTypesAdapter = createEntityAdapter<SkinType>();
+const selectors = skinTypesAdapter.getSelectors();
 
 export const injectedApi = api.injectEndpoints({
   endpoints(build) {
     return {
-      readSkinTypes: build.query<
-        EntityState<{
-          id: string;
-          subtypes: string[];
-        }>,
-        {}
-      >({
+      readSkinTypes: build.query<EntityState<SkinType>, {}>({
         providesTags() {
           return [{ type: "internal/pouches", id: "LIST" }];
         },
@@ -35,11 +31,20 @@ export const injectedApi = api.injectEndpoints({
             .then((allDocsResponse) => {
               return {
                 data: allDocsResponse.rows.reduce(
-                  (acc, row) =>
-                    skinTypesAdapter.setOne(acc, {
-                      id: row.key as string,
-                      subtypes: row.value,
-                    }),
+                  (acc, { key: [primary, secondary], value }) => {
+                    const previousState: SkinType = selectors.selectById(
+                      acc,
+                      primary
+                    ) ?? { id: primary, ids: [] };
+                    const nextState = {
+                      ...previousState,
+                    } as SkinType;
+                    if (secondary) {
+                      nextState.ids = previousState.ids.concat([secondary]);
+                      nextState[secondary] = value;
+                    }
+                    return skinTypesAdapter.upsertOne(acc, nextState);
+                  },
                   skinTypesAdapter.getInitialState()
                 ),
                 error: undefined,

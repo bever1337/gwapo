@@ -7,6 +7,7 @@ const detailed_type = {
   map: function mapSkinDetailedType(doc) {
     if (doc.$id === "gwapo/skins" && doc.type) {
       if (!doc.details) {
+        // back
         emit(doc.type, doc);
         return;
       }
@@ -27,23 +28,27 @@ const types_with_detail = {
   map: function mapSkinDetailedType(doc) {
     if (doc.$id === "gwapo/skins" && doc.type) {
       if (!doc.details) {
-        emit(doc.type, null);
+        // back item?
+        emit([doc.type], null);
         return;
       }
 
       if (doc.type === "Armor") {
         if (doc.details.weight_class === "Clothing") {
+          // no user-facing skins, filter out "Clothing"
           return;
         }
-        emit(doc.type, doc.details.weight_class);
+        emit([doc.type, "Slot"], doc.details.type); // slot, weight
+        emit([doc.type, "Weight"], doc.details.weight_class); // slot, weight
         return;
       }
 
       if (doc.type === "Gathering") {
         if (["Lure", "Bait"].includes(doc.details.type)) {
+          // no user-facing skins, filter out "Lure" and "Bait"
           return;
         }
-        emit(doc.type, doc.details.type);
+        emit([doc.type, "Tool"], doc.details.type);
         return;
       }
 
@@ -53,13 +58,14 @@ const types_with_detail = {
             doc.details.type
           )
         ) {
+          // no user-facing skins, filter out list
           return;
         }
-        emit(doc.type, doc.details.type);
+        emit([doc.type, "Type"], doc.details.type);
         return;
       }
 
-      emit(doc.type, doc.details.type);
+      emit([doc.type, "Type"], doc.details.type);
     }
   }.toString(),
   reduce: function reduceArmorSkinTypes(keys, values, rereduce) {
@@ -75,17 +81,6 @@ const types_with_detail = {
 
 //
 // armor skins
-const armor_slots = {
-  map: function mapArmorSlots(doc) {
-    if (doc.$id !== "gwapo/skins" || doc.type !== "Armor") {
-      return;
-    }
-    emit(doc.details.type);
-  }.toString(),
-  reduce: function reduceArmorSlots() {
-    return true;
-  }.toString(),
-};
 
 //
 // weapon skins
@@ -99,16 +94,8 @@ async function main() {
         _id: "_design/gw2_skins",
         _rev: previousDesignDoc?._rev ?? undefined,
         views: {
-          //
-          // all skins
           detailed_type,
           types_with_detail,
-          //
-          // armor skins
-          armor_slots,
-          //
-          // weapon skins
-          //
         },
       });
     });
