@@ -1,5 +1,4 @@
 import { Fragment } from "react";
-import { FormattedMessage } from "react-intl";
 
 import accordionClasses from "../../../../components/Accordion/index.module.css";
 import elementsClasses from "../../../../components/Elements/index.module.css";
@@ -11,10 +10,12 @@ import {
   skinAdapter,
 } from "../../../../features/store/api/read-skins";
 
-const initialState = skinAdapter.getInitialState();
+const initialArmorSkinsState = skinAdapter.getInitialState();
 
 export function WardrobeBack() {
-  const { data = initialState } = readSkins.useQuery({ type: "Back" });
+  const { data = initialArmorSkinsState } = readSkins.useQuery({
+    type: "Back",
+  });
   return (
     <Fragment>
       <section
@@ -27,7 +28,7 @@ export function WardrobeBack() {
               elementsClasses["no-margin"]
             )}
           >
-            <FormattedMessage defaultMessage="Back" />
+            Back
           </h3>
         </div>
         <div className={classNames(accordionClasses["folder"])}>
