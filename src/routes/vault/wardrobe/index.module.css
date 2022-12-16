@@ -1,0 +1,23 @@
+.label {
+  border: 1px solid #000000;
+  background-color: transparent;
+  color: #000000;
+  display: inline-block;
+  border-radius: 1em;
+  padding: 0.25em 0.75em;
+  margin: 0.25em;
+}
+
+.label:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.input:focus + .label {
+  outline: auto;
+}
+
+.label--active,
+.label--active:hover {
+  background-color: #000000;
+  color: #ffffff;
+}
