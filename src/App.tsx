@@ -82,6 +82,7 @@ const router = createBrowserRouter(
           <Route element={<WardrobeBack />} path="back/*" />
           <Route element={<WardrobeCategoryType />} path="gathering/:type" />
           <Route element={<WardrobeCategoryType />} path="weapon/:type" />
+          <Route element={<WardrobeIndex />} path="*" />
         </Route>
       </Route>
     </Route>
