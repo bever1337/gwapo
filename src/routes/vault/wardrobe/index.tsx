@@ -61,7 +61,10 @@ export function Wardrobe() {
                 <label key={choice}>
                   {choice}
                   <input
-                    checked={searchParams.get(subType) === choice}
+                    checked={
+                      (searchParams.get(subType) === null && index === 0) ||
+                      searchParams.get(subType) === choice
+                    }
                     name={subType}
                     onChange={() => {}}
                     type="radio"

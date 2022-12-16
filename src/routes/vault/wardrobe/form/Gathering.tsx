@@ -8,16 +8,27 @@ import materialClasses from "../../../../components/material.module.css";
 import materialsClasses from "../../../../components/materials.module.css";
 import { classNames } from "../../../../features/css/classnames";
 import {
+  readSkinTypes,
+  skinTypesAdapter,
+} from "../../../../features/store/api/read-skin-types";
+import {
   readSkins,
   skinAdapter,
 } from "../../../../features/store/api/read-skins";
 
-const initialState = skinAdapter.getInitialState();
+const initialSkinTypesState = skinTypesAdapter.getInitialState();
+const initialArmorSkinsState = skinAdapter.getInitialState();
 
 export function Gathering() {
+  const { data: skinTypes = initialSkinTypesState } = readSkinTypes.useQuery(
+    {}
+  );
   const [urlSearchParams] = useSearchParams();
-  const tool = urlSearchParams.get("Tool");
-  const { currentData = initialState } = readSkins.useQuery(
+  const tool =
+    urlSearchParams.get("Tool") ??
+    skinTypes.entities["Gathering"]?.["Tool"]?.[0] ??
+    "";
+  const { currentData = initialArmorSkinsState } = readSkins.useQuery(
     tool ? { type: tool } : skipToken,
     { skip: !tool }
   );

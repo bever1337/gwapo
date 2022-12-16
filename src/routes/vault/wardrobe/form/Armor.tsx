@@ -8,17 +8,31 @@ import materialClasses from "../../../../components/material.module.css";
 import materialsClasses from "../../../../components/materials.module.css";
 import { classNames } from "../../../../features/css/classnames";
 import {
+  readSkinTypes,
+  skinTypesAdapter,
+} from "../../../../features/store/api/read-skin-types";
+import {
   readSkins,
   skinAdapter,
 } from "../../../../features/store/api/read-skins";
 
-const initialState = skinAdapter.getInitialState();
+const initialSkinTypesState = skinTypesAdapter.getInitialState();
+const initialArmorSkinsState = skinAdapter.getInitialState();
 
 export function Armor() {
+  const { data: skinTypes = initialSkinTypesState } = readSkinTypes.useQuery(
+    {}
+  );
   const [urlSearchParams] = useSearchParams();
-  const armorSlot = urlSearchParams.get("Slot");
-  const armorWeight = urlSearchParams.get("Weight");
-  const { currentData = initialState } = readSkins.useQuery(
+  const armorSlot =
+    urlSearchParams.get("Slot") ??
+    skinTypes.entities["Armor"]?.["Slot"]?.[0] ??
+    "";
+  const armorWeight =
+    urlSearchParams.get("Weight") ??
+    skinTypes.entities["Armor"]?.["Weight"]?.[0] ??
+    "";
+  const { currentData = initialArmorSkinsState } = readSkins.useQuery(
     armorSlot && armorWeight
       ? { type: `${armorWeight}_${armorSlot}` }
       : skipToken,
