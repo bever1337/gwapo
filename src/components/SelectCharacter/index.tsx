@@ -55,11 +55,6 @@ export function SelectCharacter() {
           <FormattedMessage defaultMessage="GWAPO is loading your characters." />
         </QueryLoading>
         <QuerySuccess>
-          <ol>
-            {readCharactersResult.data?.map((characterName) => (
-              <li key={characterName}>{characterName}</li>
-            ))}
-          </ol>
           <select
             form="routerMonoForm"
             name="select_character"
