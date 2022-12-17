@@ -1,4 +1,4 @@
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, FormattedNumber } from "react-intl";
 
 import currencyClasses from "../../components/Currency/index.module.css";
 import elementsClasses from "../../components/Elements/index.module.css";
@@ -29,7 +29,7 @@ export function VaultWallet() {
         )}
         style={{
           columnGap: "1rem",
-          columns: "4 32rem",
+          columns: "4 24rem",
         }}
       >
         {currencies.ids.map((currencyId) => (
@@ -45,7 +45,13 @@ export function VaultWallet() {
               <QueryLoading>-</QueryLoading>
               <QueryError>x</QueryError>
               <QuerySuccess>
-                {readAccountWalletResult.data?.entities[currencyId]?.value ?? 0}
+                <FormattedNumber
+                  value={
+                    readAccountWalletResult.data?.entities[currencyId]?.value ??
+                    0
+                  }
+                  maximumSignificantDigits={3}
+                />
               </QuerySuccess>
             </span>
             <img

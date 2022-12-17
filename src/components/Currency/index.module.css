@@ -7,14 +7,7 @@
     "name image" auto
     "amount image" auto / 1fr auto;
   list-style: none;
-  padding: 0.5rem;
-}
-
-@media screen and (min-width: 32rem) {
-  .currency {
-    grid-template: "name amount image" auto / 1fr auto auto;
-    max-width: 32rem;
-  }
+  padding: 0.25rem 0.5rem;
 }
 
 .currency:nth-child(odd) {
@@ -23,7 +16,18 @@
 
 .currency__amount {
   grid-area: amount;
-  text-align: right;
+  text-align: left;
+}
+
+@media screen and (min-width: 24rem) {
+  .currency {
+    grid-template: "name amount image" auto / 1fr auto auto;
+    max-width: 24rem;
+  }
+
+  .currency__amount {
+    text-align: right;
+  }
 }
 
 .currency__img {
