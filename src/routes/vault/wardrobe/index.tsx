@@ -1,12 +1,12 @@
 import { Fragment } from "react";
 import { Form, useSearchParams } from "react-router-dom";
 
-import wardrobeClasses from "./index.module.css";
 import { Armor } from "./form/Armor";
 import { WardrobeBack } from "./form/Back";
 import { Gathering } from "./form/Gathering";
 import { Weapon } from "./form/Weapon";
 
+import inputPillClasses from "../../../components/Elements/input-pill.module.css";
 import hideClasses from "../../../components/HideA11y/index.module.css";
 import {
   readSkinTypes,
@@ -50,8 +50,8 @@ export function Wardrobe() {
               <input
                 checked={skinType === activeSkinType}
                 className={classNames(
-                  wardrobeClasses["input"],
-                  hideClasses["hide"]
+                  hideClasses["hide"],
+                  inputPillClasses["input"]
                 )}
                 id={`routes/vault/wardrobe/Wardrobe/Component/${skinType}`}
                 name="Component"
@@ -60,11 +60,7 @@ export function Wardrobe() {
                 value={skinType}
               />
               <label
-                className={classNames(
-                  wardrobeClasses["label"],
-                  skinType === activeSkinType &&
-                    wardrobeClasses["label--active"]
-                )}
+                className={classNames(inputPillClasses["label"])}
                 htmlFor={`routes/vault/wardrobe/Wardrobe/Component/${skinType}`}
               >
                 {skinType}
@@ -85,7 +81,7 @@ export function Wardrobe() {
                         searchParams.get(subType) === choice
                       }
                       className={classNames(
-                        wardrobeClasses["input"],
+                        inputPillClasses["input"],
                         hideClasses["hide"]
                       )}
                       id={`routes/vault/wardrobe/Wardrobe/Component/${subType}/${choice}`}
@@ -95,12 +91,7 @@ export function Wardrobe() {
                       value={choice}
                     />
                     <label
-                      className={classNames(
-                        wardrobeClasses["label"],
-                        ((searchParams.get(subType) === null && index === 0) ||
-                          searchParams.get(subType) === choice) &&
-                          wardrobeClasses["label--active"]
-                      )}
+                      className={classNames(inputPillClasses["label"])}
                       htmlFor={`routes/vault/wardrobe/Wardrobe/Component/${subType}/${choice}`}
                     >
                       {choice}

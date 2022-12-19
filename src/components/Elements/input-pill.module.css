@@ -16,8 +16,8 @@
   outline: auto;
 }
 
-.label--active,
-.label--active:hover {
+.input:checked + .label,
+.input:checked + .label:hover {
   background-color: #000000;
   color: #ffffff;
 }
