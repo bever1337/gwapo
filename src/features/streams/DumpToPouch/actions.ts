@@ -118,22 +118,11 @@ export class DumpStreamActions implements DumpToPouchSinkActions {
   }
 
   sequence(nextSequence: number): Promise<void> {
-    const toUpdateSequencePromise = () =>
-      this.metaPouch!.get(toDumpDatabaseName(this.header!))
-        .then((headerDocument) => {
-          return this.metaPouch!.put({ ...headerDocument, seq: nextSequence });
-        })
-        .then((pouchDbResponse) => {
-          if (!pouchDbResponse.ok) {
-            return Promise.reject(pouchDbResponse);
-          }
-          return Promise.resolve();
-        });
     // 1. If input sequence is less than the stateful sequence, bail out and return early
     if (nextSequence < this.header!.seq) {
       // Stream is behind checkpoint, update checkpoint
       this.batch = [];
-      return toUpdateSequencePromise();
+      return Promise.resolve();
     }
     // 2. Update stateful sequence
     this.header!.seq = nextSequence;
@@ -147,13 +136,24 @@ export class DumpStreamActions implements DumpToPouchSinkActions {
     // 5. Empty internal batch
     this.batch = [];
     // 6. Put cloned batch to database
-    return this.dumpPouch!.bulkDocs(previousBatch, { new_edits: false }).then(
-      (pouchDbResponse) => {
+    return this.dumpPouch!.bulkDocs(previousBatch, { new_edits: false })
+      .then((pouchDbResponse) => {
         if (pouchDbResponse.length > 0) {
           return Promise.reject("Error putting flushed docs");
         }
-        return toUpdateSequencePromise();
-      }
-    );
+        return this.metaPouch!.get(toDumpDatabaseName(this.header!));
+      })
+      .then((headerDocument) => {
+        return this.metaPouch!.put({
+          ...headerDocument,
+          seq: nextSequence,
+        });
+      })
+      .then((pouchDbResponse) => {
+        if (!pouchDbResponse.ok) {
+          return Promise.reject(pouchDbResponse);
+        }
+        return Promise.resolve();
+      });
   }
 }
