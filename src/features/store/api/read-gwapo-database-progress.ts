@@ -44,7 +44,7 @@ export const injectedApi = api.injectEndpoints({
               console.debug("changes feed complete", info);
             })
             .on("error", function onError(error) {
-              console.error("changes feed error", error);
+              console.debug("changes feed error", error);
             });
 
           queryApi.cacheEntryRemoved.finally(() => {

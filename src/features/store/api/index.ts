@@ -49,7 +49,8 @@ function baseQuery(
       queryApi.getState() as RootState,
       extraOptions.scope
     );
-    const access_token = (queryApi.getState() as RootState).client.access?.id;
+    const access_token = (queryApi.getState() as RootState).client.access
+      ?.access_token;
     if (!queryIsInScope || !access_token) {
       return {
         data: undefined,

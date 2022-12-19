@@ -2,25 +2,27 @@ import { createSlice } from "@reduxjs/toolkit";
 
 // Slice imports API, thus API and Endpoints may never import Slice
 import { readTokenInfo } from "./api/read-token-info";
-
-import type { AccessToken } from "../../types/token";
-
-export interface SliceState {
-  access: AccessToken | null;
-}
-
-export const initialState: SliceState = { access: null };
+import { initialState } from "./initial-state";
 
 export const slice = createSlice({
   initialState,
   name: "client",
-  reducers: {},
+  reducers: {
+    logout(state) {
+      state.access = null;
+    },
+  },
   extraReducers(builder) {
     builder.addMatcher(readTokenInfo.matchFulfilled, (state, action) => {
       state.access = {
         ...action.payload,
-        id: action.meta.arg.originalArgs.access_token,
+        access_token: action.meta.arg.originalArgs.access_token,
       };
+    });
+    builder.addMatcher(readTokenInfo.matchRejected, (state, action) => {
+      state.access = null;
     });
   },
 });
+
+export const logout = slice.actions.logout;

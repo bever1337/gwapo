@@ -1,5 +1,4 @@
-```plantuml
-@startuml
+@startuml DumpToPouch
 
 [*] --> Uninitialized
 
@@ -22,4 +21,3 @@ Sequence --> Aborted : Close / flush(),\lany / error("Seq must be followed by Do
 state Aborted
 
 @enduml
-```

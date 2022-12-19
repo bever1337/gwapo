@@ -1,0 +1,20 @@
+.form__flex {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.form__flex__input {
+  flex: 1 1 auto;
+  max-width: 24em;
+}
+
+.form__flex__submit {
+  margin-left: auto;
+}
+
+.link__icon--external {
+  height: 1em;
+  vertical-align: text-bottom;
+  width: 1em;
+}

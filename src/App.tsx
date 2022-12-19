@@ -10,7 +10,7 @@ import {
   Link,
 } from "react-router-dom";
 
-import { Authenticator } from "./components/authenticator";
+import { Authenticator } from "./components/Authenticator";
 import { store } from "./features/store";
 import { updateGwapoDatabaseDump } from "./features/store/api/update-gwapo-database-dump";
 import { AppOutlet } from "./routes/outlet";

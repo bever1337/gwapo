@@ -12,7 +12,15 @@
   margin: 0.5rem 0;
 }
 
+@media screen and (min-width: 24rem) {
+  .tab {
+    gap: 1em;
+    grid-template: "heading aside control" auto / 1fr auto auto;
+  }
+}
+
 .tab__aside {
+  color: #ffffff;
   grid-area: aside;
 }
 

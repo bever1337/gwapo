@@ -15,10 +15,12 @@ export interface AccountCurrency {
 type ReadAccountWalletResult = EntityState<AccountCurrency>;
 
 const scopes = [Scope.Account, Scope.Wallet];
-const scopeTags = scopes.map((scope) => ({
-  type: "access_token" as const,
-  id: scope,
-}));
+const scopeTags = scopes
+  .map((scope) => ({
+    type: "access_token" as const,
+    id: scope as any,
+  }))
+  .concat([{ type: "access_token" as const, id: "LIST" }]);
 
 const accountCurrenciesEntityAdapter = createEntityAdapter<AccountCurrency>();
 export const initialState = accountCurrenciesEntityAdapter.getInitialState();

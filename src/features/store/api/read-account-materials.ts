@@ -17,10 +17,12 @@ export interface AccountMaterial {
 type ReadAccountMaterialsResult = AccountMaterial[];
 
 const scopes = [Scope.Account, Scope.Inventories];
-const scopeTags = scopes.map((scope) => ({
-  type: "access_token" as const,
-  id: scope,
-}));
+const scopeTags = scopes
+  .map((scope) => ({
+    type: "access_token" as const,
+    id: scope as any,
+  }))
+  .concat([{ type: "access_token" as const, id: "LIST" }]);
 
 export const injectedApi = api.injectEndpoints({
   endpoints(build) {

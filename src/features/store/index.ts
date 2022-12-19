@@ -13,8 +13,8 @@ export const store = () =>
   configureStore({
     middleware(getDefaultMiddleware) {
       return getDefaultMiddleware()
-        .prepend([listenerMiddleware.middleware])
-        .concat([api.middleware]);
+        .prepend(listenerMiddleware.middleware)
+        .concat(api.middleware);
     },
     reducer: rootReducer,
   });

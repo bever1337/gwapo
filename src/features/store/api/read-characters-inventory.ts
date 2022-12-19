@@ -64,10 +64,12 @@ export interface Bag {
 export type ReadCharactersInventoryResult = Bag[];
 
 const scopes = [Scope.Account, Scope.Characters];
-const scopeTags = scopes.map((scope) => ({
-  type: "access_token" as const,
-  id: scope,
-}));
+const scopeTags = scopes
+  .map((scope) => ({
+    type: "access_token" as const,
+    id: scope as any,
+  }))
+  .concat([{ type: "access_token" as const, id: "LIST" }]);
 
 export const injectedApi = api.injectEndpoints({
   endpoints(build) {

@@ -1,11 +1,11 @@
 import { createSelector } from "@reduxjs/toolkit";
 
 import type { RootState } from ".";
-import { initialState } from "./slice";
+import { initialState } from "./initial-state";
 
 import type { Scope } from "../../types/token";
 
-const selectClient = (state: RootState) => state?.client ?? initialState;
+export const selectClient = (state: RootState) => state?.client ?? initialState;
 
 export const makeSelectIsInScope = (scopes: Scope[]) =>
   createSelector(selectClient, (substate) =>

@@ -93,7 +93,7 @@ export function getDatabaseName(
       if (!bestDatabase || typeof bestDatabase !== "string") {
         return Promise.reject("No database ready");
       }
-      console.debug("bestDatabase", bestDatabase);
+      console.info("bestDatabase", bestDatabase);
       return bestDatabase;
     })
     .finally(() => {

@@ -15,12 +15,7 @@ export function VaultOutlet() {
             elementsClasses["no-padding"]
           )}
           style={{
-            // alignItems: "center",
-            // display: "flex",
-            // flexFlow: "row wrap",
-            // justifyContent: "space-between",
             listStyle: "none",
-            // maxWidth: "24rem",
           }}
         >
           <li
