@@ -3,6 +3,7 @@ import { FormattedMessage } from "react-intl";
 import { useSearchParams } from "react-router-dom";
 
 import inputPillClasses from "../Elements/input-pill.module.css";
+import flexFormClasses from "../Elements/flex-form.module.css";
 import elementsClasses from "../Elements/index.module.css";
 import hideClasses from "../HideA11y/index.module.css";
 import { Query } from "../Query";
@@ -15,6 +16,7 @@ import { readCharacters } from "../../features/store/api/read-characters";
 import { QueryLoading } from "../Query/Loading";
 
 const noop = () => {};
+/** semi-arbitrary, default number of character slots with paid account  */
 const MAX_CHARACTERS = 5;
 
 /**
@@ -73,9 +75,14 @@ export function SelectCharacter(props: any) {
             <FormattedMessage defaultMessage="GWAPO is loading your characters." />
           </QueryLoading>
           <QuerySuccess>
-            <label>
-              filter
+            <div className={classNames(flexFormClasses["form__flex"])}>
+              <label htmlFor="components/SelectCharacter/character_name">
+                <FormattedMessage defaultMessage="Filter character name" />
+              </label>
               <input
+                className={classNames(flexFormClasses["form__flex__input"])}
+                id="components/SelectCharacter/character_name"
+                name="components/SelectCharacter/character_name"
                 onChange={(event) => {
                   setSearchInputValue(event.target.value);
                 }}
@@ -83,9 +90,15 @@ export function SelectCharacter(props: any) {
                 type="text"
                 value={searchInputValue}
               />
-              <button type="reset">reset</button>
-            </label>
-            <br />
+
+              <button
+                className={classNames(flexFormClasses["form__flex__submit"])}
+                type="reset"
+              >
+                <FormattedMessage defaultMessage="Reset" />
+              </button>
+            </div>
+            <hr />
             {readCharactersResult.data?.map((characterName) => {
               const inputId = `components/SelectCharacter/option/${characterName}`;
               const isChecked = characterName === characterNameState;
@@ -131,7 +144,7 @@ export function SelectCharacter(props: any) {
               visibleCount < (readCharactersResult.data?.length ?? 0) && (
                 <p>
                   <FormattedMessage
-                    defaultMessage="{count} hidden characters. Filter your characters by name."
+                    defaultMessage="{count} hidden characters. You can filter by your character's names."
                     values={{
                       count:
                         (readCharactersResult.data?.length ?? 0) - visibleCount,

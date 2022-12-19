@@ -2,10 +2,9 @@ import { Fragment, createElement, useState } from "react";
 import { defineMessages, FormattedMessage } from "react-intl";
 import { useSelector } from "react-redux";
 
-import authenticatorClasses from "./index.module.css";
-
 import { AccordionControl } from "../Accordion/Control";
 import accordionClasses from "../Accordion/index.module.css";
+import flexFormClasses from "../Elements/flex-form.module.css";
 import elementsClasses from "../Elements/index.module.css";
 import hideClasses from "../HideA11y/index.module.css";
 import { Iif } from "../Iif";
@@ -99,7 +98,7 @@ export function Authenticator() {
           <Iif
             condition={authenticatorState < AuthenticatorState.Authenticated}
           >
-            <div className={classNames(authenticatorClasses["form__flex"])}>
+            <div className={classNames(flexFormClasses["form__flex"])}>
               <FormattedMessage defaultMessage="API Key">
                 {(apiKey) => (
                   <Fragment>
@@ -108,7 +107,7 @@ export function Authenticator() {
                     </label>
                     <input
                       className={classNames(
-                        authenticatorClasses["form__flex__input"]
+                        flexFormClasses["form__flex__input"]
                       )}
                       disabled={
                         authenticatorState === AuthenticatorState.Loading
@@ -124,9 +123,7 @@ export function Authenticator() {
                 )}
               </FormattedMessage>
               <button
-                className={classNames(
-                  authenticatorClasses["form__flex__submit"]
-                )}
+                className={classNames(flexFormClasses["form__flex__submit"])}
                 disabled={authenticatorState === AuthenticatorState.Loading}
                 type="submit"
               >
@@ -146,7 +143,7 @@ export function Authenticator() {
                       <img
                         alt=""
                         className={classNames(
-                          authenticatorClasses["link__icon--external"]
+                          flexFormClasses["link__icon--external"]
                         )}
                         src={externalLinkImageSource}
                       />
@@ -158,7 +155,7 @@ export function Authenticator() {
                       <img
                         alt=""
                         className={classNames(
-                          authenticatorClasses["link__icon--external"]
+                          flexFormClasses["link__icon--external"]
                         )}
                         src={externalLinkImageSource}
                       />
