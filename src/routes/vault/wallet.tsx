@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { FormattedMessage, FormattedNumber } from "react-intl";
 
 import currencyClasses from "../../components/Currency/index.module.css";
@@ -15,53 +16,78 @@ import {
 } from "../../features/store/api/read-currencies";
 
 export function VaultWallet() {
-  const { data: currencies = initialState } = readCurrencies.useQuery({});
+  const readCurrenciesResult = readCurrencies.useQuery({});
   const readAccountWalletResult = readAccountWallet.useQuery({});
   return (
-    <Query result={readAccountWalletResult}>
+    <Fragment>
       <h2>
         <FormattedMessage defaultMessage="Wallet" />
       </h2>
-      <ol
-        className={classNames(
-          elementsClasses["no-margin"],
-          elementsClasses["no-padding"]
-        )}
-        style={{
-          columnGap: "1rem",
-          columns: "4 24rem",
-        }}
-      >
-        {currencies.ids.map((currencyId) => (
-          <li
-            className={classNames(currencyClasses["currency"])}
-            key={currencyId}
-          >
-            <span className={classNames(currencyClasses["currency__name"])}>
-              {currencies.entities[currencyId]?.name}
-            </span>
-            <span className={classNames(currencyClasses["currency__amount"])}>
-              <QueryUninitialized>-</QueryUninitialized>
-              <QueryLoading>-</QueryLoading>
-              <QueryError>x</QueryError>
-              <QuerySuccess>
-                <FormattedNumber
-                  value={
-                    readAccountWalletResult.data?.entities[currencyId]?.value ??
-                    0
-                  }
-                  maximumSignificantDigits={3}
-                />
-              </QuerySuccess>
-            </span>
-            <img
-              alt={currencies.entities[currencyId]?.name}
-              className={classNames(currencyClasses["currency__img"])}
-              src={currencies.entities[currencyId]?.icon}
-            />
-          </li>
-        ))}
-      </ol>
-    </Query>
+      <Query result={readCurrenciesResult}>
+        <QueryUninitialized>Waiting to load currencies...</QueryUninitialized>
+        <QueryLoading>Loading currencies...</QueryLoading>
+        <QueryError>Failed to load currencies</QueryError>
+        <QuerySuccess>
+          <Query result={readAccountWalletResult}>
+            <ol
+              className={classNames(
+                elementsClasses["no-margin"],
+                elementsClasses["no-padding"]
+              )}
+              style={{
+                columnGap: "1rem",
+                columns: "4 24rem",
+              }}
+            >
+              {(readCurrenciesResult.data ?? initialState).ids.map(
+                (currencyId) => (
+                  <li
+                    className={classNames(currencyClasses["currency"])}
+                    key={currencyId}
+                  >
+                    <span
+                      className={classNames(currencyClasses["currency__name"])}
+                    >
+                      {readCurrenciesResult.data!.entities[currencyId]!.name},
+                      {
+                        readCurrenciesResult.data!.entities[currencyId]!
+                          .description
+                      }
+                    </span>
+                    <span
+                      className={classNames(
+                        currencyClasses["currency__amount"]
+                      )}
+                    >
+                      <QueryUninitialized>-</QueryUninitialized>
+                      <QueryLoading>-</QueryLoading>
+                      <QueryError>x</QueryError>
+                      <QuerySuccess>
+                        <FormattedNumber
+                          value={
+                            readAccountWalletResult.data?.entities[currencyId]
+                              ?.value ?? 0
+                          }
+                          maximumSignificantDigits={3}
+                        />
+                      </QuerySuccess>
+                    </span>
+                    <img
+                      alt={
+                        readCurrenciesResult.data!.entities[currencyId]?.name
+                      }
+                      className={classNames(currencyClasses["currency__img"])}
+                      src={
+                        readCurrenciesResult.data!.entities[currencyId]?.icon
+                      }
+                    />
+                  </li>
+                )
+              )}
+            </ol>
+          </Query>
+        </QuerySuccess>
+      </Query>
+    </Fragment>
   );
 }
