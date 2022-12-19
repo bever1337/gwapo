@@ -6,6 +6,7 @@ import { WardrobeBack } from "./form/Back";
 import { Gathering } from "./form/Gathering";
 import { Weapon } from "./form/Weapon";
 
+import fieldsetClasses from "../../../components/Elements/fieldset.module.css";
 import inputPillClasses from "../../../components/Elements/input-pill.module.css";
 import hideClasses from "../../../components/HideA11y/index.module.css";
 import {
@@ -43,7 +44,7 @@ export function Wardrobe() {
           setSearchParams(urlSearchParams);
         }}
       >
-        <fieldset>
+        <fieldset className={classNames(fieldsetClasses["fieldset"])}>
           <legend>Wardrobe</legend>
           {skinTypes.ids.map((skinType) => (
             <Fragment key={skinType}>
@@ -70,7 +71,7 @@ export function Wardrobe() {
         </fieldset>
         {skinTypes.entities[activeSkinType]?.ids.map((subType, index) => (
           <Fragment key={subType}>
-            <fieldset>
+            <fieldset className={classNames(fieldsetClasses["fieldset"])}>
               <legend>{subType}</legend>
               {skinTypes.entities[activeSkinType]?.[subType].map(
                 (choice, index) => (

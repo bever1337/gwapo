@@ -1,0 +1,6 @@
+.fieldset {
+  /** Re-applying a fieldset's border gives a more consistent border style with other elements */
+  border: 1px solid #000000;
+  box-sizing: border-box;
+  margin: 0;
+}

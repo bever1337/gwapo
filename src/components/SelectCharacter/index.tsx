@@ -3,9 +3,11 @@ import { FormattedMessage } from "react-intl";
 import { useSearchParams } from "react-router-dom";
 
 import inputPillClasses from "../Elements/input-pill.module.css";
+import fieldsetClasses from "../Elements/fieldset.module.css";
 import flexFormClasses from "../Elements/flex-form.module.css";
 import elementsClasses from "../Elements/index.module.css";
 import hideClasses from "../HideA11y/index.module.css";
+import materialsClasses from "../materials.module.css";
 import { Query } from "../Query";
 import { QueryError } from "../Query/Error";
 import { QuerySuccess } from "../Query/Success";
@@ -55,7 +57,12 @@ export function SelectCharacter(props: any) {
           event.preventDefault();
         }}
       >
-        <fieldset>
+        <fieldset
+          className={classNames(
+            materialsClasses["materials__inline-wrapper"],
+            fieldsetClasses["fieldset"]
+          )}
+        >
           <legend>
             <FormattedMessage defaultMessage="Character" />
           </legend>
@@ -77,7 +84,7 @@ export function SelectCharacter(props: any) {
           <QuerySuccess>
             <div className={classNames(flexFormClasses["form__flex"])}>
               <label htmlFor="components/SelectCharacter/character_name">
-                <FormattedMessage defaultMessage="Filter character name" />
+                <FormattedMessage defaultMessage="Filter by your character's names" />
               </label>
               <input
                 className={classNames(flexFormClasses["form__flex__input"])}
