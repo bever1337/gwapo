@@ -14,6 +14,7 @@ export function VaultCharacterOutlet() {
         name="routerMonoForm"
         method="get"
         onChange={(event) => {
+          // TODO, it would be convenient to persist these params when routing between /vault and /vault/materials
           setParams(
             new URLSearchParams(new FormData(event.currentTarget) as any)
           );

@@ -14,6 +14,7 @@ import { QueryUninitialized } from "../Query/Uninitialized";
 import { VaultItem } from "../vault-item";
 
 import { classNames } from "../../features/css/classnames";
+import { readCharacters } from "../../features/store/api/read-characters";
 import { readCharactersInventory } from "../../features/store/api/read-characters-inventory";
 
 const emptyCharacterBag = new Array(15)
@@ -21,9 +22,11 @@ const emptyCharacterBag = new Array(15)
   .map((_null, index) => <VaultItem accountBankItem={null} key={index} />);
 
 export function CharacterBags() {
-  const characterName = new URLSearchParams(useLocation().search).get(
-    "select_character"
-  );
+  const readCharactersResult = readCharacters.useQuery({});
+  const characterName =
+    new URLSearchParams(useLocation().search).get("select_character") ??
+    readCharactersResult.data?.[0] ??
+    "";
   const readCharactersInventoryResult = readCharactersInventory.useQuery(
     characterName ? { characterName: characterName } : skipToken,
     { skip: !characterName }

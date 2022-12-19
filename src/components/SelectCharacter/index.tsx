@@ -14,27 +14,22 @@ import { classNames } from "../../features/css/classnames";
 import { readCharacters } from "../../features/store/api/read-characters";
 import { QueryLoading } from "../Query/Loading";
 
-function noop() {}
+const noop = () => {};
+const characterNameToOption = (characterName: string) => (
+  <Option key={characterName} characterName={characterName} />
+);
 
 export function SelectCharacter() {
   const selectElement = useRef<HTMLSelectElement>(null);
-  const characterName =
-    new URLSearchParams(useLocation().search).get("select_character") ?? "";
   const readCharactersResult = readCharacters.useQuery({});
-  useEffect(
-    function bubbleCharactersChangeEvent() {
-      if ((readCharactersResult.data?.length ?? 0) > 0) {
-        selectElement.current?.dispatchEvent(
-          new Event("change", { bubbles: true, cancelable: true })
-        );
-      }
-    },
-    [readCharactersResult.data]
-  );
   const authenticationError =
     readCharactersResult.error &&
     "status" in readCharactersResult.error &&
     readCharactersResult.error.status === 401;
+  const characterName =
+    new URLSearchParams(useLocation().search).get("select_character") ??
+    readCharactersResult.data?.[0] ??
+    "";
 
   return (
     <Query result={readCharactersResult}>
@@ -62,9 +57,7 @@ export function SelectCharacter() {
             ref={selectElement}
             value={characterName}
           >
-            {readCharactersResult.data?.map((characterName) => (
-              <Option key={characterName} characterName={characterName} />
-            )) ?? null}
+            {readCharactersResult.data?.map(characterNameToOption)}
           </select>
         </QuerySuccess>
       </nav>
