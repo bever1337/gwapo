@@ -3,14 +3,12 @@ import { FormattedMessage, IntlProvider } from "react-intl";
 import { Provider } from "react-redux";
 import {
   createBrowserRouter,
-  Route,
   createRoutesFromElements,
-  RouterProvider,
-  Outlet,
   Link,
+  Route,
+  RouterProvider,
 } from "react-router-dom";
 
-import { Authenticator } from "./components/Authenticator";
 import { store } from "./features/store";
 import { updateGwapoDatabaseDump } from "./features/store/api/update-gwapo-database-dump";
 import { AppOutlet } from "./routes/outlet";
@@ -59,9 +57,7 @@ const router = createBrowserRouter(
       <Route element={<VaultOutlet />} path="vault">
         <Route element={<VaultCharacterOutlet />}>
           <Route element={<Vault />} index />
-          <Route element={<Vault />} path=":characterName" />
           <Route element={<Materials />} path="materials" />
-          <Route element={<Materials />} path="materials/:characterName" />
         </Route>
         <Route element={<VaultWallet />} path="wallet" />
         <Route element={<Wardrobe />} path="wardrobe" />

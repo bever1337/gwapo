@@ -89,7 +89,7 @@ export function VaultOutlet() {
         </ul>
       </nav>
       <h1>
-        <FormattedMessage defaultMessage="Account Vault" />
+        <FormattedMessage defaultMessage="Vault" />
       </h1>
       <Outlet />
     </Fragment>

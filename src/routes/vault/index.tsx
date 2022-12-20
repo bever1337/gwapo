@@ -68,7 +68,7 @@ export function Vault() {
           </div>
           <div className={classNames(accordionClasses["folder"])}>
             <p className={classNames(elementsClasses["no-margin"])}>
-              <FormattedMessage defaultMessage="GWAPO is waiting to load your account vault" />
+              <FormattedMessage defaultMessage="GWAPO is waiting to load your account's vault" />
             </p>
           </div>
         </section>
@@ -95,7 +95,7 @@ export function Vault() {
               {authenticationError ? (
                 <FormattedMessage defaultMessage="Please provide GWAPO an API token with the necessary scopes." />
               ) : (
-                <FormattedMessage defaultMessage="GWAPO encountered an error loading your account vault." />
+                <FormattedMessage defaultMessage="GWAPO encountered an error loading your account's vault." />
               )}
             </p>
           </div>

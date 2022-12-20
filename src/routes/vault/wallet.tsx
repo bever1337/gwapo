@@ -36,7 +36,7 @@ export function VaultWallet() {
               )}
               style={{
                 columnGap: "1rem",
-                columns: "4 24rem",
+                columns: "5 24rem",
               }}
             >
               {(readCurrenciesResult.data ?? initialState).ids.map(
@@ -45,15 +45,14 @@ export function VaultWallet() {
                     className={classNames(currencyClasses["currency"])}
                     key={currencyId}
                   >
-                    <span
-                      className={classNames(currencyClasses["currency__name"])}
+                    <h3
+                      className={classNames(
+                        currencyClasses["currency__name"],
+                        elementsClasses["no-margin"]
+                      )}
                     >
-                      {readCurrenciesResult.data!.entities[currencyId]!.name},
-                      {
-                        readCurrenciesResult.data!.entities[currencyId]!
-                          .description
-                      }
-                    </span>
+                      {readCurrenciesResult.data!.entities[currencyId]!.name}
+                    </h3>
                     <span
                       className={classNames(
                         currencyClasses["currency__amount"]
@@ -81,6 +80,17 @@ export function VaultWallet() {
                         readCurrenciesResult.data!.entities[currencyId]?.icon
                       }
                     />
+                    <p
+                      className={classNames(
+                        currencyClasses["currency__description"],
+                        elementsClasses["no-margin"]
+                      )}
+                    >
+                      {
+                        readCurrenciesResult.data!.entities[currencyId]!
+                          .description
+                      }
+                    </p>
                   </li>
                 )
               )}
