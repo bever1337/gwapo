@@ -33,7 +33,7 @@ const mapAccountBankTabToElement = (
 
 const skeletonVaultContainer = mapAccountBankTabToElement(
   new Array(ITEMS_PER_TAB).fill(null),
-  0
+  1
 );
 
 export function Bank() {
@@ -55,10 +55,8 @@ export function Bank() {
                 elementsClasses["no-margin"]
               )}
             >
-              {/* Bank tabs have no heading in GW2. Mirror that choice here */}
-              {""}
+              <FormattedMessage defaultMessage="Bank Tab" />
             </h2>
-            <AccordionControl onChange={() => {}} open={true} />
           </div>
           <div className={classNames(accordionClasses["folder"])}>
             <p className={classNames(elementsClasses["no-margin"])}>
@@ -77,10 +75,8 @@ export function Bank() {
                 elementsClasses["no-margin"]
               )}
             >
-              {/* Bank tabs have no heading in GW2. Mirror that choice here */}
-              {""}
+              <FormattedMessage defaultMessage="Bank Tab" />
             </h3>
-            <AccordionControl onChange={() => {}} open={true} />
           </div>
           <div className={classNames(accordionClasses["folder"])}>
             <p className={classNames(elementsClasses["no-margin"])}>

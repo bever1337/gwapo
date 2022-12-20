@@ -6,9 +6,10 @@ import { CharacterBagContainer } from "./Container";
 
 import accordionClasses from "../../Accordion/index.module.css";
 import elementsClasses from "../../Elements/index.module.css";
+import materialsClasses from "../../materials.module.css";
 import { Query } from "../../Query";
 import { QueryError } from "../../Query/Error";
-import { QueryFetching } from "../../Query/Fetching";
+import { QueryLoading } from "../../Query/Loading";
 import { QuerySuccess } from "../../Query/Success";
 import { QueryUninitialized } from "../../Query/Uninitialized";
 import { VaultItem } from "../../vault-item";
@@ -80,7 +81,7 @@ export function CharacterBags() {
           </div>
         </section>
       </QueryError>
-      <QueryFetching>
+      <QueryLoading>
         <section>
           <div className={classNames(accordionClasses["tab"])}>
             <h2
@@ -93,10 +94,17 @@ export function CharacterBags() {
             </h2>
           </div>
           <div className={classNames(accordionClasses["folder"])}>
-            <ol>{emptyCharacterBag}</ol>
+            <ol
+              className={classNames(
+                materialsClasses["materials__list"],
+                elementsClasses["no-margin"]
+              )}
+            >
+              {emptyCharacterBag}
+            </ol>
           </div>
         </section>
-      </QueryFetching>
+      </QueryLoading>
       <QuerySuccess>
         {(readCharactersInventoryResult.currentData ?? []).map((bag, index) => (
           <CharacterBagContainer

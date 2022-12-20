@@ -58,10 +58,10 @@ export interface Bag {
   /** The amount of slots available with this bag. */
   size: number;
   /** Contains one object structure per item, object is null if no item is in the given bag slot. */
-  inventory: BagInventory[];
+  inventory: (BagInventory | null)[];
 }
 
-export type ReadCharactersInventoryResult = Bag[];
+export type ReadCharactersInventoryResult = (Bag | null)[];
 
 const scopes = [Scope.Account, Scope.Characters];
 const scopeTags = scopes
@@ -101,7 +101,11 @@ export const injectedApi = api.injectEndpoints({
               queryArguments.characterName
             )}/inventory`,
             validateStatus(response, body) {
-              return response.status === 200 && Array.isArray(body.bags);
+              return (
+                response.status === 200 &&
+                Array.isArray(body.bags) &&
+                body.bags.length > 0
+              );
             },
           };
         },

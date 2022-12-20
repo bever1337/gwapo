@@ -83,7 +83,11 @@ export const injectedApi = api.injectEndpoints({
           return {
             url: "/v2/account/bank",
             validateStatus(response, body) {
-              return response.status === 200 && Array.isArray(body);
+              return (
+                response.status === 200 &&
+                Array.isArray(body) &&
+                body.length > 0
+              );
             },
           };
         },

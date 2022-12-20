@@ -59,14 +59,14 @@ export function VaultOutlet() {
               textAlign: "center",
             }}
           >
-            <Link to="/vault/wallet">
+            <Link to="/vault/wardrobe">
               <img
                 alt=""
-                src={`${process.env.PUBLIC_URL}/icons/Finance/copper-coin-fill.svg`}
+                src={`${process.env.PUBLIC_URL}/icons/Others/shirt-fill.svg`}
                 style={{ height: "3rem", width: "3rem" }}
               />
               <br />
-              <FormattedMessage defaultMessage="Wallet" />
+              <FormattedMessage defaultMessage="Wardrobe" />
             </Link>
           </li>
           <li
@@ -76,14 +76,14 @@ export function VaultOutlet() {
               textAlign: "center",
             }}
           >
-            <Link to="/vault/wardrobe">
+            <Link to="/vault/wallet">
               <img
                 alt=""
-                src={`${process.env.PUBLIC_URL}/icons/Others/shirt-fill.svg`}
+                src={`${process.env.PUBLIC_URL}/icons/Finance/copper-coin-fill.svg`}
                 style={{ height: "3rem", width: "3rem" }}
               />
               <br />
-              <FormattedMessage defaultMessage="Wardrobe" />
+              <FormattedMessage defaultMessage="Wallet" />
             </Link>
           </li>
         </ul>

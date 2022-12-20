@@ -1,5 +1,6 @@
 .vault {
   display: grid;
+  gap: 1rem;
   grid-template:
     "heading1" auto
     "contentA" auto
@@ -12,19 +13,26 @@
 }
 
 .vault__heading--1 {
+  font-size: 2rem;
+  line-height: 2rem;
   grid-area: heading1;
+  margin: 0;
 }
 
 .vault__heading--2 {
   grid-area: heading2;
+  line-height: 2rem;
+  margin: 0;
 }
 
 .vault__content--a {
   grid-area: contentA;
+  max-width: 65rem;
 }
 
 .vault__content--b {
   grid-area: contentB;
+  max-width: 65rem;
 }
 
 @media screen and (min-width: 48rem) {

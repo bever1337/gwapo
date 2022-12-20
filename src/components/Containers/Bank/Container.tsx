@@ -11,6 +11,7 @@ import { VaultItem } from "../../vault-item";
 import { classNames } from "../../../features/css/classnames";
 import type { AccountBankItem } from "../../../features/store/api/read-account-bank";
 import { readItems } from "../../../features/store/api/read-items";
+import { FormattedMessage } from "react-intl";
 
 export function BankContainer(props: {
   accountBankItems: (AccountBankItem | null)[];
@@ -37,8 +38,12 @@ export function BankContainer(props: {
             elementsClasses["no-margin"]
           )}
         >
-          {/* Bank tabs have no heading in GW2. Mirror that choice here */}
-          {""}
+          <FormattedMessage
+            defaultMessage="Bank Tab {bankTab}"
+            values={{
+              bankTab: props.bankTab + 1,
+            }}
+          />
         </h2>
         <AccordionControl onChange={setOpen} open={open} />
       </div>

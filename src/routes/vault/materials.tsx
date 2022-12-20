@@ -22,6 +22,10 @@ export function Materials() {
         <FormattedMessage defaultMessage="Materials Storage" />
       </h2>
       <div className={classNames(vaultGridClasses["vault__content--b"])}>
+        <div
+          // offset the height of an element in the contentA column
+          style={{ height: "calc(0.5em + 1px)" }}
+        />
         <MaterialsContainers />
       </div>
     </main>

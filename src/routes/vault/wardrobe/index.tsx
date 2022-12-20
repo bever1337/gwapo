@@ -38,6 +38,9 @@ export function Wardrobe() {
   const ActiveComponent = Components[activeSkinType] ?? UnknownComponent;
   return (
     <Fragment>
+      <h1>
+        <FormattedMessage defaultMessage="Vault" />
+      </h1>
       <h2>
         <FormattedMessage defaultMessage="Wardrobe" />
       </h2>

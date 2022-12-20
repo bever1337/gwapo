@@ -41,13 +41,24 @@ export const injectedApi = api.injectEndpoints({
                 endkey: "materials_\ufff0",
               })
             )
-            .then((response) => ({
-              data: materialsEntityAdapter.setAll(
+            .then((response) => {
+              const reducedData = materialsEntityAdapter.setAll(
                 initialState,
                 response.rows.map((row) => row.doc) as unknown[] as Materials[]
-              ),
-              error: undefined,
-            }))
+              );
+              if (reducedData.ids.length === 0) {
+                return Promise.reject("Bad query");
+              }
+              return {
+                data: materialsEntityAdapter.setAll(
+                  initialState,
+                  response.rows.map(
+                    (row) => row.doc
+                  ) as unknown[] as Materials[]
+                ),
+                error: undefined,
+              };
+            })
             .catch((reason) => ({ data: undefined, error: reason }));
         },
       }),

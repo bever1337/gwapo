@@ -36,7 +36,8 @@ export function VaultWallet() {
               )}
               style={{
                 columnGap: "1rem",
-                columns: "5 24rem",
+                columns: "8 24rem",
+                maxWidth: "200rem",
               }}
             >
               {(readCurrenciesResult.data ?? initialState).ids.map(

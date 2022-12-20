@@ -18,7 +18,7 @@ import { QueryLoading } from "../Query/Loading";
 
 const noop = () => {};
 /** semi-arbitrary, default number of character slots with paid account  */
-const MAX_CHARACTERS = 5;
+const MAX_CHARACTERS = 10;
 
 /**
  * Maximum number of character slots is between 69 and 72.
@@ -115,7 +115,7 @@ export function SelectCharacter(props: any) {
                 visibleCount += 1;
               }
               return (
-                <Fragment>
+                <Fragment key={characterName}>
                   <input
                     checked={isChecked}
                     className={classNames(
