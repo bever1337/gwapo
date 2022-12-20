@@ -1,18 +1,18 @@
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { useState } from "react";
 
-import { AccordionControl } from "../Accordion/Control";
-import accordionClasses from "../Accordion/index.module.css";
-import elementsClasses from "../Elements/index.module.css";
-import hideClasses from "../HideA11y/index.module.css";
-import materialsClasses from "../materials.module.css";
-import { VaultItem } from "../vault-item";
+import { AccordionControl } from "../../Accordion/Control";
+import accordionClasses from "../../Accordion/index.module.css";
+import elementsClasses from "../../Elements/index.module.css";
+import hideClasses from "../../HideA11y/index.module.css";
+import materialsClasses from "../../materials.module.css";
+import { VaultItem } from "../../vault-item";
 
-import { classNames } from "../../features/css/classnames";
-import { readItems } from "../../features/store/api/read-items";
-import type { Bag } from "../../features/store/api/read-characters-inventory";
+import { classNames } from "../../../features/css/classnames";
+import { readItems } from "../../../features/store/api/read-items";
+import type { Bag } from "../../../features/store/api/read-characters-inventory";
 
-export function CharacterBag(props: {
+export function CharacterBagContainer(props: {
   characterBag: Bag | null;
   bagIndex: number;
 }) {

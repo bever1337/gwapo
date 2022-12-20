@@ -2,20 +2,21 @@ import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { FormattedMessage } from "react-intl";
 import { useLocation } from "react-router-dom";
 
-import accordionClasses from "../Accordion/index.module.css";
-import { CharacterBag } from "../CharacterBag";
-import elementsClasses from "../Elements/index.module.css";
-import materialsClasses from "../materials.module.css";
-import { Query } from "../Query";
-import { QueryError } from "../Query/Error";
-import { QueryFetching } from "../Query/Fetching";
-import { QuerySuccess } from "../Query/Success";
-import { QueryUninitialized } from "../Query/Uninitialized";
-import { VaultItem } from "../vault-item";
+import { CharacterBagContainer } from "./Container";
 
-import { classNames } from "../../features/css/classnames";
-import { readCharacters } from "../../features/store/api/read-characters";
-import { readCharactersInventory } from "../../features/store/api/read-characters-inventory";
+import accordionClasses from "../../Accordion/index.module.css";
+import elementsClasses from "../../Elements/index.module.css";
+import materialsClasses from "../../materials.module.css";
+import { Query } from "../../Query";
+import { QueryError } from "../../Query/Error";
+import { QueryFetching } from "../../Query/Fetching";
+import { QuerySuccess } from "../../Query/Success";
+import { QueryUninitialized } from "../../Query/Uninitialized";
+import { VaultItem } from "../../vault-item";
+
+import { classNames } from "../../../features/css/classnames";
+import { readCharacters } from "../../../features/store/api/read-characters";
+import { readCharactersInventory } from "../../../features/store/api/read-characters-inventory";
 
 const emptyCharacterBag = new Array(15)
   .fill(null)
@@ -107,7 +108,11 @@ export function CharacterBags() {
       </QueryFetching>
       <QuerySuccess>
         {(readCharactersInventoryResult.currentData ?? []).map((bag, index) => (
-          <CharacterBag bagIndex={index} characterBag={bag} key={index} />
+          <CharacterBagContainer
+            bagIndex={index}
+            characterBag={bag}
+            key={index}
+          />
         ))}
       </QuerySuccess>
     </Query>

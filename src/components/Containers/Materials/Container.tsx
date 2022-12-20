@@ -1,19 +1,19 @@
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { useState } from "react";
 
-import { AccordionControl } from "../Accordion/Control";
-import accordionClasses from "../Accordion/index.module.css";
-import elementsClasses from "../Elements/index.module.css";
-import hideClasses from "../HideA11y/index.module.css";
-import { Material } from "../material";
-import materialsClasses from "../materials.module.css";
+import { AccordionControl } from "../../Accordion/Control";
+import accordionClasses from "../../Accordion/index.module.css";
+import elementsClasses from "../../Elements/index.module.css";
+import hideClasses from "../../HideA11y/index.module.css";
+import { Material } from "../../material";
+import materialsClasses from "../../materials.module.css";
 
-import { classNames } from "../../features/css/classnames";
-import type { AccountMaterial } from "../../features/store/api/read-account-materials";
-import { readItems } from "../../features/store/api/read-items";
-import type { Materials } from "../../features/store/api/read-materials";
+import { classNames } from "../../../features/css/classnames";
+import type { AccountMaterial } from "../../../features/store/api/read-account-materials";
+import { readItems } from "../../../features/store/api/read-items";
+import type { Materials } from "../../../features/store/api/read-materials";
 
-export function MaterialsTab({
+export function MaterialsContainer({
   accountMaterials,
   materials,
 }: {

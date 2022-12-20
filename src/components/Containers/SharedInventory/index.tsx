@@ -1,20 +1,21 @@
 import { useState } from "react";
 import { FormattedMessage } from "react-intl";
 
-import { AccordionControl } from "../Accordion/Control";
-import accordionClasses from "../Accordion/index.module.css";
-import { SharedInventoryBag } from "../Bags/SharedInventory";
-import elementsClasses from "../Elements/index.module.css";
-import hideClasses from "../HideA11y/index.module.css";
-import materialsClasses from "../materials.module.css";
-import { Query } from "../Query";
-import { QueryError } from "../Query/Error";
-import { QueryLoading } from "../Query/Loading";
-import { QuerySuccess } from "../Query/Success";
-import { QueryUninitialized } from "../Query/Uninitialized";
+import { SharedInventoryContainer } from "./Container";
 
-import { classNames } from "../../features/css/classnames";
-import { readAccountInventory } from "../../features/store/api/read-account-inventory";
+import { AccordionControl } from "../../Accordion/Control";
+import accordionClasses from "../../Accordion/index.module.css";
+import elementsClasses from "../../Elements/index.module.css";
+import hideClasses from "../../HideA11y/index.module.css";
+import materialsClasses from "../../materials.module.css";
+import { Query } from "../../Query";
+import { QueryError } from "../../Query/Error";
+import { QueryLoading } from "../../Query/Loading";
+import { QuerySuccess } from "../../Query/Success";
+import { QueryUninitialized } from "../../Query/Uninitialized";
+
+import { classNames } from "../../../features/css/classnames";
+import { readAccountInventory } from "../../../features/store/api/read-account-inventory";
 
 export function SharedInventory() {
   const readAccountInventoryResult = readAccountInventory.useQuery({});
@@ -63,7 +64,7 @@ export function SharedInventory() {
                 elementsClasses["no-margin"]
               )}
             >
-              <SharedInventoryBag slots={[null, null]} />
+              <SharedInventoryContainer slots={[null, null]} />
             </ol>
           </QueryLoading>
           <QueryError>
@@ -76,7 +77,9 @@ export function SharedInventory() {
             </p>
           </QueryError>
           <QuerySuccess>
-            <SharedInventoryBag slots={readAccountInventoryResult.data ?? []} />
+            <SharedInventoryContainer
+              slots={readAccountInventoryResult.data ?? []}
+            />
           </QuerySuccess>
         </div>
       </section>

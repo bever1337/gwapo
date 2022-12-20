@@ -84,7 +84,7 @@ export function SelectCharacter(props: any) {
           <QuerySuccess>
             <div className={classNames(flexFormClasses["form__flex"])}>
               <label htmlFor="components/SelectCharacter/character_name">
-                <FormattedMessage defaultMessage="Filter by your character's names" />
+                <FormattedMessage defaultMessage="Filter your characters by name" />
               </label>
               <input
                 className={classNames(flexFormClasses["form__flex__input"])}

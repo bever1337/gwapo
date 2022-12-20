@@ -88,9 +88,6 @@ export function VaultOutlet() {
           </li>
         </ul>
       </nav>
-      <h1>
-        <FormattedMessage defaultMessage="Vault" />
-      </h1>
       <Outlet />
     </Fragment>
   );

@@ -1,18 +1,18 @@
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 
-import elementsClasses from "../Elements/index.module.css";
-import itemTileClasses from "../ItemTile/index.module.css";
-import materialClasses from "../material.module.css";
-import materialsClasses from "../materials.module.css";
-import { Query } from "../Query";
-import { QueryError } from "../Query/Error";
-import { QueryLoading } from "../Query/Loading";
-import { QuerySuccess } from "../Query/Success";
-import { QueryUninitialized } from "../Query/Uninitialized";
+import elementsClasses from "../../Elements/index.module.css";
+import itemTileClasses from "../../ItemTile/index.module.css";
+import materialClasses from "../../material.module.css";
+import materialsClasses from "../../materials.module.css";
+import { Query } from "../../Query";
+import { QueryError } from "../../Query/Error";
+import { QueryLoading } from "../../Query/Loading";
+import { QuerySuccess } from "../../Query/Success";
+import { QueryUninitialized } from "../../Query/Uninitialized";
 
-import { classNames } from "../../features/css/classnames";
-import type { SharedInventorySlot } from "../../features/store/api/read-account-inventory";
-import { readItems } from "../../features/store/api/read-items";
+import { classNames } from "../../../features/css/classnames";
+import type { SharedInventorySlot } from "../../../features/store/api/read-account-inventory";
+import { readItems } from "../../../features/store/api/read-items";
 
 const errorImageSrc = `${process.env.PUBLIC_URL}/icons/System/error-warning-fill.svg`;
 const loadingImageSrc = `${process.env.PUBLIC_URL}/icons/System/loader-fill.svg`;
@@ -20,7 +20,7 @@ const loadingImageSrc = `${process.env.PUBLIC_URL}/icons/System/loader-fill.svg`
 // Warning: shared inventory slots do not have any unique identifiers
 // Features like filtering and sorting will not work until each item has a uid
 // For now, we can assume this is safe because the list is static
-export function SharedInventoryBag(props: {
+export function SharedInventoryContainer(props: {
   slots: (null | SharedInventorySlot)[];
 }) {
   const itemIds = props.slots.reduce(

@@ -15,7 +15,6 @@ import { AppOutlet } from "./routes/outlet";
 import { Vault } from "./routes/vault";
 import { Materials } from "./routes/vault/materials";
 import { VaultOutlet } from "./routes/vault/outlet";
-import { VaultCharacterOutlet } from "./routes/vault/outlet-character";
 import { VaultWallet } from "./routes/vault/wallet";
 import { Wardrobe } from "./routes/vault/wardrobe";
 
@@ -55,10 +54,8 @@ const router = createBrowserRouter(
         index
       />
       <Route element={<VaultOutlet />} path="vault">
-        <Route element={<VaultCharacterOutlet />}>
-          <Route element={<Vault />} index />
-          <Route element={<Materials />} path="materials" />
-        </Route>
+        <Route element={<Vault />} index />
+        <Route element={<Materials />} path="materials" />
         <Route element={<VaultWallet />} path="wallet" />
         <Route element={<Wardrobe />} path="wardrobe" />
       </Route>

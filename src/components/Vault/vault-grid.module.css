@@ -1,0 +1,36 @@
+.vault {
+  display: grid;
+  grid-template:
+    "heading1" auto
+    "contentA" auto
+    "heading2" auto
+    "contentB" auto / 1fr;
+}
+
+.vault__aside {
+  /* dialog area */
+}
+
+.vault__heading--1 {
+  grid-area: heading1;
+}
+
+.vault__heading--2 {
+  grid-area: heading2;
+}
+
+.vault__content--a {
+  grid-area: contentA;
+}
+
+.vault__content--b {
+  grid-area: contentB;
+}
+
+@media screen and (min-width: 48rem) {
+  .vault {
+    grid-template:
+      "heading1 heading2 heading2" auto
+      "contentA contentA contentB" 1fr / auto 0.5fr 1fr;
+  }
+}

@@ -1,4 +1,5 @@
 import { Fragment } from "react";
+import { FormattedMessage } from "react-intl";
 import { Form, useSearchParams } from "react-router-dom";
 
 import { Armor } from "./form/Armor";
@@ -37,7 +38,9 @@ export function Wardrobe() {
   const ActiveComponent = Components[activeSkinType] ?? UnknownComponent;
   return (
     <Fragment>
-      <h2>Wardrobe</h2>
+      <h2>
+        <FormattedMessage defaultMessage="Wardrobe" />
+      </h2>
       <Form
         onChange={(event) => {
           const formData = new FormData(event.currentTarget);
