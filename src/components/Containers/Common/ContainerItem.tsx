@@ -1,6 +1,5 @@
 import containerItemClasses from "./ContainerItem.module.css";
 
-import itemTileClasses from "../../ItemTile/index.module.css";
 import { QueryError } from "../../Query/Error";
 import { QueryLoading } from "../../Query/Loading";
 import { QuerySuccess } from "../../Query/Success";
@@ -23,30 +22,21 @@ export function ContainerItem(props: {
     <li className={classNames(containerItemClasses["item"])}>
       <QueryUninitialized>
         <img
-          className={classNames(
-            containerItemClasses["item__img"],
-            itemTileClasses["tile"]
-          )}
+          className={classNames(containerItemClasses["item__img"])}
           alt="loading"
           src={loadingImageSrc}
         />
       </QueryUninitialized>
       <QueryLoading>
         <img
-          className={classNames(
-            containerItemClasses["item__img"],
-            itemTileClasses["tile"]
-          )}
+          className={classNames(containerItemClasses["item__img"])}
           alt="loading"
           src={loadingImageSrc}
         />
       </QueryLoading>
       <QueryError>
         <img
-          className={classNames(
-            containerItemClasses["item__img"],
-            itemTileClasses["tile"]
-          )}
+          className={classNames(containerItemClasses["item__img"])}
           alt="error"
           src={errorImageSrc}
         />
@@ -55,8 +45,7 @@ export function ContainerItem(props: {
         <img
           className={classNames(
             containerItemClasses["item__img"],
-            itemTileClasses["tile"],
-            itemTileClasses[props.item?.rarity ?? ""]
+            containerItemClasses[props.item?.rarity ?? ""]
           )}
           alt={props.item?.name ?? ""}
           src={props.containerItem ? props.item?.icon ?? errorImageSrc : ""}

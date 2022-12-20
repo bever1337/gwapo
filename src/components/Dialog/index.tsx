@@ -9,7 +9,7 @@ import dialogClasses from "./index.module.css";
 
 import { Authenticator } from "../Authenticator";
 import elementsClasses from "../Elements/index.module.css";
-import hideClasses from "../HideA11y/index.module.css";
+import hideClasses from "../Elements/Hide.module.css";
 import { Installer } from "../Installer";
 
 import { classNames } from "../../features/css/classnames";

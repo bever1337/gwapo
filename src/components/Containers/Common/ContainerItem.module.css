@@ -4,6 +4,7 @@
 
 .item__img {
   background-color: darkgray;
+  border: 2px solid silver;
   box-sizing: border-box;
   display: block;
   height: 4rem;
@@ -22,4 +23,36 @@
   text-align: right;
   top: 2px;
   width: calc(100% - 4px);
+}
+
+.Junk {
+  border-color: silver;
+}
+
+.Basic {
+  border-color: black;
+}
+
+.Fine {
+  border-color: teal;
+}
+
+.Masterwork {
+  border-color: green;
+}
+
+.Rare {
+  border-color: gold;
+}
+
+.Exotic {
+  border-color: orangered;
+}
+
+.Ascended {
+  border-color: magenta;
+}
+
+.Legendary {
+  border-color: purple;
 }

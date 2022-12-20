@@ -6,7 +6,7 @@ import inputPillClasses from "../Elements/input-pill.module.css";
 import fieldsetClasses from "../Elements/fieldset.module.css";
 import flexFormClasses from "../Elements/flex-form.module.css";
 import elementsClasses from "../Elements/index.module.css";
-import hideClasses from "../HideA11y/index.module.css";
+import hideClasses from "../Elements/Hide.module.css";
 import { Query } from "../Query";
 import { QueryError } from "../Query/Error";
 import { QuerySuccess } from "../Query/Success";

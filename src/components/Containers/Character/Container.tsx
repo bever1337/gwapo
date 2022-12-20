@@ -7,7 +7,7 @@ import { ContainerItem } from "../Common/ContainerItem";
 import { AccordionControl } from "../../Accordion/Control";
 import accordionClasses from "../../Accordion/index.module.css";
 import elementsClasses from "../../Elements/index.module.css";
-import hideClasses from "../../HideA11y/index.module.css";
+import hideClasses from "../../Elements/Hide.module.css";
 import { Query } from "../../Query";
 
 import { classNames } from "../../../features/css/classnames";

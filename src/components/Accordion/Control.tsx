@@ -1,5 +1,5 @@
 import accordionClasses from "./index.module.css";
-import hideClasses from "../HideA11y/index.module.css";
+import hideClasses from "../Elements/Hide.module.css";
 
 import { classNames } from "../../features/css/classnames";
 

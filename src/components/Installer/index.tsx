@@ -4,7 +4,7 @@ import { FormattedMessage } from "react-intl";
 import { AccordionControl } from "../Accordion/Control";
 import accordionClasses from "../Accordion/index.module.css";
 import elementsClasses from "../Elements/index.module.css";
-import hideClasses from "../HideA11y/index.module.css";
+import hideClasses from "../Elements/Hide.module.css";
 
 import { classNames } from "../../features/css/classnames";
 
