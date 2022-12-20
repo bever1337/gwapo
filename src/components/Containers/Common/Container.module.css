@@ -1,20 +1,8 @@
-.materials__list {
+.container {
   display: grid;
   gap: 0.25rem;
   grid-template-columns: repeat(auto-fill, 4rem);
   justify-content: flex-start;
   list-style: none;
   padding: 0;
-}
-
-.materials__header {
-  grid-area: header;
-}
-
-.materials__control {
-  grid-area: input;
-}
-
-.materials__list {
-  grid-area: list;
 }

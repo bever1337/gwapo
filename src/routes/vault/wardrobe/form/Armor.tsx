@@ -3,9 +3,9 @@ import { Fragment } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import accordionClasses from "../../../../components/Accordion/index.module.css";
+import containerClasses from "../../../../components/Containers/Common/Container.module.css";
+import containerItemClasses from "../../../../components/Containers/Common/ContainerItem.module.css";
 import elementsClasses from "../../../../components/Elements/index.module.css";
-import materialClasses from "../../../../components/material.module.css";
-import materialsClasses from "../../../../components/materials.module.css";
 import { classNames } from "../../../../features/css/classnames";
 import {
   readSkinTypes,
@@ -55,17 +55,17 @@ export function Armor() {
         <div className={classNames(accordionClasses["folder"])}>
           <ul
             className={classNames(
-              materialsClasses["materials__list"],
+              containerClasses["container"],
               elementsClasses["no-margin"]
             )}
           >
             {currentData.ids.map((skinId) => (
               <li
-                className={classNames(materialClasses["material__item"])}
+                className={classNames(containerItemClasses["item"])}
                 key={skinId}
               >
                 <img
-                  className={classNames(materialClasses["material__img"])}
+                  className={classNames(containerItemClasses["item__img"])}
                   alt={currentData.entities[skinId]?.name ?? ""}
                   src={currentData.entities[skinId]?.icon ?? ""}
                 />

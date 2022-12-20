@@ -1,74 +1,79 @@
 import { skipToken } from "@reduxjs/toolkit/dist/query";
-import { useState } from "react";
+import { Fragment, useState } from "react";
+
+import containerClasses from "../Common/Container.module.css";
+import { ContainerItem } from "../Common/ContainerItem";
 
 import { AccordionControl } from "../../Accordion/Control";
 import accordionClasses from "../../Accordion/index.module.css";
 import elementsClasses from "../../Elements/index.module.css";
 import hideClasses from "../../HideA11y/index.module.css";
-import materialsClasses from "../../materials.module.css";
-import { VaultItem } from "../../vault-item";
+import { Query } from "../../Query";
 
 import { classNames } from "../../../features/css/classnames";
 import { readItems } from "../../../features/store/api/read-items";
 import type { Bag } from "../../../features/store/api/read-characters-inventory";
 
 export function CharacterBagContainer(props: {
-  characterBag: Bag | null;
+  characterBag: Bag;
   bagIndex: number;
 }) {
   const [open, setOpen] = useState(true);
-  const skip = props.characterBag === null;
   const queryArguments = {
-    ids:
-      props.characterBag?.inventory.reduce(
-        (acc, item) => (item ? acc.concat([item.id]) : acc),
-        [props.characterBag.id] as number[]
-      ) ?? [],
+    ids: props.characterBag.inventory.reduce(
+      (acc, item) => (item ? acc.concat([item.id]) : acc),
+      [props.characterBag.id] as number[]
+    ),
   };
-  const { data: items } = readItems.useQuery(
+  const skip = queryArguments.ids.length === 0;
+  const readItemsResult = readItems.useQuery(
     skip ? skipToken : queryArguments,
     { skip }
   );
-  if (props.characterBag === null) {
-    return null;
-  }
   return (
-    <section>
-      <div className={classNames(accordionClasses["tab"])}>
-        <h2
+    <Fragment>
+      <section>
+        <div className={classNames(accordionClasses["tab"])}>
+          <h2
+            className={classNames(
+              accordionClasses["tab__heading"],
+              elementsClasses["no-margin"]
+            )}
+          >
+            {readItemsResult.data?.entities[props.characterBag?.id ?? ""]
+              ?.name ?? ""}
+          </h2>
+          <AccordionControl onChange={setOpen} open={open} />
+        </div>
+        <div
           className={classNames(
-            accordionClasses["tab__heading"],
-            elementsClasses["no-margin"]
+            !open && hideClasses["hide"],
+            accordionClasses["folder"]
           )}
         >
-          {items?.entities[props.characterBag?.id ?? ""]?.name ?? ""}
-        </h2>
-        <AccordionControl onChange={setOpen} open={open} />
-      </div>
-      <div
-        className={classNames(
-          !open && hideClasses["hide"],
-          accordionClasses["folder"]
-        )}
-      >
-        <ol
-          className={classNames(
-            materialsClasses["materials__list"],
-            elementsClasses["no-margin"]
-          )}
-        >
-          {props.characterBag?.inventory.map((characterBagItem, index) => (
-            // Warning: bags do not have any unique identifiers
-            // Features like filtering and sorting will not work until each item has a uid
-            // For now, we can assume this is safe because the list is static
-            <VaultItem
-              accountBankItem={characterBagItem}
-              item={items?.entities?.[characterBagItem?.id ?? ""]}
-              key={index}
-            />
-          ))}
-        </ol>
-      </div>
-    </section>
+          <ol
+            className={classNames(
+              containerClasses["container"],
+              elementsClasses["no-margin"]
+            )}
+          >
+            <Query result={readItemsResult}>
+              {props.characterBag?.inventory.map((characterBagItem, index) => (
+                // Warning: bag slots do not have any unique identifiers
+                // Features like filtering and sorting will not work until each item has a uid
+                // For now, we can assume this is safe because the list is static
+                <ContainerItem
+                  containerItem={characterBagItem}
+                  item={
+                    readItemsResult.data?.entities?.[characterBagItem?.id ?? ""]
+                  }
+                  key={index}
+                />
+              ))}
+            </Query>
+          </ol>
+        </div>
+      </section>
+    </Fragment>
   );
 }

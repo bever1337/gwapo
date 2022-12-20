@@ -10,24 +10,20 @@ export interface ReadAccountBankArguments {}
 export interface AccountBankItem {
   /** The item's ID. */
   id: number;
-  /** The amount of items in the item stack. */
-  count: number;
-  /** The amount of charges remaining on the item. */
-  charges?: number;
-  /** The skin applied to the item, if it is different from its original. Can be resolved against /v2/skins. */
-  skin?: number;
-  /** The IDs of the dyes applied to the item. Can be resolved against /v2/colors. */
-  dyes?: number[];
-  /** The item IDs of the runes or sigills applied to the item. */
-  upgrades?: number[];
-  /** The slot occupied by the upgrade at the corresponding position in upgrades. */
-  upgrade_slot_indices?: number[];
-  /** An array of item IDs for each infusion applied to the item. */
-  infusions?: number[];
   /** The current binding of the item. Either Account or Character if present. */
   binding?: string;
   /** If binding is Character, this field tells which character it is bound to. */
   bound_to?: string;
+  /** The amount of charges remaining on the item. */
+  charges?: number;
+  /** The amount of items in the item stack. */
+  count: number;
+  /** The IDs of the dyes applied to the item. Can be resolved against /v2/colors. */
+  dyes?: number[];
+  /** An array of item IDs for each infusion applied to the item. */
+  infusions?: number[];
+  /** The skin applied to the item, if it is different from its original. Can be resolved against /v2/skins. */
+  skin?: number;
   /** The stats of the item. */
   stats?: {
     /** The ID of the item's stats. Can be resolved against /v2/itemstats. */
@@ -56,6 +52,10 @@ export interface AccountBankItem {
       Vitality?: number;
     };
   };
+  /** The item IDs of the runes or sigills applied to the item. */
+  upgrades?: number[];
+  /** The slot occupied by the upgrade at the corresponding position in upgrades. */
+  upgrade_slot_indices?: number[];
 }
 
 export type ReadAccountBankResult = (AccountBankItem | null)[];

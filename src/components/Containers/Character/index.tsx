@@ -4,15 +4,16 @@ import { useLocation } from "react-router-dom";
 
 import { CharacterBagContainer } from "./Container";
 
+import containerClasses from "../Common/Container.module.css";
+import { ContainerItem } from "../Common/ContainerItem";
+
 import accordionClasses from "../../Accordion/index.module.css";
 import elementsClasses from "../../Elements/index.module.css";
-import materialsClasses from "../../materials.module.css";
 import { Query } from "../../Query";
 import { QueryError } from "../../Query/Error";
 import { QueryLoading } from "../../Query/Loading";
 import { QuerySuccess } from "../../Query/Success";
 import { QueryUninitialized } from "../../Query/Uninitialized";
-import { VaultItem } from "../../vault-item";
 
 import { classNames } from "../../../features/css/classnames";
 import { readCharacters } from "../../../features/store/api/read-characters";
@@ -20,7 +21,7 @@ import { readCharactersInventory } from "../../../features/store/api/read-charac
 
 const emptyCharacterBag = new Array(15)
   .fill(null)
-  .map((_null, index) => <VaultItem accountBankItem={null} key={index} />);
+  .map((_null, index) => <ContainerItem containerItem={null} key={index} />);
 
 export function CharacterBags() {
   const readCharactersResult = readCharacters.useQuery({});
@@ -96,7 +97,7 @@ export function CharacterBags() {
           <div className={classNames(accordionClasses["folder"])}>
             <ol
               className={classNames(
-                materialsClasses["materials__list"],
+                containerClasses["container"],
                 elementsClasses["no-margin"]
               )}
             >
@@ -106,13 +107,15 @@ export function CharacterBags() {
         </section>
       </QueryLoading>
       <QuerySuccess>
-        {(readCharactersInventoryResult.currentData ?? []).map((bag, index) => (
-          <CharacterBagContainer
-            bagIndex={index}
-            characterBag={bag}
-            key={index}
-          />
-        ))}
+        {(readCharactersInventoryResult.currentData ?? []).map((bag, index) =>
+          bag ? (
+            <CharacterBagContainer
+              bagIndex={index}
+              characterBag={bag}
+              key={index}
+            />
+          ) : null
+        )}
       </QuerySuccess>
     </Query>
   );

@@ -1,12 +1,14 @@
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { useState } from "react";
 
+import containerClasses from "../Common/Container.module.css";
+import { MaterialContainerItem } from "./ContainerItem";
+
 import { AccordionControl } from "../../Accordion/Control";
 import accordionClasses from "../../Accordion/index.module.css";
 import elementsClasses from "../../Elements/index.module.css";
 import hideClasses from "../../HideA11y/index.module.css";
-import { Material } from "../../material";
-import materialsClasses from "../../materials.module.css";
+import { Query } from "../../Query";
 
 import { classNames } from "../../../features/css/classnames";
 import type { AccountMaterial } from "../../../features/store/api/read-account-materials";
@@ -22,18 +24,18 @@ export function MaterialsContainer({
 }) {
   const [open, setOpen] = useState(true);
 
-  const skip = materials.items.length === 0;
   const queryArguments = {
     ids: materials.items.reduce(
       (acc, item) => (item ? acc.concat([item]) : acc),
       [] as number[]
     ),
   };
-  const { data: items } = readItems.useQuery(
+  const skip = queryArguments.ids.length === 0;
+  const readItemsResult = readItems.useQuery(
     skip ? skipToken : queryArguments,
     { skip }
   );
-
+  const { data: items } = readItemsResult;
   return (
     <section>
       <div className={classNames(accordionClasses["tab"])}>
@@ -55,17 +57,19 @@ export function MaterialsContainer({
       >
         <ol
           className={classNames(
-            materialsClasses["materials__list"],
+            containerClasses["container"],
             elementsClasses["no-margin"]
           )}
         >
-          {items?.ids.map((itemId) => (
-            <Material
-              accountMaterial={accountMaterials?.[itemId as number]}
-              key={itemId}
-              material={items.entities[itemId]!}
-            />
-          ))}
+          <Query result={readItemsResult}>
+            {items?.ids.map((itemId) => (
+              <MaterialContainerItem
+                accountMaterial={accountMaterials?.[itemId as number]}
+                key={itemId}
+                material={items.entities[itemId]!}
+              />
+            ))}
+          </Query>
         </ol>
       </div>
     </section>

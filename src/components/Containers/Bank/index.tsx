@@ -1,7 +1,6 @@
 import { FormattedMessage } from "react-intl";
 import { useSelector } from "react-redux";
 
-import { AccordionControl } from "../../Accordion/Control";
 import accordionClasses from "../../Accordion/index.module.css";
 import { BankContainer } from "../../Containers/Bank/Container";
 import elementsClasses from "../../Elements/index.module.css";

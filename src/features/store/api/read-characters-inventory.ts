@@ -10,14 +10,18 @@ export interface ReadCharactersInventoryArguments {
 export interface BagInventory {
   /** The item id which can be resolved against /v2/items */
   id: number;
-  /** Amount of item in the stack. Minium of 1, maximum of 250. */
-  count: number;
+  /** describes which kind of binding the item has. Possible values: */
+  binding?: "Character" | "Account";
+  /** Name of the character the item is bound to. Only if `binding` is `"Character" */
+  bound_to?: string;
   /** The number of charges on an item. */
   charges?: number;
+  /** Amount of item in the stack. Minium of 1, maximum of 250. */
+  count: number;
+  /** Array of selected dyes for the equipment piece. Values default to null if no dye is selected. Colors can be resolved against v2/colors */
+  dyes?: number[];
   /** returns an array of infusion item ids which can be resolved against /v2/items */
   infusions?: number[];
-  /** returns an array of upgrade component item ids which can be resolved against /v2/items */
-  upgrades?: number[];
   /** Skin id for the given equipment piece. Can be resolved against /v2/skins */
   skin?: number;
   /** Contains information on the stats chosen if the item offers an option for stats/prefix. */
@@ -44,12 +48,8 @@ export interface BagInventory {
       BoonDuration?: number;
     };
   };
-  /** Array of selected dyes for the equipment piece. Values default to null if no dye is selected. Colors can be resolved against v2/colors */
-  dyes?: number[];
-  /** describes which kind of binding the item has. Possible values: */
-  binding?: "Character" | "Account";
-  /** Name of the character the item is bound to. Only if `binding` is `"Character" */
-  bound_to?: string;
+  /** returns an array of upgrade component item ids which can be resolved against /v2/items */
+  upgrades?: number[];
 }
 
 export interface Bag {

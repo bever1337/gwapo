@@ -8,18 +8,18 @@ interface ReadAccountInventoryArguments {}
 export interface SharedInventorySlot {
   /** The item's ID. */
   id: number;
-  /** The amount of items in the item stack. */
-  count: number;
+  /** The current binding of the item. If present, the only possible value is Account. */
+  binding?: string;
   /** The amount of charges remaining on the item. */
   charges?: number;
+  /** The amount of items in the item stack. */
+  count: number;
+  /** An array of item IDs for each infusion applied to the item. */
+  infusions?: number[];
   /** The skin applied to the item, if it is different from its original. Can be resolved against /v2/skins. */
   skin?: number;
   /** An array of item IDs for each rune or signet applied to the item. */
   upgrades?: number[];
-  /** An array of item IDs for each infusion applied to the item. */
-  infusions?: number[];
-  /** The current binding of the item. If present, the only possible value is Account. */
-  binding?: string;
 }
 
 type ReadAccountInventoryResult = SharedInventorySlot[];

@@ -1,13 +1,9 @@
-import { useState } from "react";
 import { FormattedMessage } from "react-intl";
 
 import { SharedInventoryContainer } from "./Container";
 
-import { AccordionControl } from "../../Accordion/Control";
 import accordionClasses from "../../Accordion/index.module.css";
 import elementsClasses from "../../Elements/index.module.css";
-import hideClasses from "../../HideA11y/index.module.css";
-import materialsClasses from "../../materials.module.css";
 import { Query } from "../../Query";
 import { QueryError } from "../../Query/Error";
 import { QueryLoading } from "../../Query/Loading";
@@ -17,10 +13,9 @@ import { QueryUninitialized } from "../../Query/Uninitialized";
 import { classNames } from "../../../features/css/classnames";
 import { readAccountInventory } from "../../../features/store/api/read-account-inventory";
 
+// Todo loading state styles are broken
 export function SharedInventory() {
   const readAccountInventoryResult = readAccountInventory.useQuery({});
-  const [open, setOpen] = useState(true);
-  const accordionDisabled = readAccountInventoryResult.isError;
   const authenticationError =
     readAccountInventoryResult.error &&
     "status" in readAccountInventoryResult.error &&
@@ -28,44 +23,41 @@ export function SharedInventory() {
 
   return (
     <Query result={readAccountInventoryResult}>
-      <section>
-        <div className={classNames(accordionClasses["tab"])}>
-          <h2
-            className={classNames(
-              accordionClasses["tab__heading"],
-              elementsClasses["no-margin"]
-            )}
-          >
-            <FormattedMessage defaultMessage="Shared Inventory" />
-          </h2>
-          {accordionDisabled ? null : (
-            <AccordionControl onChange={setOpen} open={open} />
-          )}
-        </div>
-        <div
-          className={classNames(
-            accordionDisabled === false &&
-              open === false &&
-              hideClasses["hide"],
-            accordionClasses["folder"]
-          )}
-        >
-          <QueryUninitialized>
-            <p className={classNames(elementsClasses["no-margin"])}>
-              <FormattedMessage defaultMessage="GWAPO is waiting to load your shared inventory" />
-            </p>
-          </QueryUninitialized>
-          <QueryLoading>
-            <ol
+      <QueryUninitialized>
+        <section>
+          <div className={classNames(accordionClasses["tab"])}>
+            <h2
               className={classNames(
-                materialsClasses["materials__list"],
+                accordionClasses["tab__heading"],
                 elementsClasses["no-margin"]
               )}
             >
-              <SharedInventoryContainer slots={[null, null]} />
-            </ol>
-          </QueryLoading>
-          <QueryError>
+              <FormattedMessage defaultMessage="Shared Inventory" />
+            </h2>
+          </div>
+          <div className={classNames(accordionClasses["folder"])}>
+            <p className={classNames(elementsClasses["no-margin"])}>
+              <FormattedMessage defaultMessage="GWAPO is waiting to load your shared inventory" />
+            </p>
+          </div>
+        </section>
+      </QueryUninitialized>
+      <QueryLoading>
+        <SharedInventoryContainer slots={[null, null]} />
+      </QueryLoading>
+      <QueryError>
+        <section>
+          <div className={classNames(accordionClasses["tab"])}>
+            <h2
+              className={classNames(
+                accordionClasses["tab__heading"],
+                elementsClasses["no-margin"]
+              )}
+            >
+              <FormattedMessage defaultMessage="Shared Inventory" />
+            </h2>
+          </div>
+          <div className={classNames(accordionClasses["folder"])}>
             <p className={classNames(elementsClasses["no-margin"])}>
               {authenticationError ? (
                 <FormattedMessage defaultMessage="Please provide GWAPO an API token with the necessary scopes." />
@@ -73,14 +65,14 @@ export function SharedInventory() {
                 <FormattedMessage defaultMessage="GWAPO encountered an error loading your shared inventory." />
               )}
             </p>
-          </QueryError>
-          <QuerySuccess>
-            <SharedInventoryContainer
-              slots={readAccountInventoryResult.data ?? []}
-            />
-          </QuerySuccess>
-        </div>
-      </section>
+          </div>
+        </section>
+      </QueryError>
+      <QuerySuccess>
+        <SharedInventoryContainer
+          slots={readAccountInventoryResult.data ?? []}
+        />
+      </QuerySuccess>
     </Query>
   );
 }
