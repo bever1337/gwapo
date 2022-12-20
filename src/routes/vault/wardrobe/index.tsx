@@ -7,7 +7,7 @@ import { WardrobeBack } from "./form/Back";
 import { Gathering } from "./form/Gathering";
 import { Weapon } from "./form/Weapon";
 
-import fieldsetClasses from "../../../components/Elements/fieldset.module.css";
+import fieldsetClasses from "../../../components/Elements/input-pill.module.css";
 import inputPillClasses from "../../../components/Elements/input-pill.module.css";
 import hideClasses from "../../../components/Elements/Hide.module.css";
 import {

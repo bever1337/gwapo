@@ -3,7 +3,7 @@ import { FormattedMessage } from "react-intl";
 import { useSearchParams } from "react-router-dom";
 
 import inputPillClasses from "../Elements/input-pill.module.css";
-import fieldsetClasses from "../Elements/fieldset.module.css";
+import fieldsetClasses from "../Elements/input-pill.module.css";
 import flexFormClasses from "../Elements/flex-form.module.css";
 import elementsClasses from "../Elements/index.module.css";
 import hideClasses from "../Elements/Hide.module.css";

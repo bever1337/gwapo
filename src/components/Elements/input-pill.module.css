@@ -1,3 +1,20 @@
+.fieldset {
+  /** Re-applying a fieldset's border gives a more consistent border style with other elements */
+  border: 1px solid #000000;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.input:focus + .label {
+  outline: auto;
+}
+
+.input:checked + .label,
+.input:checked + .label:hover {
+  background-color: #000000;
+  color: #ffffff;
+}
+
 .label {
   border: 1px solid #000000;
   background-color: transparent;
@@ -10,14 +27,4 @@
 
 .label:hover {
   background-color: rgba(0, 0, 0, 0.1);
-}
-
-.input:focus + .label {
-  outline: auto;
-}
-
-.input:checked + .label,
-.input:checked + .label:hover {
-  background-color: #000000;
-  color: #ffffff;
 }
