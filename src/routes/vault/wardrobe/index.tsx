@@ -48,12 +48,7 @@ export function Wardrobe() {
           setSearchParams(urlSearchParams);
         }}
       >
-        <fieldset
-          className={classNames(
-            fieldsetClasses["fieldset"],
-            materialsClasses["materials__inline-wrapper"]
-          )}
-        >
+        <fieldset className={classNames(fieldsetClasses["fieldset"])}>
           <legend>Wardrobe</legend>
           {skinTypes.ids.map((skinType) => (
             <Fragment key={skinType}>
@@ -80,12 +75,7 @@ export function Wardrobe() {
         </fieldset>
         {skinTypes.entities[activeSkinType]?.ids.map((subType, index) => (
           <Fragment key={subType}>
-            <fieldset
-              className={classNames(
-                fieldsetClasses["fieldset"],
-                materialsClasses["materials__inline-wrapper"]
-              )}
-            >
+            <fieldset className={classNames(fieldsetClasses["fieldset"])}>
               <legend>{subType}</legend>
               {skinTypes.entities[activeSkinType]?.[subType].map(
                 (choice, index) => (

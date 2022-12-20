@@ -29,9 +29,7 @@ export function BankContainer(props: {
     { skip }
   );
   return (
-    <section
-      className={classNames(materialsClasses["materials__inline-wrapper"])}
-    >
+    <section>
       <div className={classNames(accordionClasses["tab"])}>
         <h2
           className={classNames(

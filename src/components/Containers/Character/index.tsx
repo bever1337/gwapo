@@ -6,7 +6,6 @@ import { CharacterBagContainer } from "./Container";
 
 import accordionClasses from "../../Accordion/index.module.css";
 import elementsClasses from "../../Elements/index.module.css";
-import materialsClasses from "../../materials.module.css";
 import { Query } from "../../Query";
 import { QueryError } from "../../Query/Error";
 import { QueryFetching } from "../../Query/Fetching";
@@ -40,9 +39,7 @@ export function CharacterBags() {
   return (
     <Query result={readCharactersInventoryResult}>
       <QueryUninitialized>
-        <section
-          className={classNames(materialsClasses["materials__inline-wrapper"])}
-        >
+        <section>
           <div className={classNames(accordionClasses["tab"])}>
             <h2
               className={classNames(
@@ -61,9 +58,7 @@ export function CharacterBags() {
         </section>
       </QueryUninitialized>
       <QueryError>
-        <section
-          className={classNames(materialsClasses["materials__inline-wrapper"])}
-        >
+        <section>
           <div className={classNames(accordionClasses["tab"])}>
             <h2
               className={classNames(
@@ -86,9 +81,7 @@ export function CharacterBags() {
         </section>
       </QueryError>
       <QueryFetching>
-        <section
-          className={classNames(materialsClasses["materials__inline-wrapper"])}
-        >
+        <section>
           <div className={classNames(accordionClasses["tab"])}>
             <h2
               className={classNames(
@@ -100,9 +93,7 @@ export function CharacterBags() {
             </h2>
           </div>
           <div className={classNames(accordionClasses["folder"])}>
-            <ol className={classNames(materialsClasses["materials__list"])}>
-              {emptyCharacterBag}
-            </ol>
+            <ol>{emptyCharacterBag}</ol>
           </div>
         </section>
       </QueryFetching>

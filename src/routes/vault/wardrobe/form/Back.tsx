@@ -18,9 +18,7 @@ export function WardrobeBack() {
   });
   return (
     <Fragment>
-      <section
-        className={classNames(materialsClasses["materials__inline-wrapper"])}
-      >
+      <section>
         <div className={classNames(accordionClasses["tab"])}>
           <h3
             className={classNames(

@@ -5,7 +5,6 @@ import { AccordionControl } from "../../Accordion/Control";
 import accordionClasses from "../../Accordion/index.module.css";
 import { BankContainer } from "../../Containers/Bank/Container";
 import elementsClasses from "../../Elements/index.module.css";
-import materialsClasses from "../../materials.module.css";
 import { Query } from "../../Query";
 import { QueryError } from "../../Query/Error";
 import { QueryLoading } from "../../Query/Loading";
@@ -48,9 +47,7 @@ export function Bank() {
   return (
     <Query result={readAccountBankResult}>
       <QueryUninitialized>
-        <section
-          className={classNames(materialsClasses["materials__inline-wrapper"])}
-        >
+        <section>
           <div className={classNames(accordionClasses["tab"])}>
             <h2
               className={classNames(
@@ -72,9 +69,7 @@ export function Bank() {
       </QueryUninitialized>
       <QueryLoading>{skeletonVaultContainer}</QueryLoading>
       <QueryError>
-        <section
-          className={classNames(materialsClasses["materials__inline-wrapper"])}
-        >
+        <section>
           <div className={classNames(accordionClasses["tab"])}>
             <h3
               className={classNames(

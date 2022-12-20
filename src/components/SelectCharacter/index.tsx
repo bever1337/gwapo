@@ -7,7 +7,6 @@ import fieldsetClasses from "../Elements/fieldset.module.css";
 import flexFormClasses from "../Elements/flex-form.module.css";
 import elementsClasses from "../Elements/index.module.css";
 import hideClasses from "../HideA11y/index.module.css";
-import materialsClasses from "../materials.module.css";
 import { Query } from "../Query";
 import { QueryError } from "../Query/Error";
 import { QuerySuccess } from "../Query/Success";
@@ -57,12 +56,7 @@ export function SelectCharacter(props: any) {
           event.preventDefault();
         }}
       >
-        <fieldset
-          className={classNames(
-            materialsClasses["materials__inline-wrapper"],
-            fieldsetClasses["fieldset"]
-          )}
-        >
+        <fieldset className={classNames(fieldsetClasses["fieldset"])}>
           <legend>
             <FormattedMessage defaultMessage="Character" />
           </legend>
