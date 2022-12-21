@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from "react";
+import { Fragment } from "react";
 import { FormattedMessage, IntlProvider } from "react-intl";
 import { Provider } from "react-redux";
 import {
@@ -9,8 +9,8 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
+import "./App.css";
 import { store } from "./features/store";
-import { updateGwapoDatabaseDump } from "./features/store/api/update-gwapo-database-dump";
 import { AppOutlet } from "./routes/outlet";
 import { Vault } from "./routes/vault";
 import { Materials } from "./routes/vault/materials";
@@ -19,17 +19,6 @@ import { VaultWallet } from "./routes/vault/wallet";
 import { Wardrobe } from "./routes/vault/wardrobe";
 
 const appStore = store();
-
-function RunDatabaseDump() {
-  const [trigger] = updateGwapoDatabaseDump.useMutation({});
-  useEffect(() => {
-    const request = trigger({});
-    return () => {
-      request.abort();
-    };
-  }, [trigger]);
-  return null;
-}
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -68,7 +57,6 @@ export function App() {
   return (
     <Provider store={appStore}>
       <IntlProvider defaultLocale="en-US" locale="en-US">
-        <RunDatabaseDump />
         <RouterProvider router={router} />
       </IntlProvider>
     </Provider>

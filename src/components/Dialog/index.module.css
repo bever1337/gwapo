@@ -2,8 +2,8 @@
   box-sizing: border-box;
   display: grid;
   grid-template: "formA" auto "main" 1fr "formB" auto / 1fr;
-  height: 28rem;
-  width: 48rem;
+  height: 36rem;
+  width: 28rem;
 }
 
 .dialog__form--a__img {

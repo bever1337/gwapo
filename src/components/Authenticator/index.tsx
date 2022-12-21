@@ -2,6 +2,8 @@ import { Fragment, createElement, useState } from "react";
 import { defineMessages, FormattedMessage } from "react-intl";
 import { useSelector } from "react-redux";
 
+import authenticatorClasses from "./index.module.css";
+
 import { AccordionControl } from "../Accordion/Control";
 import accordionClasses from "../Accordion/index.module.css";
 import flexFormClasses from "../Elements/flex-form.module.css";
@@ -168,9 +170,56 @@ export function Authenticator() {
           <Iif
             condition={authenticatorState === AuthenticatorState.Authenticated}
           >
-            <button type="reset">
-              <FormattedMessage defaultMessage="Log Out" />
-            </button>
+            <table>
+              <tbody>
+                <tr>
+                  <th
+                    className={classNames(authenticatorClasses["th"])}
+                    scope="row"
+                  >
+                    <FormattedMessage defaultMessage="API Key" />
+                  </th>
+                  <td>{client?.name}</td>
+                </tr>
+                <tr>
+                  <th
+                    className={classNames(authenticatorClasses["th"])}
+                    scope="row"
+                  >
+                    <FormattedMessage defaultMessage="Type" />
+                  </th>
+                  <td>{client?.type}</td>
+                </tr>
+                <tr>
+                  <th
+                    className={classNames(authenticatorClasses["th"])}
+                    colSpan={2}
+                    scope="col"
+                  >
+                    <FormattedMessage defaultMessage="Permissions" />
+                  </th>
+                </tr>
+                <tr>
+                  <td colSpan={2}>
+                    {
+                      // client is read-only, sort is applied in-place,
+                      // must create a new reference
+                      [...(client?.permissions ?? [])]
+                        .sort((a, b) => `${a}`.localeCompare(`${b}`))
+                        .join(", ")
+                    }
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div className={classNames(flexFormClasses["form__flex"])}>
+              <button
+                className={classNames(flexFormClasses["form__flex__submit"])}
+                type="reset"
+              >
+                <FormattedMessage defaultMessage="Log Out" />
+              </button>
+            </div>
           </Iif>
         </div>
       </form>
