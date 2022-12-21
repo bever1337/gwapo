@@ -26,14 +26,14 @@ export function SharedInventory() {
       <QueryUninitialized>
         <section>
           <div className={classNames(accordionClasses["tab"])}>
-            <h2
+            <h3
               className={classNames(
                 accordionClasses["tab__heading"],
                 elementsClasses["no-margin"]
               )}
             >
               <FormattedMessage defaultMessage="Shared Inventory" />
-            </h2>
+            </h3>
           </div>
           <div className={classNames(accordionClasses["folder"])}>
             <p className={classNames(elementsClasses["no-margin"])}>
@@ -48,14 +48,14 @@ export function SharedInventory() {
       <QueryError>
         <section>
           <div className={classNames(accordionClasses["tab"])}>
-            <h2
+            <h3
               className={classNames(
                 accordionClasses["tab__heading"],
                 elementsClasses["no-margin"]
               )}
             >
               <FormattedMessage defaultMessage="Shared Inventory" />
-            </h2>
+            </h3>
           </div>
           <div className={classNames(accordionClasses["folder"])}>
             <p className={classNames(elementsClasses["no-margin"])}>

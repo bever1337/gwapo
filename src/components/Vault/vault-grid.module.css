@@ -27,12 +27,10 @@
 
 .vault__content--a {
   grid-area: contentA;
-  max-width: 65rem;
 }
 
 .vault__content--b {
   grid-area: contentB;
-  max-width: 65rem;
 }
 
 @media screen and (min-width: 48rem) {

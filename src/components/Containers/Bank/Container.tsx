@@ -35,7 +35,7 @@ export function BankContainer(props: {
     <Fragment>
       <section>
         <div className={classNames(accordionClasses["tab"])}>
-          <h2
+          <h3
             className={classNames(
               accordionClasses["tab__heading"],
               elementsClasses["no-margin"]
@@ -47,7 +47,7 @@ export function BankContainer(props: {
                 bankTab: props.bankTab + 1,
               }}
             />
-          </h2>
+          </h3>
           <AccordionControl onChange={setOpen} open={open} />
         </div>
         <div

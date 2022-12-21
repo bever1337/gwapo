@@ -9,8 +9,10 @@ import { ContainerItem } from "../Common/ContainerItem";
 
 import accordionClasses from "../../Accordion/index.module.css";
 import elementsClasses from "../../Elements/index.module.css";
+import { Iif } from "../../Iif";
 import { Query } from "../../Query";
 import { QueryError } from "../../Query/Error";
+import { QueryFetching } from "../../Query/Fetching";
 import { QueryLoading } from "../../Query/Loading";
 import { QuerySuccess } from "../../Query/Success";
 import { QueryUninitialized } from "../../Query/Uninitialized";
@@ -43,14 +45,14 @@ export function CharacterBags() {
       <QueryUninitialized>
         <section>
           <div className={classNames(accordionClasses["tab"])}>
-            <h2
+            <h3
               className={classNames(
                 accordionClasses["tab__heading"],
                 elementsClasses["no-margin"]
               )}
             >
               {""}
-            </h2>
+            </h3>
           </div>
           <div className={classNames(accordionClasses["folder"])}>
             <p className={classNames(elementsClasses["no-margin"])}>
@@ -62,14 +64,14 @@ export function CharacterBags() {
       <QueryError>
         <section>
           <div className={classNames(accordionClasses["tab"])}>
-            <h2
+            <h3
               className={classNames(
                 accordionClasses["tab__heading"],
                 elementsClasses["no-margin"]
               )}
             >
               {""}
-            </h2>
+            </h3>
           </div>
           <div className={classNames(accordionClasses["folder"])}>
             <p className={classNames(elementsClasses["no-margin"])}>
@@ -85,14 +87,14 @@ export function CharacterBags() {
       <QueryLoading>
         <section>
           <div className={classNames(accordionClasses["tab"])}>
-            <h2
+            <h3
               className={classNames(
                 accordionClasses["tab__heading"],
                 elementsClasses["no-margin"]
               )}
             >
               {""}
-            </h2>
+            </h3>
           </div>
           <div className={classNames(accordionClasses["folder"])}>
             <ol
@@ -107,15 +109,42 @@ export function CharacterBags() {
         </section>
       </QueryLoading>
       <QuerySuccess>
-        {(readCharactersInventoryResult.currentData ?? []).map((bag, index) =>
-          bag ? (
-            <CharacterBagContainer
-              bagIndex={index}
-              characterBag={bag}
-              key={index}
-            />
-          ) : null
-        )}
+        <QueryFetching>
+          <section>
+            <div className={classNames(accordionClasses["tab"])}>
+              <h3
+                className={classNames(
+                  accordionClasses["tab__heading"],
+                  elementsClasses["no-margin"]
+                )}
+              >
+                {""}
+              </h3>
+            </div>
+            <div className={classNames(accordionClasses["folder"])}>
+              <ol
+                className={classNames(
+                  containerClasses["container"],
+                  elementsClasses["no-margin"]
+                )}
+              >
+                {emptyCharacterBag}
+              </ol>
+            </div>
+          </section>
+        </QueryFetching>
+        <Iif condition={!readCharactersInventoryResult.isFetching}>
+          {readCharactersInventoryResult.currentData?.map((bag, index) => {
+            if (!bag) return null;
+            return (
+              <CharacterBagContainer
+                bagIndex={index}
+                characterBag={bag}
+                key={index}
+              />
+            );
+          })}
+        </Iif>
       </QuerySuccess>
     </Query>
   );

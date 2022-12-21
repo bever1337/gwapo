@@ -1,4 +1,5 @@
-import { createSelector } from "@reduxjs/toolkit";
+import { createEntityAdapter } from "@reduxjs/toolkit";
+import type { EntityState } from "@reduxjs/toolkit";
 
 import { api } from ".";
 import { makeSelectIsInScope } from "../selectors";
@@ -14,7 +15,9 @@ export interface AccountMaterial {
   count: number;
 }
 
-type ReadAccountMaterialsResult = AccountMaterial[];
+type ReadAccountMaterialsResult = EntityState<AccountMaterial>;
+
+const accountMaterialAdapter = createEntityAdapter<AccountMaterial>();
 
 const scopes = [Scope.Account, Scope.Inventories];
 const scopeTags = scopes
@@ -46,6 +49,12 @@ export const injectedApi = api.injectEndpoints({
         providesTags(result, error, queryArguments) {
           return scopeTags;
         },
+        transformResponse(response: AccountMaterial[], meta, queryArguments) {
+          return accountMaterialAdapter.setAll(
+            accountMaterialAdapter.getInitialState(),
+            response
+          );
+        },
       }),
     };
   },
@@ -53,18 +62,3 @@ export const injectedApi = api.injectEndpoints({
 
 export const readAccountMaterials = injectedApi.endpoints.readAccountMaterials;
 export const selectReadAccountMaterialsInScope = makeSelectIsInScope(scopes);
-// An entity adapter would make this data jive with `read-materials`
-export const selectAccountMaterialsByCategory = createSelector(
-  readAccountMaterials.select({}),
-  (queryResult) =>
-    (queryResult?.data ?? []).reduce(
-      (acc, accountMaterial) => ({
-        ...acc,
-        [accountMaterial.category]: {
-          ...(acc[accountMaterial.category] ?? {}),
-          [accountMaterial.id]: accountMaterial,
-        },
-      }),
-      {} as { [index: number]: { [index: number]: AccountMaterial } }
-    )
-);

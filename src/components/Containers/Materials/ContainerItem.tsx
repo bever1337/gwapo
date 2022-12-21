@@ -1,17 +1,18 @@
-import containerItemClasses from "../../Containers/Common/ContainerItem.module.css";
+import containerItemClasses from "../Common/ContainerItem.module.css";
+
+import { Query } from "../../Query";
+import { QueryError } from "../../Query/Error";
+import { QueryLoading } from "../../Query/Loading";
+import { QuerySuccess } from "../../Query/Success";
+import { QueryUninitialized } from "../../Query/Uninitialized";
 
 import { classNames } from "../../../features/css/classnames";
-import type { AccountMaterial } from "../../../features/store/api/read-account-materials";
+import { readAccountMaterials } from "../../../features/store/api/read-account-materials";
 import type { Item } from "../../../types/item";
 
 // Different from common ContainerItem because material is always present unlike item
-export function MaterialContainerItem({
-  accountMaterial,
-  material,
-}: {
-  accountMaterial?: AccountMaterial;
-  material: Item;
-}) {
+export function MaterialContainerItem({ material }: { material: Item }) {
+  const readAccountMaterialsResult = readAccountMaterials.useQueryState({});
   return (
     <li className={classNames(containerItemClasses["item"])}>
       <img
@@ -20,7 +21,14 @@ export function MaterialContainerItem({
         src={material.icon}
       />
       <span className={classNames(containerItemClasses["item__count"])}>
-        {accountMaterial?.count}
+        <Query result={readAccountMaterialsResult}>
+          <QueryUninitialized>🕦</QueryUninitialized>
+          <QueryLoading>...</QueryLoading>
+          <QueryError>x</QueryError>
+          <QuerySuccess>
+            {readAccountMaterialsResult.data?.entities[material.id]?.count ?? 0}
+          </QuerySuccess>
+        </Query>
       </span>
     </li>
   );

@@ -34,7 +34,7 @@ export function CharacterBagContainer(props: {
     <Fragment>
       <section>
         <div className={classNames(accordionClasses["tab"])}>
-          <h2
+          <h3
             className={classNames(
               accordionClasses["tab__heading"],
               elementsClasses["no-margin"]
@@ -42,7 +42,7 @@ export function CharacterBagContainer(props: {
           >
             {readItemsResult.data?.entities[props.characterBag?.id ?? ""]
               ?.name ?? ""}
-          </h2>
+          </h3>
           <AccordionControl onChange={setOpen} open={open} />
         </div>
         <div

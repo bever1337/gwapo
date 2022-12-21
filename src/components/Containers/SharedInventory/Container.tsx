@@ -38,14 +38,14 @@ export function SharedInventoryContainer(props: {
     <Fragment>
       <section>
         <div className={classNames(accordionClasses["tab"])}>
-          <h2
+          <h3
             className={classNames(
               accordionClasses["tab__heading"],
               elementsClasses["no-margin"]
             )}
           >
             <FormattedMessage defaultMessage="Shared Inventory" />
-          </h2>
+          </h3>
           <AccordionControl onChange={setOpen} open={open} />
         </div>
         <div

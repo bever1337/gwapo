@@ -15,6 +15,7 @@ export function Vault() {
       </h1>
       <div className={classNames(vaultGridClasses["vault__content--a"])}>
         <SelectCharacter />
+        <div style={{ height: "0.5em" }} />
         <SharedInventory />
         <CharacterBags />
       </div>

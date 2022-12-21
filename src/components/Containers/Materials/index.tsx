@@ -1,5 +1,4 @@
 import { FormattedMessage } from "react-intl";
-import { useSelector } from "react-redux";
 
 import accordionClasses from "../../Accordion/index.module.css";
 import { MaterialsContainer } from "../../Containers/Materials/Container";
@@ -10,82 +9,60 @@ import { QueryLoading } from "../../Query/Loading";
 import { QuerySuccess } from "../../Query/Success";
 import { QueryUninitialized } from "../../Query/Uninitialized";
 import { classNames } from "../../../features/css/classnames";
-import {
-  readAccountMaterials,
-  selectAccountMaterialsByCategory,
-} from "../../../features/store/api/read-account-materials";
+import { readAccountMaterials } from "../../../features/store/api/read-account-materials";
 import { readMaterials } from "../../../features/store/api/read-materials";
 
-const queryCacheArguments = {};
+function Skeleton(props: { children: any }) {
+  return (
+    <section>
+      <div className={classNames(accordionClasses["tab"])}>
+        <h3
+          className={classNames(
+            accordionClasses["tab__heading"],
+            elementsClasses["no-margin"]
+          )}
+        >
+          <FormattedMessage defaultMessage="Crafting Materials" />
+        </h3>
+      </div>
+      <div className={classNames(accordionClasses["folder"])}>
+        {props.children}
+      </div>
+    </section>
+  );
+}
 
 export function Materials() {
+  readAccountMaterials.useQuerySubscription({});
   const readMaterialsResult = readMaterials.useQuery({});
-  const { data: materials } = readMaterialsResult;
-  readAccountMaterials.useQuery(queryCacheArguments);
-  const accountMaterialsByCategory = useSelector(
-    selectAccountMaterialsByCategory
-  );
   return (
     <Query result={readMaterialsResult}>
       <QueryUninitialized>
-        <section>
-          <div className={classNames(accordionClasses["tab"])}>
-            <h2
-              className={classNames(
-                accordionClasses["tab__heading"],
-                elementsClasses["no-margin"]
-              )}
-            >
-              <FormattedMessage defaultMessage="Crafting Materials" />
-            </h2>
-          </div>
-          <div className={classNames(accordionClasses["folder"])}>
-            <p className={classNames(elementsClasses["no-margin"])}>
-              <FormattedMessage defaultMessage="GWAPO is waiting to load materials" />
-            </p>
-          </div>
-        </section>
+        <Skeleton>
+          <p>
+            <FormattedMessage defaultMessage="GWAPO is waiting to load crafting materials." />
+          </p>
+        </Skeleton>
       </QueryUninitialized>
       <QueryLoading>
-        <section>
-          <div className={classNames(accordionClasses["tab"])}>
-            <h2
-              className={classNames(
-                accordionClasses["tab__heading"],
-                elementsClasses["no-margin"]
-              )}
-            >
-              <FormattedMessage defaultMessage="Crafting Materials" />
-            </h2>
-          </div>
-          <div className={classNames(accordionClasses["folder"])} />
-        </section>
+        <Skeleton>
+          <p>
+            <FormattedMessage defaultMessage="GWAPO is loading crafting materials." />
+          </p>
+        </Skeleton>
       </QueryLoading>
       <QueryError>
-        <section>
-          <div className={classNames(accordionClasses["tab"])}>
-            <h2
-              className={classNames(
-                accordionClasses["tab__heading"],
-                elementsClasses["no-margin"]
-              )}
-            >
-              <FormattedMessage defaultMessage="Crafting Materials" />
-            </h2>
-          </div>
-          <div className={classNames(accordionClasses["folder"])}>
-            <p className={classNames(elementsClasses["no-margin"])}>
-              <FormattedMessage defaultMessage="GWAPO encountered an error loading materials." />
-            </p>
-          </div>
-        </section>
+        <Skeleton>
+          <p>
+            <FormattedMessage defaultMessage="GWAPO encountered an error loading crafting materials." />
+          </p>
+        </Skeleton>
       </QueryError>
       <QuerySuccess>
-        {materials?.ids.map((materialId) => (
+        {readMaterialsResult.data?.ids.map((materialId) => (
           <MaterialsContainer
             key={materialId}
-            accountMaterials={accountMaterialsByCategory[materialId as number]}
-            materials={materials.entities[materialId]!}
+            materials={readMaterialsResult.data?.entities[materialId]!}
           />
         ))}
       </QuerySuccess>

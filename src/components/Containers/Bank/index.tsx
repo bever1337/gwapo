@@ -32,7 +32,7 @@ const mapAccountBankTabToElement = (
 
 const skeletonVaultContainer = mapAccountBankTabToElement(
   new Array(ITEMS_PER_TAB).fill(null),
-  1
+  0
 );
 
 export function Bank() {
@@ -48,14 +48,14 @@ export function Bank() {
       <QueryUninitialized>
         <section>
           <div className={classNames(accordionClasses["tab"])}>
-            <h2
+            <h3
               className={classNames(
                 accordionClasses["tab__heading"],
                 elementsClasses["no-margin"]
               )}
             >
               <FormattedMessage defaultMessage="Bank Tab" />
-            </h2>
+            </h3>
           </div>
           <div className={classNames(accordionClasses["folder"])}>
             <p className={classNames(elementsClasses["no-margin"])}>
