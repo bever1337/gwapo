@@ -6,23 +6,24 @@
   grid-template:
     "heading control" auto
     "aside control" auto / 1fr auto;
-  padding: 0.375rem 0.25rem;
+  /* padding: 0.375rem 0.25rem; */
 }
 
 @media screen and (min-width: 24rem) {
   .tab {
-    gap: 1em;
     grid-template: "heading aside control" auto / 1fr auto auto;
   }
 }
 
 .tab__aside {
   grid-area: aside;
+  padding: 0.375rem 0;
 }
 
 .tab__control {
   font-size: 1rem;
   grid-area: control;
+  padding: 0.375rem 0.25rem 0.375rem 0;
   user-select: none;
 }
 
@@ -30,6 +31,11 @@
   font-size: 1rem;
   font-weight: normal;
   grid-area: heading;
+  user-select: none;
+}
+
+.tab__heading__padding {
+  padding: 0.375rem 0 0.375rem 0.25rem;
 }
 
 /** Preserve line-height */

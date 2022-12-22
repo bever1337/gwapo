@@ -2,6 +2,7 @@ import { FormattedMessage } from "react-intl";
 
 import { SharedInventoryContainer } from "./Container";
 
+import { AccordionHeading } from "../../Accordion/Heading";
 import accordionClasses from "../../Accordion/index.module.css";
 import elementsClasses from "../../Elements/index.module.css";
 import { Query } from "../../Query";
@@ -26,14 +27,9 @@ export function SharedInventory() {
       <QueryUninitialized>
         <section>
           <div className={classNames(accordionClasses["tab"])}>
-            <h3
-              className={classNames(
-                accordionClasses["tab__heading"],
-                elementsClasses["no-margin"]
-              )}
-            >
+            <AccordionHeading>
               <FormattedMessage defaultMessage="Shared Inventory" />
-            </h3>
+            </AccordionHeading>
           </div>
           <div className={classNames(accordionClasses["folder"])}>
             <p className={classNames(elementsClasses["no-margin"])}>
@@ -48,14 +44,9 @@ export function SharedInventory() {
       <QueryError>
         <section>
           <div className={classNames(accordionClasses["tab"])}>
-            <h3
-              className={classNames(
-                accordionClasses["tab__heading"],
-                elementsClasses["no-margin"]
-              )}
-            >
+            <AccordionHeading>
               <FormattedMessage defaultMessage="Shared Inventory" />
-            </h3>
+            </AccordionHeading>
           </div>
           <div className={classNames(accordionClasses["folder"])}>
             <p className={classNames(elementsClasses["no-margin"])}>

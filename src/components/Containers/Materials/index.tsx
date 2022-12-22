@@ -1,8 +1,8 @@
 import { FormattedMessage } from "react-intl";
 
+import { AccordionHeading } from "../../Accordion/Heading";
 import accordionClasses from "../../Accordion/index.module.css";
 import { MaterialsContainer } from "../../Containers/Materials/Container";
-import elementsClasses from "../../Elements/index.module.css";
 import { Query } from "../../Query";
 import { QueryError } from "../../Query/Error";
 import { QueryLoading } from "../../Query/Loading";
@@ -16,14 +16,9 @@ function Skeleton(props: { children: any }) {
   return (
     <section>
       <div className={classNames(accordionClasses["tab"])}>
-        <h3
-          className={classNames(
-            accordionClasses["tab__heading"],
-            elementsClasses["no-margin"]
-          )}
-        >
+        <AccordionHeading>
           <FormattedMessage defaultMessage="Crafting Materials" />
-        </h3>
+        </AccordionHeading>
       </div>
       <div className={classNames(accordionClasses["folder"])}>
         {props.children}

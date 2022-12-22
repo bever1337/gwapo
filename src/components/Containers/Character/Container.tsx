@@ -5,6 +5,7 @@ import containerClasses from "../Common/Container.module.css";
 import { ContainerItem } from "../Common/ContainerItem";
 
 import { AccordionControl } from "../../Accordion/Control";
+import { AccordionHeading } from "../../Accordion/Heading";
 import accordionClasses from "../../Accordion/index.module.css";
 import elementsClasses from "../../Elements/index.module.css";
 import hideClasses from "../../Elements/Hide.module.css";
@@ -34,15 +35,10 @@ export function CharacterBagContainer(props: {
     <Fragment>
       <section>
         <div className={classNames(accordionClasses["tab"])}>
-          <h3
-            className={classNames(
-              accordionClasses["tab__heading"],
-              elementsClasses["no-margin"]
-            )}
-          >
+          <AccordionHeading onChange={setOpen}>
             {readItemsResult.data?.entities[props.characterBag?.id ?? ""]
               ?.name ?? ""}
-          </h3>
+          </AccordionHeading>
           <AccordionControl onChange={setOpen} open={open} />
         </div>
         <div

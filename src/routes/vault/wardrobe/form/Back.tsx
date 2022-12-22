@@ -1,5 +1,6 @@
 import { Fragment } from "react";
 
+import { AccordionHeading } from "../../../../components/Accordion/Heading";
 import accordionClasses from "../../../../components/Accordion/index.module.css";
 import containerClasses from "../../../../components/Containers/Common/Container.module.css";
 import containerItemClasses from "../../../../components/Containers/Common/ContainerItem.module.css";
@@ -20,14 +21,7 @@ export function WardrobeBack() {
     <Fragment>
       <section>
         <div className={classNames(accordionClasses["tab"])}>
-          <h3
-            className={classNames(
-              accordionClasses["tab__heading"],
-              elementsClasses["no-margin"]
-            )}
-          >
-            Back
-          </h3>
+          <AccordionHeading>Back</AccordionHeading>
         </div>
         <div className={classNames(accordionClasses["folder"])}>
           <ul

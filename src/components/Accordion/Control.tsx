@@ -14,11 +14,8 @@ import { classNames } from "../../features/css/classnames";
 const TRIANGLE_CLOSED = "\u25B6";
 const TRIANGLE_OPEN = "\u25BC";
 
-export function AccordionControl({
-  onChange,
-  open,
-}: {
-  onChange: (nextOpen: boolean) => void;
+export function AccordionControl(props: {
+  onChange?: React.Dispatch<React.SetStateAction<boolean>>;
   open: boolean;
 }) {
   return (
@@ -28,16 +25,16 @@ export function AccordionControl({
       </span>
       <span
         role="img"
-        aria-label={`Indicates data is ${open ? "expanded" : "hidden"}`}
+        aria-label={`Indicates data is ${props.open ? "expanded" : "hidden"}`}
       >
-        {open ? TRIANGLE_OPEN : TRIANGLE_CLOSED}
+        {props.open ? TRIANGLE_OPEN : TRIANGLE_CLOSED}
       </span>
       <input
-        checked={open}
+        checked={props.open}
         className={classNames(hideClasses["hide"])}
         form="noop"
         onChange={(event) => {
-          onChange(event.target.checked);
+          props.onChange?.(event.target.checked);
         }}
         type="checkbox"
       />

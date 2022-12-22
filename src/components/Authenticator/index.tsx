@@ -2,12 +2,10 @@ import { Fragment, createElement, useState } from "react";
 import { defineMessages, FormattedMessage } from "react-intl";
 import { useSelector } from "react-redux";
 
-import authenticatorClasses from "./index.module.css";
-
 import { AccordionControl } from "../Accordion/Control";
+import { AccordionHeading } from "../Accordion/Heading";
 import accordionClasses from "../Accordion/index.module.css";
 import flexFormClasses from "../Elements/flex-form.module.css";
-import elementsClasses from "../Elements/index.module.css";
 import hideClasses from "../Elements/Hide.module.css";
 import { Iif } from "../Iif";
 
@@ -64,38 +62,33 @@ export function Authenticator() {
   const externalLinkImageSource = `${process.env.PUBLIC_URL}/icons/System/external-link-fill.svg`;
   return (
     <Fragment>
-      <form
-        onReset={(event) => {
-          dispatch(logoutThunk);
-        }}
-        onSubmit={(event) => {
-          event.preventDefault();
-          const formData = new FormData(event.target as HTMLFormElement);
-          initiate({ access_token: formData.get("access_token") as string });
-        }}
-      >
-        <div className={classNames(accordionClasses["tab"])}>
-          <h3
-            className={classNames(
-              accordionClasses["tab__heading"],
-              elementsClasses["no-margin"]
-            )}
-          >
-            <FormattedMessage defaultMessage="Authentication" />
-          </h3>
-          <span className={classNames(accordionClasses["tab__aside"])}>
-            {createElement(
-              FormattedMessage,
-              AuthenticatorStateMessages[AuthenticatorState[authenticatorState]]
-            )}
-          </span>
-          <AccordionControl onChange={setOpen} open={open} />
-        </div>
-        <div
-          className={classNames(
-            accordionClasses["folder"],
-            !open && hideClasses["hide"]
+      <div className={classNames(accordionClasses["tab"])}>
+        <AccordionHeading onChange={setOpen}>
+          <FormattedMessage defaultMessage="Authentication" />
+        </AccordionHeading>
+        <span className={classNames(accordionClasses["tab__aside"])}>
+          {createElement(
+            FormattedMessage,
+            AuthenticatorStateMessages[AuthenticatorState[authenticatorState]]
           )}
+        </span>
+        <AccordionControl onChange={setOpen} open={open} />
+      </div>
+      <div
+        className={classNames(
+          accordionClasses["folder"],
+          !open && hideClasses["hide"]
+        )}
+      >
+        <form
+          onReset={(event) => {
+            dispatch(logoutThunk);
+          }}
+          onSubmit={(event) => {
+            event.preventDefault();
+            const formData = new FormData(event.target as HTMLFormElement);
+            initiate({ access_token: formData.get("access_token") as string });
+          }}
         >
           <Iif
             condition={authenticatorState < AuthenticatorState.Authenticated}
@@ -170,48 +163,20 @@ export function Authenticator() {
           <Iif
             condition={authenticatorState === AuthenticatorState.Authenticated}
           >
-            <table>
-              <tbody>
-                <tr>
-                  <th
-                    className={classNames(authenticatorClasses["th"])}
-                    scope="row"
-                  >
-                    <FormattedMessage defaultMessage="API Key" />
-                  </th>
-                  <td>{client?.name}</td>
-                </tr>
-                <tr>
-                  <th
-                    className={classNames(authenticatorClasses["th"])}
-                    scope="row"
-                  >
-                    <FormattedMessage defaultMessage="Type" />
-                  </th>
-                  <td>{client?.type}</td>
-                </tr>
-                <tr>
-                  <th
-                    className={classNames(authenticatorClasses["th"])}
-                    colSpan={2}
-                    scope="col"
-                  >
-                    <FormattedMessage defaultMessage="Permissions" />
-                  </th>
-                </tr>
-                <tr>
-                  <td colSpan={2}>
-                    {
-                      // client is read-only, sort is applied in-place,
-                      // must create a new reference
-                      [...(client?.permissions ?? [])]
-                        .sort((a, b) => `${a}`.localeCompare(`${b}`))
-                        .join(", ")
-                    }
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <p>
+              <FormattedMessage
+                defaultMessage={`Successfully authenticated your API key, "{name}." GWAPO is authorized to read the following: {permissions}.`}
+                values={{
+                  name: client?.name ?? "",
+                  permissions:
+                    // client is read-only, sort is applied in-place,
+                    // must create a new reference
+                    [...(client?.permissions ?? [])]
+                      .sort((a, b) => `${a}`.localeCompare(`${b}`))
+                      .join(", "),
+                }}
+              />
+            </p>
             <div className={classNames(flexFormClasses["form__flex"])}>
               <button
                 className={classNames(flexFormClasses["form__flex__submit"])}
@@ -221,8 +186,8 @@ export function Authenticator() {
               </button>
             </div>
           </Iif>
-        </div>
-      </form>
+        </form>
+      </div>
     </Fragment>
   );
 }

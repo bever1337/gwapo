@@ -7,6 +7,7 @@ import { MaterialContainerItem } from "./ContainerItem";
 import containerClasses from "../Common/Container.module.css";
 
 import { AccordionControl } from "../../Accordion/Control";
+import { AccordionHeading } from "../../Accordion/Heading";
 import accordionClasses from "../../Accordion/index.module.css";
 import elementsClasses from "../../Elements/index.module.css";
 import hideClasses from "../../Elements/Hide.module.css";
@@ -24,14 +25,7 @@ function Skeleton(props: { children: any; materials: Materials }) {
   return (
     <section>
       <div className={classNames(accordionClasses["tab"])}>
-        <h3
-          className={classNames(
-            accordionClasses["tab__heading"],
-            elementsClasses["no-margin"]
-          )}
-        >
-          {props.materials.name}
-        </h3>
+        <AccordionHeading>{props.materials.name}</AccordionHeading>
       </div>
       <div className={classNames(accordionClasses["folder"])}>
         {props.children}
@@ -60,35 +54,30 @@ export function MaterialsContainer({ materials }: { materials: Materials }) {
       <QueryUninitialized>
         <Skeleton materials={materials}>
           <p>
-            <FormattedMessage defaultMessage="Gwapo is waiting to load crafting materials." />
+            <FormattedMessage defaultMessage="GWAPO is waiting to load crafting materials." />
           </p>
         </Skeleton>
       </QueryUninitialized>
       <QueryLoading>
         <Skeleton materials={materials}>
           <p>
-            <FormattedMessage defaultMessage="Gwapo is loading crafting materials." />
+            <FormattedMessage defaultMessage="GWAPO is loading crafting materials." />
           </p>
         </Skeleton>
       </QueryLoading>
       <QueryError>
         <Skeleton materials={materials}>
           <p>
-            <FormattedMessage defaultMessage="Gwapo encountered an error loading crafting materials." />
+            <FormattedMessage defaultMessage="GWAPO encountered an error loading crafting materials." />
           </p>
         </Skeleton>
       </QueryError>
       <QuerySuccess>
         <section>
           <div className={classNames(accordionClasses["tab"])}>
-            <h3
-              className={classNames(
-                accordionClasses["tab__heading"],
-                elementsClasses["no-margin"]
-              )}
-            >
+            <AccordionHeading onChange={setOpen}>
               {materials.name}
-            </h3>
+            </AccordionHeading>
             <AccordionControl onChange={setOpen} open={open} />
           </div>
           <div

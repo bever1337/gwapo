@@ -1,6 +1,7 @@
 import { FormattedMessage } from "react-intl";
 import { useSelector } from "react-redux";
 
+import { AccordionHeading } from "../../Accordion/Heading";
 import accordionClasses from "../../Accordion/index.module.css";
 import { BankContainer } from "../../Containers/Bank/Container";
 import elementsClasses from "../../Elements/index.module.css";
@@ -48,14 +49,9 @@ export function Bank() {
       <QueryUninitialized>
         <section>
           <div className={classNames(accordionClasses["tab"])}>
-            <h3
-              className={classNames(
-                accordionClasses["tab__heading"],
-                elementsClasses["no-margin"]
-              )}
-            >
+            <AccordionHeading>
               <FormattedMessage defaultMessage="Bank Tab" />
-            </h3>
+            </AccordionHeading>
           </div>
           <div className={classNames(accordionClasses["folder"])}>
             <p className={classNames(elementsClasses["no-margin"])}>
@@ -68,14 +64,9 @@ export function Bank() {
       <QueryError>
         <section>
           <div className={classNames(accordionClasses["tab"])}>
-            <h3
-              className={classNames(
-                accordionClasses["tab__heading"],
-                elementsClasses["no-margin"]
-              )}
-            >
+            <AccordionHeading>
               <FormattedMessage defaultMessage="Bank Tab" />
-            </h3>
+            </AccordionHeading>
           </div>
           <div className={classNames(accordionClasses["folder"])}>
             <p className={classNames(elementsClasses["no-margin"])}>

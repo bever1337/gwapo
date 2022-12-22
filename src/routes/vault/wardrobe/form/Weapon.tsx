@@ -2,6 +2,7 @@ import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { Fragment } from "react";
 import { useSearchParams } from "react-router-dom";
 
+import { AccordionHeading } from "../../../../components/Accordion/Heading";
 import accordionClasses from "../../../../components/Accordion/index.module.css";
 import containerClasses from "../../../../components/Containers/Common/Container.module.css";
 import containerItemClasses from "../../../../components/Containers/Common/ContainerItem.module.css";
@@ -36,14 +37,7 @@ export function Weapon() {
     <Fragment>
       <section>
         <div className={classNames(accordionClasses["tab"])}>
-          <h3
-            className={classNames(
-              accordionClasses["tab__heading"],
-              elementsClasses["no-margin"]
-            )}
-          >
-            {weaponType}
-          </h3>
+          <AccordionHeading>{weaponType}</AccordionHeading>
         </div>
         <div className={classNames(accordionClasses["folder"])}>
           <ul
