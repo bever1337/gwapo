@@ -2,8 +2,9 @@ import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { Link, Outlet } from "react-router-dom";
 
-import elementsClasses from "../../components/Elements/index.module.css";
-import { classNames } from "../../features/css/classnames";
+import elementsClasses from "../../Elements/index.module.css";
+
+import { classNames } from "../../../features/css/classnames";
 
 export function VaultOutlet() {
   return (

@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import { Link, Outlet } from "react-router-dom";
 
-import { Dialog } from "../components/Dialog";
+import { Dialog } from "../Dialog";
 
 export function AppOutlet() {
   // declare string tempaltes outside JSX props for better syntax highlighting

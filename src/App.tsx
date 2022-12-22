@@ -10,13 +10,13 @@ import {
 } from "react-router-dom";
 
 import "./App.css";
+import { AppOutlet } from "./components/Routes/outlet";
+import { Vault } from "./components/Routes/vault";
+import { Materials } from "./components/Routes/vault/materials";
+import { VaultOutlet } from "./components/Routes/vault/outlet";
+import { VaultWallet } from "./components/Routes/vault/wallet";
+import { Wardrobe } from "./components/Routes/vault/wardrobe";
 import { store } from "./features/store";
-import { AppOutlet } from "./routes/outlet";
-import { Vault } from "./routes/vault";
-import { Materials } from "./routes/vault/materials";
-import { VaultOutlet } from "./routes/vault/outlet";
-import { VaultWallet } from "./routes/vault/wallet";
-import { Wardrobe } from "./routes/vault/wardrobe";
 
 const appStore = store();
 

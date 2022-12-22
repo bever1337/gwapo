@@ -1,19 +1,20 @@
 import { Fragment } from "react";
 import { FormattedMessage, FormattedNumber } from "react-intl";
 
-import currencyClasses from "../../components/Currency/index.module.css";
-import elementsClasses from "../../components/Elements/index.module.css";
-import { Query } from "../../components/Query";
-import { QueryError } from "../../components/Query/Error";
-import { QueryLoading } from "../../components/Query/Loading";
-import { QuerySuccess } from "../../components/Query/Success";
-import { QueryUninitialized } from "../../components/Query/Uninitialized";
-import { classNames } from "../../features/css/classnames";
-import { readAccountWallet } from "../../features/store/api/read-account-wallet";
+import currencyClasses from "../../Currency/index.module.css";
+import elementsClasses from "../../Elements/index.module.css";
+import { Query } from "../../Query";
+import { QueryError } from "../../Query/Error";
+import { QueryLoading } from "../../Query/Loading";
+import { QuerySuccess } from "../../Query/Success";
+import { QueryUninitialized } from "../../Query/Uninitialized";
+
+import { classNames } from "../../../features/css/classnames";
+import { readAccountWallet } from "../../../features/store/api/read-account-wallet";
 import {
   initialState,
   readCurrencies,
-} from "../../features/store/api/read-currencies";
+} from "../../../features/store/api/read-currencies";
 
 export function VaultWallet() {
   const readCurrenciesResult = readCurrencies.useQuery({});
