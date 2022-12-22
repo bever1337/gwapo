@@ -16,7 +16,7 @@ const detailed_type = {
           return;
         }
         // weight_slot, e.g. Heavy_Shoulders
-        emit(doc.details.weight_class + "_" + doc.details.type, doc);
+        emit(doc.details.type + "_" + doc.details.weight_class, doc);
         return;
       }
       emit(doc.details.type, doc);
