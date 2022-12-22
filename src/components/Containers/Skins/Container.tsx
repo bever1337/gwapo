@@ -20,7 +20,7 @@ export function SkinContainer() {
     urlSearchParams.get("Component") ??
     (readSkinTypesResult.data?.ids[0] as string) ??
     "";
-  const queryEntries = readSkinTypesResult.data?.entities[
+  const skinTypePartials = readSkinTypesResult.data?.entities[
     activeSkinType
   ]?.ids?.map(
     (skinKey) =>
@@ -28,12 +28,12 @@ export function SkinContainer() {
       readSkinTypesResult.data?.entities[activeSkinType]?.[skinKey]?.[0] ??
       ""
   );
-  if (queryEntries?.length === 0) {
-    queryEntries.push(activeSkinType);
+  if (skinTypePartials?.length === 0) {
+    skinTypePartials.push(activeSkinType);
   }
-  const skip = !queryEntries || queryEntries.length === 0;
+  const skip = !skinTypePartials || skinTypePartials.length === 0;
   const { currentData } = readSkins.useQuery(
-    skip ? skipToken : { type: queryEntries?.join("_") ?? "" },
+    skip ? skipToken : { type: skinTypePartials?.join("_") ?? "" },
     { skip }
   );
 
@@ -42,7 +42,7 @@ export function SkinContainer() {
       <div className={classNames(accordionClasses["tab"])}>
         <AccordionHeading>
           {/** Tab applies extra styles when it's empty. Doing extra work to ensure heading is not a single white-space */}
-          {queryEntries?.filter((v) => !!v).join(", ")}
+          {skinTypePartials?.filter((v) => !!v).join(", ")}
         </AccordionHeading>
       </div>
       <div className={classNames(accordionClasses["folder"])}>
