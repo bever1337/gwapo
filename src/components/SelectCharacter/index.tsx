@@ -1,6 +1,6 @@
 import { Fragment, useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { useSearchParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 import inputPillClasses from "../Elements/input-pill.module.css";
 import fieldsetClasses from "../Elements/input-pill.module.css";
@@ -16,6 +16,11 @@ import { classNames } from "../../features/css/classnames";
 import { readCharacters } from "../../features/store/api/read-characters";
 import { QueryLoading } from "../Query/Loading";
 
+import {
+  characterName,
+  selectCharacterName,
+} from "../../features/store/ui/slice";
+
 const noop = () => {};
 /** semi-arbitrary, default number of character slots with paid account  */
 const MAX_CHARACTERS = 10;
@@ -24,6 +29,7 @@ const MAX_CHARACTERS = 10;
  * Maximum number of character slots is between 69 and 72.
  */
 export function SelectCharacter(props: any) {
+  const dispatch = useDispatch();
   const [searchInputValue, setSearchInputValue] = useState("");
   const readCharactersResult = readCharacters.useQuery({});
   const authenticationError =
@@ -31,22 +37,17 @@ export function SelectCharacter(props: any) {
     "status" in readCharactersResult.error &&
     readCharactersResult.error.status === 401;
 
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const characterNameState =
-    searchParams.get("select_character") ??
-    readCharactersResult.data?.[0] ??
-    "";
+  const characterNameState = useSelector(selectCharacterName);
 
   let visibleCount = 0;
   return (
     <Query result={readCharactersResult}>
       <form
         onChange={(event) => {
-          // TODO, it would be convenient to persist these params when routing between /vault and /vault/materials
-          setSearchParams(
-            new URLSearchParams(new FormData(event.currentTarget) as any)
-          );
+          const formData = new FormData(event.currentTarget);
+          const nextCharacterName =
+            (formData.get("select_character") as string | null) ?? "";
+          dispatch(characterName(nextCharacterName));
         }}
         onReset={(event) => {
           event.preventDefault();
@@ -83,7 +84,7 @@ export function SelectCharacter(props: any) {
               <input
                 className={classNames(flexFormClasses["form__flex__input"])}
                 id="components/SelectCharacter/character_name"
-                name="components/SelectCharacter/character_name"
+                name="character_name"
                 onChange={(event) => {
                   setSearchInputValue(event.target.value);
                 }}

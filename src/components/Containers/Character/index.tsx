@@ -1,6 +1,6 @@
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { FormattedMessage } from "react-intl";
-import { useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import { CharacterBagContainer } from "./Container";
 
@@ -21,17 +21,15 @@ import { QueryUninitialized } from "../../Query/Uninitialized";
 import { classNames } from "../../../features/css/classnames";
 import { readCharacters } from "../../../features/store/api/read-characters";
 import { readCharactersInventory } from "../../../features/store/api/read-characters-inventory";
+import { selectCharacterName } from "../../../features/store/ui/slice";
 
 const emptyCharacterBag = new Array(15)
   .fill(null)
   .map((_null, index) => <ContainerItem containerItem={null} key={index} />);
 
 export function CharacterBags() {
-  const readCharactersResult = readCharacters.useQuery({});
-  const characterName =
-    new URLSearchParams(useLocation().search).get("select_character") ??
-    readCharactersResult.data?.[0] ??
-    "";
+  readCharacters.useQuerySubscription({});
+  const characterName = useSelector(selectCharacterName);
   const readCharactersInventoryResult = readCharactersInventory.useQuery(
     characterName ? { characterName: characterName } : skipToken,
     { skip: !characterName }

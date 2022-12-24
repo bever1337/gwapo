@@ -1,12 +1,14 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 
-import { slice } from "./slice";
 import { api } from "./api";
 import { listenerMiddleware } from "./listener-middleware";
+import { slice } from "./slice";
+import { uiSlice } from "./ui/slice";
 
 const rootReducer = combineReducers({
-  [slice.name]: slice.reducer,
   [api.reducerPath]: api.reducer,
+  [slice.name]: slice.reducer,
+  [uiSlice.name]: uiSlice.reducer,
 });
 
 export const store = () =>

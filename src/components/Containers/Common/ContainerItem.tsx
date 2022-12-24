@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 import containerItemClasses from "./ContainerItem.module.css";
 
 import { QueryError } from "../../Query/Error";
@@ -42,19 +44,24 @@ export function ContainerItem(props: {
         />
       </QueryError>
       <QuerySuccess>
-        <img
-          className={classNames(
-            containerItemClasses["item__img"],
-            containerItemClasses[props.item?.rarity ?? ""]
-          )}
-          alt={props.item?.name ?? ""}
-          src={props.containerItem ? props.item?.icon ?? errorImageSrc : ""}
-        />
-        {typeof props.containerItem?.count === "number" ? (
-          <span className={classNames(containerItemClasses["item__count"])}>
-            {props.containerItem.count}
-          </span>
-        ) : null}
+        <Link
+          to={`${props.item?.id ?? ""}`}
+          state={{ containerItem: props.containerItem, item: props.item }}
+        >
+          <img
+            className={classNames(
+              containerItemClasses["item__img"],
+              containerItemClasses[props.item?.rarity ?? ""]
+            )}
+            alt={props.item?.name ?? ""}
+            src={props.containerItem ? props.item?.icon ?? errorImageSrc : ""}
+          />
+          {typeof props.containerItem?.count === "number" ? (
+            <span className={classNames(containerItemClasses["item__count"])}>
+              {props.containerItem.count}
+            </span>
+          ) : null}
+        </Link>
       </QuerySuccess>
     </li>
   );

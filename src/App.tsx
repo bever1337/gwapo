@@ -11,12 +11,13 @@ import {
 
 import "./App.css";
 import { AppOutlet } from "./components/Routes/outlet";
-import { Vault } from "./components/Routes/vault";
+import { Vault } from "./components/Routes/vault/bank";
 import { Materials } from "./components/Routes/vault/materials";
 import { VaultOutlet } from "./components/Routes/vault/outlet";
 import { VaultWallet } from "./components/Routes/vault/wallet";
 import { Wardrobe } from "./components/Routes/vault/wardrobe";
 import { store } from "./features/store";
+import { VaultBankItem } from "./components/Routes/vault/bank/item";
 
 const appStore = store();
 
@@ -43,7 +44,9 @@ const router = createBrowserRouter(
         index
       />
       <Route element={<VaultOutlet />} path="vault">
-        <Route element={<Vault />} index />
+        <Route element={<Vault />} path="bank">
+          <Route element={<VaultBankItem />} path=":itemId" />
+        </Route>
         <Route element={<Materials />} path="materials" />
         <Route element={<VaultWallet />} path="wallet" />
         <Route element={<Wardrobe />} path="wardrobe" />
