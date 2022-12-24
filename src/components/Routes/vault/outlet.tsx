@@ -26,7 +26,7 @@ export function VaultOutlet() {
               textAlign: "center",
             }}
           >
-            <Link to="/vault">
+            <Link to="/vault/bank">
               <img
                 alt=""
                 src={`${process.env.PUBLIC_URL}/icons/Finance/safe-2-fill.svg`}

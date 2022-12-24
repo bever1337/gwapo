@@ -28,7 +28,7 @@ const router = createBrowserRouter(
         element={
           <Fragment>
             <nav>
-              <Link to="/vault">
+              <Link to="/vault/bank">
                 <img
                   alt=""
                   src={
