@@ -1,7 +1,3 @@
-/**
- * Design challenge! This ain't a general-purpose dialog
- * This application will have ONE dialog element 🧠
- */
 import React, { Fragment, useRef } from "react";
 import { FormattedMessage } from "react-intl";
 

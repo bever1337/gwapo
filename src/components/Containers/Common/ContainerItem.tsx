@@ -1,3 +1,4 @@
+import { Fragment, createElement } from "react";
 import { Link } from "react-router-dom";
 
 import containerItemClasses from "./ContainerItem.module.css";
@@ -44,10 +45,11 @@ export function ContainerItem(props: {
         />
       </QueryError>
       <QuerySuccess>
-        <Link
-          to={`${props.item?.id ?? ""}`}
-          state={{ containerItem: props.containerItem, item: props.item }}
-        >
+        {createElement(
+          props.item?.id ? Link : Fragment,
+          props.item?.id
+            ? { replace: true, to: `${props.item?.id ?? ""}` }
+            : null,
           <img
             className={classNames(
               containerItemClasses["item__img"],
@@ -55,13 +57,13 @@ export function ContainerItem(props: {
             )}
             alt={props.item?.name ?? ""}
             src={props.containerItem ? props.item?.icon ?? errorImageSrc : ""}
-          />
-          {typeof props.containerItem?.count === "number" ? (
+          />,
+          typeof props.containerItem?.count === "number" ? (
             <span className={classNames(containerItemClasses["item__count"])}>
               {props.containerItem.count}
             </span>
-          ) : null}
-        </Link>
+          ) : null
+        )}
       </QuerySuccess>
     </li>
   );

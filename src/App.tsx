@@ -5,8 +5,10 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
   Link,
+  Outlet,
   Route,
   RouterProvider,
+  Routes,
 } from "react-router-dom";
 
 import "./App.css";
@@ -17,13 +19,13 @@ import { VaultOutlet } from "./components/Routes/vault/outlet";
 import { VaultWallet } from "./components/Routes/vault/wallet";
 import { Wardrobe } from "./components/Routes/vault/wardrobe";
 import { store } from "./features/store";
-import { VaultBankItem } from "./components/Routes/vault/bank/item";
+import { VaultBankItem } from "./components/Routes/vault/item";
 
 const appStore = store();
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route element={<AppOutlet />} path="/">
+    <Route element={<AppOutlet />}>
       <Route
         element={
           <Fragment>
@@ -47,7 +49,9 @@ const router = createBrowserRouter(
         <Route element={<Vault />} path="bank">
           <Route element={<VaultBankItem />} path=":itemId" />
         </Route>
-        <Route element={<Materials />} path="materials" />
+        <Route element={<Materials />} path="materials">
+          <Route element={<VaultBankItem />} path=":itemId" />
+        </Route>
         <Route element={<VaultWallet />} path="wallet" />
         <Route element={<Wardrobe />} path="wardrobe" />
       </Route>

@@ -2,12 +2,12 @@ import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { Outlet } from "react-router-dom";
 
-import { Bank } from "../../../Containers/Bank";
-import { CharacterBags } from "../../../Containers/Character";
-import { SelectCharacter } from "../../../SelectCharacter";
-import { SharedInventory } from "../../../Containers/SharedInventory";
-import vaultGridClasses from "../../../Vault/vault-grid.module.css";
-import { classNames } from "../../../../features/css/classnames";
+import { Bank } from "../../Containers/Bank";
+import { CharacterBags } from "../../Containers/Character";
+import { SelectCharacter } from "../../SelectCharacter";
+import { SharedInventory } from "../../Containers/SharedInventory";
+import vaultGridClasses from "../../Vault/vault-grid.module.css";
+import { classNames } from "../../../features/css/classnames";
 
 export function Vault() {
   return (
@@ -32,8 +32,8 @@ export function Vault() {
           />
           <Bank />
         </div>
-        <Outlet />
       </main>
+      <Outlet />
     </Fragment>
   );
 }
