@@ -48,7 +48,7 @@ export function ContainerItem(props: {
         {createElement(
           props.item?.id ? Link : Fragment,
           props.item?.id
-            ? { replace: true, to: `${props.item?.id ?? ""}` }
+            ? { relative: "path", replace: true, to: `${props.item?.id ?? ""}` }
             : null,
           <img
             className={classNames(

@@ -21,8 +21,6 @@ npm run start
 
 ## Proposed Site Map
 
-# Proposed Site Map
-
 - /vault
   - /(index as bank) => /v2/account/bank, /v2/account/inventory, /v2/characters, /v2/characters/:id/inventory
   - /materials => /v2/account/materials, /v2/account/inventory, /v2/characters, /v2/characters/:id/inventory
@@ -41,6 +39,12 @@ npm run start
   - /training => /v2/characters, /v2/characters/:id/heropoints, /v2/characters/:id/training
   - ? [Should this be /pvp?] => /v2/characters/:id/skills, /v2/characters/:id/specializations, /v2/characters/:id/equipment
   - ? [Should this be /achievements?] => /v2/characters/:id/quests, /v2/characters/:id/sab
+
+## Routes file structure
+
+Follows similar conventions as Gatsby, Next, Astro where the filesystem mocks an HTTP-serving-HTML server.
+
+Routes called `outlet` or routes prefixed with `_` are presentation-only and do not contribute to paths/URLs. Routes prefixed with `:` are dynamic and may match any URL segment.
 
 ## Data Flow
 

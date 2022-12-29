@@ -1,14 +1,14 @@
 import { useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-import containerItemClasses from "../../Containers/Common/ContainerItem.module.css";
+import containerItemClasses from "../Containers/Common/ContainerItem.module.css";
 
-import { classNames } from "../../../features/css/classnames";
-import { readItems } from "../../../features/store/api/read-items";
+import { classNames } from "../../features/css/classnames";
+import { readItems } from "../../features/store/api/read-items";
 
 const errorImageSrc = `${process.env.PUBLIC_URL}/icons/System/error-warning-fill.svg`;
 
-export function VaultBankItem(props: {}) {
+export function VaultItemDialog(props: {}) {
   const { itemId } = useParams();
   const { data } = readItems.useQuery({ ids: [parseInt(itemId!, 10)] });
   const currentItem = data?.entities[itemId ?? ""];

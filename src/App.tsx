@@ -5,21 +5,21 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
   Link,
-  Outlet,
   Route,
   RouterProvider,
-  Routes,
 } from "react-router-dom";
 
 import "./App.css";
 import { AppOutlet } from "./components/Routes/outlet";
-import { Vault } from "./components/Routes/vault/bank";
-import { Materials } from "./components/Routes/vault/materials";
+import { Vault } from "./components/Routes/vault/_inventory/bank";
+import { VaultBankItemDialog } from "./components/Routes/vault/_inventory/bank/:itemId";
+import { Materials } from "./components/Routes/vault/_inventory/materials";
+import { VaultMaterialsItemDialog } from "./components/Routes/vault/_inventory/materials/:itemId";
+import { VaultInventoryOutlet } from "./components/Routes/vault/_inventory/outlet";
 import { VaultOutlet } from "./components/Routes/vault/outlet";
 import { VaultWallet } from "./components/Routes/vault/wallet";
 import { Wardrobe } from "./components/Routes/vault/wardrobe";
 import { store } from "./features/store";
-import { VaultBankItem } from "./components/Routes/vault/item";
 
 const appStore = store();
 
@@ -46,11 +46,13 @@ const router = createBrowserRouter(
         index
       />
       <Route element={<VaultOutlet />} path="vault">
-        <Route element={<Vault />} path="bank">
-          <Route element={<VaultBankItem />} path=":itemId" />
-        </Route>
-        <Route element={<Materials />} path="materials">
-          <Route element={<VaultBankItem />} path=":itemId" />
+        <Route element={<VaultInventoryOutlet />}>
+          <Route element={<Vault />} path="bank">
+            <Route element={<VaultBankItemDialog />} path=":itemId" />
+          </Route>
+          <Route element={<Materials />} path="materials">
+            <Route element={<VaultMaterialsItemDialog />} path=":itemId" />
+          </Route>
         </Route>
         <Route element={<VaultWallet />} path="wallet" />
         <Route element={<Wardrobe />} path="wardrobe" />

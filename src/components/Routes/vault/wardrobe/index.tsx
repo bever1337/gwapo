@@ -2,18 +2,18 @@ import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { useSearchParams } from "react-router-dom";
 
-import { SkinContainer } from "../../Containers/Skins/Container";
-import fieldsetClasses from "../../Elements/input-pill.module.css";
-import inputPillClasses from "../../Elements/input-pill.module.css";
-import hideClasses from "../../Elements/Hide.module.css";
-import { Query } from "../../Query";
-import { QueryError } from "../../Query/Error";
-import { QueryLoading } from "../../Query/Loading";
-import { QuerySuccess } from "../../Query/Success";
-import { QueryUninitialized } from "../../Query/Uninitialized";
+import { SkinContainer } from "../../../Containers/Skins/Container";
+import fieldsetClasses from "../../../Elements/input-pill.module.css";
+import inputPillClasses from "../../../Elements/input-pill.module.css";
+import hideClasses from "../../../Elements/Hide.module.css";
+import { Query } from "../../../Query";
+import { QueryError } from "../../../Query/Error";
+import { QueryLoading } from "../../../Query/Loading";
+import { QuerySuccess } from "../../../Query/Success";
+import { QueryUninitialized } from "../../../Query/Uninitialized";
 
-import { readSkinTypes } from "../../../features/store/api/read-skin-types";
-import { classNames } from "../../../features/css/classnames";
+import { readSkinTypes } from "../../../../features/store/api/read-skin-types";
+import { classNames } from "../../../../features/css/classnames";
 
 const Components = {
   Armor: SkinContainer,
