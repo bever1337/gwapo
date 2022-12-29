@@ -5,7 +5,6 @@
 .item__img {
   background-color: darkgray;
   border: 2px solid silver;
-  box-sizing: border-box;
   display: block;
   height: 4rem;
   width: 4rem;

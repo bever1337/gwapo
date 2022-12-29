@@ -1,21 +1,21 @@
 import React, { Fragment, useRef } from "react";
 import { FormattedMessage } from "react-intl";
 
-import dialogClasses from "./index.module.css";
-
 import { Authenticator } from "../Authenticator";
+import dialogClasses from "../Dialog/index.module.css";
 import elementsClasses from "../Elements/index.module.css";
 import hideClasses from "../Elements/Hide.module.css";
 import { Installer } from "../Installer";
 
 import { classNames } from "../../features/css/classnames";
 
+// declare string tempaltes outside JSX props for better syntax highlighting
+const closeImageSource = `${process.env.PUBLIC_URL}/icons/System/close-fill.svg`;
+const settingsImageSource = `${process.env.PUBLIC_URL}/icons/System/settings-3-fill.svg`;
+
 /** */
-export function Dialog(props: any) {
+export function Settings(props: any) {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  // declare string tempaltes outside JSX props for better syntax highlighting
-  const closeImageSource = `${process.env.PUBLIC_URL}/icons/System/close-fill.svg`;
-  const settingsImageSource = `${process.env.PUBLIC_URL}/icons/System/settings-3-fill.svg`;
   return (
     <Fragment>
       <button

@@ -2,10 +2,13 @@ import { useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 import containerItemClasses from "../Containers/Common/ContainerItem.module.css";
+import dialogClasses from "../Dialog/index.module.css";
+import elementsClasses from "../Elements/index.module.css";
 
 import { classNames } from "../../features/css/classnames";
 import { readItems } from "../../features/store/api/read-items";
 
+const closeImageSource = `${process.env.PUBLIC_URL}/icons/System/close-fill.svg`;
 const errorImageSrc = `${process.env.PUBLIC_URL}/icons/System/error-warning-fill.svg`;
 
 export function VaultItemDialog(props: {}) {
@@ -31,6 +34,7 @@ export function VaultItemDialog(props: {}) {
         replace: true,
       });
     };
+    dialog.addEventListener("close", onCancel);
     dialog.addEventListener("cancel", onCancel);
 
     return () => {
@@ -40,17 +44,39 @@ export function VaultItemDialog(props: {}) {
 
   return (
     <dialog ref={dialogRef}>
-      <img
-        className={classNames(
-          containerItemClasses["item__img"],
-          containerItemClasses[currentItem?.rarity ?? ""]
-        )}
-        alt={currentItem?.name ?? ""}
-        src={currentItem ? currentItem?.icon ?? errorImageSrc : ""}
-        style={{ float: "left" }}
-      />
-      <h3>{currentItem?.name}</h3>
-      <p>{currentItem?.description}</p>
+      <form
+        id={`components/Vault/Dialog/${itemId}`}
+        method="dialog"
+        style={{
+          width: "16rem",
+        }}
+      >
+        <div className={classNames(dialogClasses["dialog__form--a"])}>
+          <h3 className={classNames(elementsClasses["no-margin"])}>
+            {currentItem?.name}
+          </h3>
+          <button form={`components/Vault/Dialog/${itemId}`} type="submit">
+            <img
+              alt="Close"
+              className={classNames(dialogClasses["dialog__form--a__img"])}
+              src={closeImageSource}
+            />
+          </button>
+        </div>
+        <div>
+          <img
+            className={classNames(
+              containerItemClasses["item__img"],
+              containerItemClasses[currentItem?.rarity ?? ""]
+            )}
+            alt={currentItem?.name ?? ""}
+            src={currentItem ? currentItem?.icon ?? errorImageSrc : ""}
+            style={{ float: "left", margin: "0 1em 0.5em 0" }}
+          />
+          <p>{currentItem?.description}</p>
+          <p>Type: {currentItem?.type}</p>
+        </div>
+      </form>
     </dialog>
   );
 }

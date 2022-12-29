@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import { Link, Outlet } from "react-router-dom";
 
-import { Dialog } from "../Dialog";
+import { Settings } from "../Settings";
 
 export function AppOutlet() {
   // declare string tempaltes outside JSX props for better syntax highlighting
@@ -20,7 +20,7 @@ export function AppOutlet() {
           <img alt="Home" src={homeImageSource} />
           Gwapo
         </Link>
-        <Dialog />
+        <Settings />
       </div>
       <hr />
       <Outlet />

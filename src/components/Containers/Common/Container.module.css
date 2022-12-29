@@ -1,7 +1,7 @@
 .container {
   display: grid;
   gap: 0.25rem;
-  grid-template-columns: repeat(auto-fill, 4rem);
+  grid-template-columns: repeat(auto-fill, calc(4rem + 4px));
   justify-content: flex-start;
   list-style: none;
   padding: 0;
