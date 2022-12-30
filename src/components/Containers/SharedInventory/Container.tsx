@@ -1,6 +1,7 @@
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { Fragment, useState } from "react";
 import { FormattedMessage } from "react-intl";
+import { useResolvedPath } from "react-router-dom";
 
 import containerClasses from "../Common/Container.module.css";
 import { ContainerItem } from "../Common/ContainerItem";

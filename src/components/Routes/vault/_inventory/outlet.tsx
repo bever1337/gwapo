@@ -1,11 +1,12 @@
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
-import { Outlet } from "react-router-dom";
+import { Outlet, Routes, Route } from "react-router-dom";
 
 import { CharacterBags } from "../../../Containers/Character";
 import { SelectCharacter } from "../../../SelectCharacter";
 import { SharedInventory } from "../../../Containers/SharedInventory";
 import vaultGridClasses from "../../../Vault/vault-grid.module.css";
+import { VaultItemDialog } from "../../../Vault/Dialog";
 import { classNames } from "../../../../features/css/classnames";
 
 export function VaultInventoryOutlet() {
@@ -22,6 +23,11 @@ export function VaultInventoryOutlet() {
           <CharacterBags />
         </div>
         <Outlet />
+        <div className={classNames(vaultGridClasses["vault__aside"])}>
+          <Routes>
+            <Route path=":category/:itemId" element={<VaultItemDialog />} />
+          </Routes>
+        </div>
       </main>
     </Fragment>
   );

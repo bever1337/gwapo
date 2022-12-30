@@ -1,6 +1,5 @@
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
-import { Outlet } from "react-router-dom";
 
 import { Materials as MaterialsContainers } from "../../../../Containers/Materials";
 import vaultGridClasses from "../../../../Vault/vault-grid.module.css";
@@ -20,7 +19,6 @@ export function Materials() {
         />
         <MaterialsContainers />
       </div>
-      <Outlet />
     </Fragment>
   );
 }

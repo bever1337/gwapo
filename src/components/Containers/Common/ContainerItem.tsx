@@ -1,5 +1,5 @@
 import { Fragment, createElement } from "react";
-import { Link } from "react-router-dom";
+import { Link, useMatches, useLocation, useMatch } from "react-router-dom";
 
 import containerItemClasses from "./ContainerItem.module.css";
 
@@ -21,6 +21,9 @@ export function ContainerItem(props: {
   } | null;
   item?: Item;
 }) {
+  const {
+    params: { category },
+  } = useMatch("/vault/:category/*")!;
   return (
     <li className={classNames(containerItemClasses["item"])}>
       <QueryUninitialized>
@@ -48,7 +51,10 @@ export function ContainerItem(props: {
         {createElement(
           props.item?.id ? Link : Fragment,
           props.item?.id
-            ? { relative: "path", replace: true, to: `${props.item?.id ?? ""}` }
+            ? {
+                replace: true,
+                to: `/vault/${category}/${props.item?.id ?? ""}`,
+              }
             : null,
           <img
             className={classNames(
