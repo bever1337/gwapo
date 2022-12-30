@@ -2,7 +2,7 @@ import React, { Fragment, useRef } from "react";
 import { FormattedMessage } from "react-intl";
 
 import { Authenticator } from "../Authenticator";
-import dialogClasses from "../Dialog/index.module.css";
+import dialogClasses from "../Elements/Dialog.module.css";
 import elementsClasses from "../Elements/index.module.css";
 import hideClasses from "../Elements/Hide.module.css";
 import { Installer } from "../Installer";

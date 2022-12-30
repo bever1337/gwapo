@@ -2,7 +2,7 @@ import { Fragment, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 import containerItemClasses from "../Containers/Common/ContainerItem.module.css";
-import dialogClasses from "../Dialog/index.module.css";
+import dialogClasses from "../Elements/Dialog.module.css";
 import elementsClasses from "../Elements/index.module.css";
 
 import { classNames } from "../../features/css/classnames";
