@@ -9,7 +9,6 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
-import "./App.css";
 import { AppOutlet } from "./components/Routes/outlet";
 import { Vault } from "./components/Routes/vault/_inventory/bank";
 import { Materials } from "./components/Routes/vault/_inventory/materials";

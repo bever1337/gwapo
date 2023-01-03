@@ -1,0 +1,58 @@
+.grid {
+  display: grid;
+  flex: 1 0 auto;
+  grid-template:
+    "heading1" auto
+    "nav" auto
+    "heading2" auto
+    "main" auto / 1fr;
+}
+
+.heading--1 {
+  align-self: center;
+  grid-area: heading1;
+}
+
+.heading--2 {
+  align-self: center;
+  grid-area: heading2;
+}
+
+.main {
+  grid-area: main;
+}
+
+.nav {
+  grid-area: nav;
+}
+
+.nav__list {
+  list-style: none;
+}
+
+.nav__item {
+  display: inline-block;
+  margin: 0.5em;
+  text-align: center;
+}
+
+.nav__item__img {
+  height: 3rem;
+  width: 3rem;
+}
+
+@media screen and (min-width: 45rem) {
+  .grid {
+    gap: 1rem;
+    grid-template:
+      "heading1 heading2" auto
+      "nav main" 1fr / auto 1fr;
+  }
+
+  .nav__list {
+    display: flex;
+    flex-flow: column wrap;
+    position: sticky;
+    top: 0;
+  }
+}

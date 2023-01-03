@@ -1,0 +1,15 @@
+@media screen and (min-width: 64rem) {
+  .main {
+    display: grid;
+    gap: 1rem;
+    grid-template:
+      "a c" auto
+      "b c" auto / 1fr 1fr;
+  }
+}
+
+@media screen and (min-width: 90rem) {
+  .main {
+    grid-template: "a b c" auto / 1fr 1fr 1fr;
+  }
+}

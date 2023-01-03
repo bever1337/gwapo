@@ -9,11 +9,14 @@ export function AppOutlet() {
 
   return (
     <Fragment>
-      <div
+      <header
         style={{
           alignItems: "center",
+          borderBottom: "1px solid black",
           display: "flex",
           justifyContent: "space-between",
+          marginBottom: "0.5rem",
+          paddingBottom: "0.5rem",
         }}
       >
         <Link to="/">
@@ -21,8 +24,7 @@ export function AppOutlet() {
           Gwapo
         </Link>
         <Settings />
-      </div>
-      <hr />
+      </header>
       <Outlet />
     </Fragment>
   );
