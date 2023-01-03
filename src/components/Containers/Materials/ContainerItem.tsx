@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 import containerItemClasses from "../Common/ContainerItem.module.css";
 
 import { Query } from "../../Query";
@@ -15,21 +17,24 @@ export function MaterialContainerItem({ material }: { material: Item }) {
   const readAccountMaterialsResult = readAccountMaterials.useQueryState({});
   return (
     <li className={classNames(containerItemClasses["item"])}>
-      <img
-        className={classNames(containerItemClasses["item__img"])}
-        alt={material.name}
-        src={material.icon}
-      />
-      <span className={classNames(containerItemClasses["item__count"])}>
-        <Query result={readAccountMaterialsResult}>
-          <QueryUninitialized>🕦</QueryUninitialized>
-          <QueryLoading>...</QueryLoading>
-          <QueryError>x</QueryError>
-          <QuerySuccess>
-            {readAccountMaterialsResult.data?.entities[material.id]?.count ?? 0}
-          </QuerySuccess>
-        </Query>
-      </span>
+      <Link replace relative="path" to={`?itemId=${material.id}`}>
+        <img
+          className={classNames(containerItemClasses["item__img"])}
+          alt={material.name}
+          src={material.icon}
+        />
+        <span className={classNames(containerItemClasses["item__count"])}>
+          <Query result={readAccountMaterialsResult}>
+            <QueryUninitialized>🕦</QueryUninitialized>
+            <QueryLoading>...</QueryLoading>
+            <QueryError>x</QueryError>
+            <QuerySuccess>
+              {readAccountMaterialsResult.data?.entities[material.id]?.count ??
+                0}
+            </QuerySuccess>
+          </Query>
+        </span>
+      </Link>
     </li>
   );
 }

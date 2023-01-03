@@ -52,9 +52,7 @@ export function VaultInventoryOutlet() {
           />
           <Outlet />
         </div>
-        <Routes>
-          <Route path=":category/:itemId" element={<VaultItemDialog />} />
-        </Routes>
+        <VaultItemDialog />
       </main>
     </Fragment>
   );

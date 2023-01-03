@@ -1,5 +1,5 @@
 import { Fragment, createElement } from "react";
-import { Link, useMatches, useLocation, useMatch } from "react-router-dom";
+import { Link, useMatch } from "react-router-dom";
 
 import containerItemClasses from "./ContainerItem.module.css";
 
@@ -53,7 +53,8 @@ export function ContainerItem(props: {
           props.item?.id
             ? {
                 replace: true,
-                to: `/vault/${category}/${props.item?.id ?? ""}`,
+                relative: "path",
+                to: `?itemId=${props.item?.id ?? ""}`,
               }
             : null,
           <img

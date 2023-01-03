@@ -44,8 +44,8 @@ const router = createBrowserRouter(
       />
       <Route element={<VaultOutlet />} path="vault">
         <Route element={<VaultInventoryOutlet />} path="*">
-          <Route element={<Vault />} path="bank/*" />
-          <Route element={<Materials />} path="materials/*" />
+          <Route element={<Vault />} path="bank" />
+          <Route element={<Materials />} path="materials" />
         </Route>
         <Route element={<VaultWallet />} path="wallet" />
         <Route element={<Wardrobe />} path="wardrobe" />

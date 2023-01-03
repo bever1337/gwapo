@@ -1,8 +1,13 @@
 import { Fragment } from "react";
-import { FormattedMessage, FormattedNumber } from "react-intl";
+import {
+  FormattedMessage,
+  FormattedNumber,
+  FormattedNumberParts,
+} from "react-intl";
 
 import vaultOutletClasses from "../outlet.module.css";
 
+import { separateCopperCoins } from "../../../Currency/coin";
 import currencyClasses from "../../../Currency/index.module.css";
 import elementsClasses from "../../../Elements/index.module.css";
 import { Query } from "../../../Query";
@@ -72,13 +77,34 @@ export function VaultWallet() {
                         <QueryLoading>-</QueryLoading>
                         <QueryError>x</QueryError>
                         <QuerySuccess>
-                          <FormattedNumber
-                            value={
-                              readAccountWalletResult.data?.entities[currencyId]
-                                ?.value ?? 0
+                          {(() => {
+                            if (
+                              readCurrenciesResult.data!.entities[currencyId]
+                                ?.name === "Coin"
+                            ) {
+                              const [gold, silver, copper] =
+                                separateCopperCoins(
+                                  readAccountWalletResult.data?.entities[
+                                    currencyId
+                                  ]?.value ?? 0
+                                );
+                              return (
+                                <>
+                                  <FormattedNumber value={gold} /> gold,{" "}
+                                  {silver} silver, {copper} copper
+                                </>
+                              );
                             }
-                            maximumSignificantDigits={3}
-                          />
+                            return (
+                              <FormattedNumber
+                                value={
+                                  readAccountWalletResult.data?.entities[
+                                    currencyId
+                                  ]?.value ?? 0
+                                }
+                              />
+                            );
+                          })()}
                         </QuerySuccess>
                       </span>
                       <img

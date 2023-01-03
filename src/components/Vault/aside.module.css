@@ -15,12 +15,30 @@
 
 @media screen and (min-width: 64rem) {
   .aside {
+    animation-duration: 0.1s;
+    animation-name: slidein;
     background-color: initial;
     border: 0px;
     grid-area: c;
     height: auto;
     padding: 0;
     position: static;
-    width: auto;
+    overflow-y: initial;
+    width: 100%;
+    z-index: -100;
+  }
+
+  .aside > .sticky {
+    position: sticky;
+    top: 0;
+  }
+}
+
+@keyframes slidein {
+  0% {
+    transform: translateX(-100%) translateY(-5rem);
+  }
+  100% {
+    transform: translateX(0) translateY(0);
   }
 }
