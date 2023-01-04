@@ -25,7 +25,7 @@ export const injectedApi = api.injectEndpoints({
     return {
       readSkins: build.query<EntityState<Skin>, { type: string }>({
         providesTags() {
-          return [{ type: "internal/pouches", id: "LIST" }];
+          return [{ type: "internal/pouches", id: "BEST" }];
         },
         async queryFn(queryArguments, queryApi) {
           return getDatabaseName(queryApi)

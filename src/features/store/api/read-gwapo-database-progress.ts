@@ -52,12 +52,16 @@ export const injectedApi = api.injectEndpoints({
           });
         },
         providesTags(result, error) {
+          const baseTags = [
+            { type: "internal/pouches" as const, id: "BEST" },
+            { type: "internal/pouches" as const, id: "LIST" },
+          ];
           if (!result || error) {
-            return [{ type: "internal/pouches", id: "LIST" }];
+            return baseTags;
           }
           return [
-            { type: "internal/pouches", id: result._id },
-            { type: "internal/pouches", id: "LIST" },
+            { type: "internal/pouches" as const, id: result._id },
+            ...baseTags,
           ];
         },
         queryFn(queryArguments, queryApi) {

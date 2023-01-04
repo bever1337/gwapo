@@ -2,7 +2,6 @@ import { createEntityAdapter, createSelector } from "@reduxjs/toolkit";
 import type { EntityState } from "@reduxjs/toolkit";
 import type { BaseQueryApi } from "@reduxjs/toolkit/src/query/baseQueryTypes";
 
-import type { RootState } from "..";
 import { api } from ".";
 
 import { PouchDB } from "../../pouch";
@@ -25,17 +24,21 @@ export const injectedApi = api.injectEndpoints({
   endpoints(build) {
     return {
       readGwapoDatabases: build.query<EntityState<DumpHeaderDocument>, {}>({
+        onQueryStarted(queryArguments, queryApi) {
+          queryApi.queryFulfilled
+            .then(() => {
+              queryApi.dispatch(
+                injectedApi.util.invalidateTags([
+                  { type: "internal/pouches", id: "BEST" },
+                ])
+              );
+            })
+            .catch(() => {
+              //
+            });
+        },
         providesTags(result, error) {
-          return (result?.ids ?? []).reduce(
-            (acc, databaseName) =>
-              acc.concat([
-                {
-                  type: "internal/pouches",
-                  id: databaseName as string,
-                },
-              ]),
-            [{ type: "internal/pouches", id: "LIST" }]
-          );
+          return [{ type: "internal/pouches", id: "LIST" }];
         },
         queryFn(queryArguments, queryApi) {
           const pouch = new PouchDB("gwapo-db", {
@@ -67,29 +70,36 @@ export const injectedApi = api.injectEndpoints({
 
 export const readGwapoDatabases = injectedApi.endpoints.readGwapoDatabases;
 
+const innerSelectBestDatabase = (queryResult: {
+  data?: EntityState<DumpHeaderDocument>;
+}) => {
+  const result = queryResult.data?.ids.find((databaseName) => {
+    const {
+      seq,
+      db_info: { update_seq },
+    } = databaseSelectors.selectById(queryResult.data!, databaseName)!;
+    return seq === update_seq;
+  });
+  return result;
+};
+
 /** Selects the newest database with 100% data available */
 export const selectBestDatabase = createSelector(
   readGwapoDatabases.select({}),
-  (queryResult) => {
-    return queryResult.data?.ids.find((databaseName) => {
-      const {
-        seq,
-        db_info: { update_seq },
-      } = databaseSelectors.selectById(queryResult.data!, databaseName)!;
-      return seq === update_seq;
-    });
-  }
+  innerSelectBestDatabase
 );
 
 /** Not quite a thunk. queryFn helper to select a database name or reject if none is ready */
 export function getDatabaseName(
   queryApi: Pick<BaseQueryApi, "dispatch" | "getState">
 ) {
-  const subscription = queryApi.dispatch(readGwapoDatabases.initiate({}));
+  const subscription = queryApi.dispatch(
+    readGwapoDatabases.initiate({}, { subscribe: false })
+  );
   return subscription
     .unwrap()
-    .then(() => selectBestDatabase(queryApi.getState() as RootState))
-    .then((bestDatabase) => {
+    .then((queryResult) => {
+      const bestDatabase = innerSelectBestDatabase({ data: queryResult });
       if (!bestDatabase || typeof bestDatabase !== "string") {
         return Promise.reject("No database ready");
       }

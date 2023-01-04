@@ -6,7 +6,7 @@ export function Index() {
   return (
     <Fragment>
       <nav>
-        <Link to="/pve">
+        <Link to="/pve/dungeons">
           <img
             alt=""
             src={process.env.PUBLIC_URL + "/icons/System/shield-fill.svg"}

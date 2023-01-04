@@ -100,6 +100,9 @@ export const injectedApi = api.injectEndpoints({
   endpoints(build) {
     return {
       readAchievements: build.query<EntityState<Achievement>, { key: any }>({
+        providesTags() {
+          return [{ type: "internal/pouches", id: "BEST" }];
+        },
         async queryFn(queryArguments, queryApi) {
           return getDatabaseName(queryApi)
             .then((databaseName) =>

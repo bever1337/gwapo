@@ -11,40 +11,28 @@ type SkinType = {
 } & { [key: string]: string[] };
 
 export const skinTypesAdapter = createEntityAdapter<SkinType>();
-const selectors = skinTypesAdapter.getSelectors();
 
 export const injectedApi = api.injectEndpoints({
   endpoints(build) {
     return {
       readSkinTypes: build.query<EntityState<SkinType>, {}>({
         providesTags() {
-          return [{ type: "internal/pouches", id: "LIST" }];
+          return [{ type: "internal/pouches", id: "BEST" }];
         },
         async queryFn(queryArguments, queryApi) {
           return getDatabaseName(queryApi)
             .then((databaseName) =>
-              new PouchDB(databaseName, { adapter: "indexeddb" }).query(
-                "gw2_skins/types_with_detail",
-                { group: true }
-              )
+              new PouchDB(databaseName, { adapter: "indexeddb" }).allDocs({
+                include_docs: true,
+                startkey: "skins",
+                endkey: "skins_\ufff0",
+              })
             )
             .then((allDocsResponse) => {
               return {
                 data: allDocsResponse.rows.reduce(
-                  (acc, { key: [primary, secondary], value }) => {
-                    const previousState: SkinType = selectors.selectById(
-                      acc,
-                      primary
-                    ) ?? { id: primary, ids: [] };
-                    const nextState = {
-                      ...previousState,
-                    } as SkinType;
-                    if (secondary) {
-                      nextState.ids = previousState.ids.concat([secondary]);
-                      nextState[secondary] = value;
-                    }
-                    return skinTypesAdapter.upsertOne(acc, nextState);
-                  },
+                  (acc, row) =>
+                    skinTypesAdapter.setOne(acc, row.doc! as any as SkinType),
                   skinTypesAdapter.getInitialState()
                 ),
                 error: undefined,

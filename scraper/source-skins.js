@@ -31,6 +31,8 @@ async function main() {
   console.log("Fetching skin indices...");
   /** @type {integer[]} */
   const skinIds = await fetch(SKINS_URL).then((response) => response.json());
+  const skinDocuments = [];
+  const skinsManifest = {};
   console.log(`Found ${skinIds.length} skins.`);
   console.log(`Batch size ${BATCH_SIZE}.`);
   console.log(`${Math.ceil(skinIds.length / BATCH_SIZE)} fetches required.`);
@@ -51,19 +53,99 @@ async function main() {
         .slice(j, j + BATCH_SIZE)
         .join(",")}`;
       batch.push(
-        gatekeptFetch(skinsBatchUrl).then((skinsList) =>
-          pouch.bulkDocs(
-            skinsList.map((skin) => ({
-              ...skin,
-              _id: `skins_${skin.id}`,
-              $id: "gwapo/skins",
-            }))
-          )
-        )
+        gatekeptFetch(skinsBatchUrl).then((skinsList) => {
+          const skinDocumentsBatch = skinsList.map((skin) => ({
+            ...skin,
+            _id: `skin_${skin.id}`,
+            $id: "gwapo/skin",
+          }));
+          skinDocuments.push(...skinDocumentsBatch);
+          return pouch.bulkDocs(skinDocumentsBatch);
+        })
       );
     }
     await Promise.all(batch);
   }
+
+  console.log("Creating skins manifest");
+  for (let i = 0; i < skinDocuments.length; i++) {
+    const skin = skinDocuments[i];
+    switch (skin.type) {
+      case "Armor": {
+        if (skin.details.weight_class === "Clothing") {
+          // no user-facing skins, filter out "Clothing"
+          break;
+        }
+        skinsManifest.Armor ??= {
+          _id: `skins_Armor`,
+          $id: "gwapo/skins",
+          id: "Armor",
+          ids: ["Slot", "Weight"],
+          Slot: [],
+          Weight: [],
+        };
+        if (!skinsManifest.Armor.Slot.includes(skin.details.type)) {
+          skinsManifest.Armor.Slot.push(skin.details.type);
+        }
+        if (!skinsManifest.Armor.Weight.includes(skin.details.weight_class)) {
+          skinsManifest.Armor.Weight.push(skin.details.weight_class);
+        }
+        break;
+      }
+      case "Back": {
+        skinsManifest["Back"] ??= {
+          _id: `skins_Back`,
+          $id: "gwapo/skins",
+          id: "Back",
+          ids: [],
+        };
+        break;
+      }
+      case "Gathering": {
+        if (["Lure", "Bait"].includes(skin.details.type)) {
+          // no user-facing skins, filter out "Lure" and "Bait"
+          break;
+        }
+        skinsManifest.Gathering ??= {
+          _id: `skins_Gathering`,
+          $id: "gwapo/skins",
+          id: "Gathering",
+          ids: ["Tool"],
+          Tool: [],
+        };
+        if (!skinsManifest.Gathering.Tool.includes(skin.details.type)) {
+          skinsManifest.Gathering.Tool.push(skin.details.type);
+        }
+        break;
+      }
+      case "Weapon": {
+        if (
+          ["LargeBundle", "SmallBundle", "Toy", "ToyTwoHanded"].includes(
+            skin.details.type
+          )
+        ) {
+          // no user-facing skins, filter out "Lure" and "Bait"
+          break;
+        }
+        skinsManifest.Weapon ??= {
+          _id: `skins_Weapon`,
+          $id: "gwapo/skins",
+          id: "Weapon",
+          ids: ["Type"],
+          Type: [],
+        };
+        if (!skinsManifest.Weapon.Type.includes(skin.details.type)) {
+          skinsManifest.Weapon.Type.push(skin.details.type);
+        }
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+  }
+
+  await pouch.bulkDocs(Object.values(skinsManifest));
 
   console.log("exit");
 }
