@@ -1,5 +1,5 @@
-import { Fragment, createElement } from "react";
-import { Link, useMatch } from "react-router-dom";
+import { Fragment, createElement, useId } from "react";
+import { Link } from "react-router-dom";
 
 import containerItemClasses from "./ContainerItem.module.css";
 
@@ -21,11 +21,9 @@ export function ContainerItem(props: {
   } | null;
   item?: Item;
 }) {
-  const {
-    params: { category },
-  } = useMatch("/vault/:category/*")!;
+  const elementId = useId();
   return (
-    <li className={classNames(containerItemClasses["item"])}>
+    <li className={classNames(containerItemClasses["item"])} id={elementId}>
       <QueryUninitialized>
         <img
           className={classNames(containerItemClasses["item__img"])}
@@ -53,8 +51,11 @@ export function ContainerItem(props: {
           props.item?.id
             ? {
                 replace: true,
-                relative: "path",
-                to: `?itemId=${props.item?.id ?? ""}`,
+                to: {
+                  hash: "#aside",
+                  search: `?itemId=${props.item?.id ?? ""}`,
+                },
+                state: { from: elementId },
               }
             : null,
           <img

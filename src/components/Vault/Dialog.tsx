@@ -1,5 +1,6 @@
 import { skipToken } from "@reduxjs/toolkit/dist/query";
-import { useSearchParams, Link } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import { useLocation, useSearchParams, Link } from "react-router-dom";
 
 import asideClasses from "./aside.module.css";
 
@@ -12,6 +13,8 @@ import { readItems } from "../../features/store/api/read-items";
 const errorImageSrc = `${process.env.PUBLIC_URL}/icons/System/error-warning-fill.svg`;
 
 export function VaultItemDialog(props: {}) {
+  const contentRef = useRef<HTMLDivElement>(null);
+  const location = useLocation();
   const [searchParams] = useSearchParams();
   const itemId = searchParams.get("itemId");
   const { data } = readItems.useQuery(
@@ -20,18 +23,22 @@ export function VaultItemDialog(props: {}) {
   );
   const currentItem = data?.entities[itemId ?? ""];
 
-  if (!itemId) return null;
-
+  useEffect(() => {
+    if (location.hash === "#aside") {
+      contentRef.current?.scrollIntoView({
+        behavior: "auto",
+        inline: "end",
+      });
+    }
+  }, [location.hash, location.key]);
   return (
     <aside className={classNames(asideClasses["aside"])}>
-      <div className={classNames(asideClasses["sticky"])}>
+      <div className={classNames(asideClasses["sticky"])} ref={contentRef}>
         <div
           // offset the height of an element in the contentA column
           style={{ height: "calc(0.5em + 2px)" }}
         />
-        <Link relative="path" to="./">
-          back
-        </Link>
+        <a href={`#${location.state?.from ?? ""}`}>back</a>
         <img
           className={classNames(
             containerItemClasses["item__img"],
@@ -46,9 +53,7 @@ export function VaultItemDialog(props: {}) {
         </h3>
         <p>{currentItem?.description}</p>
         <p>Type: {currentItem?.type}</p>
-        <Link relative="path" to="./">
-          back
-        </Link>
+        <a href={`#${location.state?.from ?? ""}`}>back</a>
       </div>
     </aside>
   );

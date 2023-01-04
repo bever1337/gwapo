@@ -1,3 +1,4 @@
+import { useId } from "react";
 import { Link } from "react-router-dom";
 
 import containerItemClasses from "../Common/ContainerItem.module.css";
@@ -14,10 +15,19 @@ import type { Item } from "../../../types/item";
 
 // Different from common ContainerItem because material is always present unlike item
 export function MaterialContainerItem({ material }: { material: Item }) {
+  const elementId = useId();
   const readAccountMaterialsResult = readAccountMaterials.useQueryState({});
+
   return (
-    <li className={classNames(containerItemClasses["item"])}>
-      <Link replace relative="path" to={`?itemId=${material.id}`}>
+    <li className={classNames(containerItemClasses["item"])} id={elementId}>
+      <Link
+        replace
+        to={{
+          hash: "#aside",
+          search: `?itemId=${material.id}`,
+        }}
+        state={{ from: elementId }}
+      >
         <img
           className={classNames(containerItemClasses["item__img"])}
           alt={material.name}
