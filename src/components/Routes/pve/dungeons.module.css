@@ -1,0 +1,22 @@
+.list {
+  column-width: 36rem;
+  list-style: none;
+  padding: 0;
+}
+
+.item {
+  border: 1px solid #000000;
+  break-inside: avoid;
+  margin: 1rem 0;
+  padding: 1rem;
+}
+
+.item:first-of-type {
+  margin-top: 0;
+}
+
+.icon {
+  height: 1em;
+  vertical-align: text-bottom;
+  width: 1em;
+}

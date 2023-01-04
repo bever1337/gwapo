@@ -9,7 +9,10 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
+import { Index } from "./components/Routes";
 import { AppOutlet } from "./components/Routes/outlet";
+import { Dungeons } from "./components/Routes/pve/dungeons";
+import { PveOutlet } from "./components/Routes/pve/outlet";
 import { Vault } from "./components/Routes/vault/_inventory/bank";
 import { Materials } from "./components/Routes/vault/_inventory/materials";
 import { VaultInventoryOutlet } from "./components/Routes/vault/_inventory/outlet";
@@ -23,25 +26,10 @@ const appStore = store();
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route element={<AppOutlet />}>
-      <Route
-        element={
-          <Fragment>
-            <nav>
-              <Link to="/vault/bank">
-                <img
-                  alt=""
-                  src={
-                    process.env.PUBLIC_URL + "/icons/Finance/safe-2-fill.svg"
-                  }
-                  style={{ height: "2rem", width: "2rem" }}
-                />
-                <FormattedMessage defaultMessage="Vault" />
-              </Link>
-            </nav>
-          </Fragment>
-        }
-        index
-      />
+      <Route element={<Index />} index />
+      <Route element={<PveOutlet />} path="pve">
+        <Route element={<Dungeons />} path="dungeons" />
+      </Route>
       <Route element={<VaultOutlet />} path="vault">
         <Route element={<VaultInventoryOutlet />} path="*">
           <Route element={<Vault />} path="bank" />

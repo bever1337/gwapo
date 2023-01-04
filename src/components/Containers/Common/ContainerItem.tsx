@@ -12,7 +12,7 @@ import { classNames } from "../../../features/css/classnames";
 import type { Item } from "../../../types/item";
 
 const errorImageSrc = `${process.env.PUBLIC_URL}/icons/System/error-warning-fill.svg`;
-const loadingImageSrc = `${process.env.PUBLIC_URL}/icons/System/loader-fill.svg`;
+const loaderImageSrc = `${process.env.PUBLIC_URL}/icons/System/loader-fill.svg`;
 
 export function ContainerItem(props: {
   containerItem: {
@@ -30,14 +30,14 @@ export function ContainerItem(props: {
         <img
           className={classNames(containerItemClasses["item__img"])}
           alt="loading"
-          src={loadingImageSrc}
+          src={loaderImageSrc}
         />
       </QueryUninitialized>
       <QueryLoading>
         <img
           className={classNames(containerItemClasses["item__img"])}
           alt="loading"
-          src={loadingImageSrc}
+          src={loaderImageSrc}
         />
       </QueryLoading>
       <QueryError>
