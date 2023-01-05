@@ -32,13 +32,13 @@ export const injectedApi = api.injectEndpoints({
             .then((databaseName) =>
               new PouchDB(databaseName, { adapter: "indexeddb" }).query(
                 "gw2_skins/detailed_type",
-                { key: queryArguments.type, include_docs: false }
+                { key: queryArguments.type, include_docs: true }
               )
             )
             .then((allDocsResponse) => {
               return {
                 data: allDocsResponse.rows.reduce(
-                  (acc, row) => skinAdapter.setOne(acc, row.value as any),
+                  (acc, row) => skinAdapter.setOne(acc, row.doc as any),
                   skinAdapter.getInitialState()
                 ),
                 error: undefined,

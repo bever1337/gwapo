@@ -1,4 +1,3 @@
-const { emit } = require("process");
 const { pouch } = require("./common");
 
 //
@@ -8,7 +7,7 @@ const detailed_type = {
     if (doc.$id === "gwapo/skin" && doc.type) {
       if (!doc.details) {
         // back
-        emit(doc.type, doc);
+        emit(doc.type, null);
         return;
       }
       if (doc.type === "Armor") {
@@ -16,10 +15,10 @@ const detailed_type = {
           return;
         }
         // weight_slot, e.g. Heavy_Shoulders
-        emit(doc.details.type + "_" + doc.details.weight_class, doc);
+        emit(doc.details.type + "_" + doc.details.weight_class, null);
         return;
       }
-      emit(doc.details.type, doc);
+      emit(doc.details.type, null);
     }
   }.toString(),
 };

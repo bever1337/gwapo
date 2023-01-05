@@ -37,7 +37,6 @@ export const injectedApi = api.injectEndpoints({
           return [{ type: "internal/pouches", id: "BEST" }];
         },
         queryFn(queryArguments, queryApi) {
-          console.log("queryfn read currencies");
           return getDatabaseName(queryApi)
             .then((databaseName) =>
               new PouchDB(databaseName, { adapter: "indexeddb" }).allDocs({

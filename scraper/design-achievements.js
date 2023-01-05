@@ -1,4 +1,3 @@
-const { emit } = require("process");
 const { pouch } = require("./common");
 
 const detailed_type = {
