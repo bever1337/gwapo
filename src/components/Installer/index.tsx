@@ -9,14 +9,26 @@ import hideClasses from "../Elements/Hide.module.css";
 
 import { classNames } from "../../features/css/classnames";
 import {
+  readGwapoDatabaseProgress,
+  selectProgress,
+} from "../../features/store/api/read-gwapo-database-progress";
+import {
   readGwapoDatabases,
   selectBestDatabase,
 } from "../../features/store/api/read-gwapo-databases";
 import { updateGwapoDatabaseDump } from "../../features/store/api/update-gwapo-database-dump";
 
 export function Installer() {
-  const [open, setOpen] = useState(false); // accordion state
+  const [open, setOpen] = useState(true); // accordion state
   readGwapoDatabases.useQuerySubscription({});
+  const progressDatabaseHeader = readGwapoDatabaseProgress.useQuery({});
+  const targetDatabase = progressDatabaseHeader.data;
+  const bestDatabase = useSelector(selectBestDatabase);
+  const progressPercent = useSelector(selectProgress);
+  const currentIsBehind =
+    !!progressDatabaseHeader.data?._id &&
+    !!bestDatabase &&
+    progressDatabaseHeader.data?._id !== bestDatabase;
   const [trigger] = updateGwapoDatabaseDump.useMutation({});
   useEffect(() => {
     const request = trigger({});
@@ -39,7 +51,12 @@ export function Installer() {
         )}
       >
         <p>👷Under Construction👷</p>
-        <p>Current database: {useSelector(selectBestDatabase)}</p>
+        <label>
+          Installing {targetDatabase?._id}. {`${progressPercent}%`} complete.
+          <br />
+          <progress max={100} value={progressPercent} />
+        </label>
+        {currentIsBehind && <p>Current version: {bestDatabase}</p>}
       </div>
     </Fragment>
   );

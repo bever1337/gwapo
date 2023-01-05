@@ -28,6 +28,9 @@ export function Dungeons() {
   });
   return (
     <Query result={readAchievementsResult}>
+      <QueryUninitialized>Waiting to load dungeons.</QueryUninitialized>
+      <QueryLoading>Loading dungeons...</QueryLoading>
+      <QueryError>GWAPO encountered an error loading dungeons.</QueryError>
       <QuerySuccess>
         <Query result={readAccountAchievementsResult}>
           <ol className={classNames(dungeonsClasses["list"])}>

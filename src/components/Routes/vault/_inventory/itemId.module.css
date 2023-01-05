@@ -7,6 +7,10 @@
   padding: 1rem;
 }
 
+.null {
+  display: none;
+}
+
 @media screen and (min-width: 64rem) {
   .aside {
     border: 0px;
@@ -18,4 +22,8 @@
     position: sticky;
     top: 0;
   }
+
+  /* .null {
+    display: initial;
+  } */
 }

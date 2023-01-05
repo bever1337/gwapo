@@ -23,20 +23,20 @@ enum AuthenticatorState {
   Authenticated,
 }
 
-const AuthenticatorStateMessages = defineMessages({
-  [AuthenticatorState[AuthenticatorState.Unauthenticated]]: {
-    defaultMessage: "Logged out",
-  },
-  [AuthenticatorState[AuthenticatorState.Loading]]: {
-    defaultMessage: "Loading",
-  },
-  [AuthenticatorState[AuthenticatorState.Error]]: {
-    defaultMessage: "Error",
-  },
-  [AuthenticatorState[AuthenticatorState.Authenticated]]: {
-    defaultMessage: "Logged in",
-  },
-});
+// const AuthenticatorStateMessages = defineMessages({
+//   [AuthenticatorState[AuthenticatorState.Unauthenticated]]: {
+//     defaultMessage: "Logged out",
+//   },
+//   [AuthenticatorState[AuthenticatorState.Loading]]: {
+//     defaultMessage: "Loading",
+//   },
+//   [AuthenticatorState[AuthenticatorState.Error]]: {
+//     defaultMessage: "Error",
+//   },
+//   [AuthenticatorState[AuthenticatorState.Authenticated]]: {
+//     defaultMessage: "Logged in",
+//   },
+// });
 
 function deriveAuthenticatorState(
   client: ClientState["access"],
@@ -66,12 +66,12 @@ export function Authenticator() {
         <AccordionHeading onChange={setOpen}>
           <FormattedMessage defaultMessage="Authentication" />
         </AccordionHeading>
-        <span className={classNames(accordionClasses["tab__aside"])}>
+        {/* <span className={classNames(accordionClasses["tab__aside"])}>
           {createElement(
             FormattedMessage,
             AuthenticatorStateMessages[AuthenticatorState[authenticatorState]]
           )}
-        </span>
+        </span> */}
         <AccordionControl onChange={setOpen} open={open} />
       </div>
       <div

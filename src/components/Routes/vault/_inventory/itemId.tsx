@@ -1,14 +1,14 @@
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { useEffect, useRef } from "react";
-import { useLocation, useSearchParams, Link } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 
-import asideClasses from "./aside.module.css";
+import itemIdClasses from "./itemId.module.css";
 
-import containerItemClasses from "../Containers/Common/ContainerItem.module.css";
-import elementsClasses from "../Elements/index.module.css";
+import containerItemClasses from "../../../Containers/Common/ContainerItem.module.css";
+import elementsClasses from "../../../Elements/index.module.css";
 
-import { classNames } from "../../features/css/classnames";
-import { readItems } from "../../features/store/api/read-items";
+import { classNames } from "../../../../features/css/classnames";
+import { readItems } from "../../../../features/store/api/read-items";
 
 const errorImageSrc = `${process.env.PUBLIC_URL}/icons/System/error-warning-fill.svg`;
 
@@ -31,14 +31,31 @@ export function VaultItemDialog(props: {}) {
       });
     }
   }, [location.hash, location.key]);
+
+  const backLinkElement = (
+    <a
+      href={
+        (location.state?.from ? `#${location.state?.from}` : location.hash) ||
+        ""
+      }
+    >
+      back
+    </a>
+  );
+
   return (
-    <aside className={classNames(asideClasses["aside"])}>
-      <div className={classNames(asideClasses["sticky"])} ref={contentRef}>
+    <aside
+      className={classNames(
+        itemIdClasses["aside"],
+        !itemId && itemIdClasses["null"]
+      )}
+    >
+      <div className={classNames(itemIdClasses["sticky"])} ref={contentRef}>
         <div
           // offset the height of an element in the contentA column
           style={{ height: "calc(0.5em + 2px)" }}
         />
-        <a href={`#${location.state?.from ?? ""}`}>back</a>
+        {backLinkElement}
         <img
           className={classNames(
             containerItemClasses["item__img"],
@@ -53,7 +70,7 @@ export function VaultItemDialog(props: {}) {
         </h3>
         <p>{currentItem?.description}</p>
         <p>Type: {currentItem?.type}</p>
-        <a href={`#${location.state?.from ?? ""}`}>back</a>
+        {backLinkElement}
       </div>
     </aside>
   );

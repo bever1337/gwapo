@@ -1,6 +1,8 @@
 import React, { Fragment, useRef } from "react";
 import { FormattedMessage } from "react-intl";
 
+import settingsClasses from "./index.module.css";
+
 import { Authenticator } from "../Authenticator";
 import dialogClasses from "../Elements/Dialog.module.css";
 import elementsClasses from "../Elements/index.module.css";
@@ -8,6 +10,11 @@ import hideClasses from "../Elements/Hide.module.css";
 import { Installer } from "../Installer";
 
 import { classNames } from "../../features/css/classnames";
+import {
+  readGwapoDatabaseProgress,
+  selectProgress,
+} from "../../features/store/api/read-gwapo-database-progress";
+import { useSelector } from "react-redux";
 
 // declare string tempaltes outside JSX props for better syntax highlighting
 const closeImageSource = `${process.env.PUBLIC_URL}/icons/System/close-fill.svg`;
@@ -16,6 +23,9 @@ const settingsImageSource = `${process.env.PUBLIC_URL}/icons/System/settings-3-f
 /** */
 export function Settings(props: any) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  readGwapoDatabaseProgress.useQuery({});
+  const progressPercent = useSelector(selectProgress);
+  const loadingDump = progressPercent >= 0 && progressPercent < 100;
   return (
     <Fragment>
       <button
@@ -24,7 +34,11 @@ export function Settings(props: any) {
         }}
         type="button"
       >
-        <img alt="Settings" src={settingsImageSource} />
+        <img
+          alt="Settings"
+          className={classNames(loadingDump && settingsClasses["working"])}
+          src={settingsImageSource}
+        />
         <span className={classNames(hideClasses["hide"])}>
           <FormattedMessage defaultMessage="Click to open settings" />
         </span>

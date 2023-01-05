@@ -10,7 +10,7 @@ import { CharacterBags } from "../../../Containers/Character";
 import elementsClasses from "../../../Elements/index.module.css";
 import { SelectCharacter } from "../../../SelectCharacter";
 import { SharedInventory } from "../../../Containers/SharedInventory";
-import { VaultItemDialog } from "../../../Vault/Dialog";
+import { VaultItemDialog } from "./itemId";
 import { classNames } from "../../../../features/css/classnames";
 
 export function VaultInventoryOutlet() {
