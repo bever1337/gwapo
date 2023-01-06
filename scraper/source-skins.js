@@ -54,11 +54,22 @@ async function main() {
         .join(",")}`;
       batch.push(
         gatekeptFetch(skinsBatchUrl).then((skinsList) => {
-          const skinDocumentsBatch = skinsList.map((skin) => ({
-            ...skin,
-            _id: `skin_${skin.id}`,
-            $id: "gwapo/skin",
-          }));
+          const skinDocumentsBatch = skinsList.map((skin) => {
+            const skinDocumentId = [
+              "skin",
+              skin.details?.type ?? skin.type,
+              skin.details?.weight_class,
+              skin.id,
+            ]
+              .filter((skinPartial) => !!skinPartial)
+              .join("_");
+
+            return {
+              ...skin,
+              _id: skinDocumentId,
+              $id: "gwapo/skin",
+            };
+          });
           skinDocuments.push(...skinDocumentsBatch);
           return pouch.bulkDocs(skinDocumentsBatch);
         })

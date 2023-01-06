@@ -30,10 +30,11 @@ export const injectedApi = api.injectEndpoints({
         async queryFn(queryArguments, queryApi) {
           return getDatabaseName(queryApi)
             .then((databaseName) =>
-              new PouchDB(databaseName, { adapter: "indexeddb" }).query(
-                "gw2_skins/detailed_type",
-                { key: queryArguments.type, include_docs: true }
-              )
+              new PouchDB(databaseName, { adapter: "indexeddb" }).allDocs({
+                endkey: `skin_${queryArguments.type}_\ufff0`,
+                include_docs: true,
+                startkey: `skin_${queryArguments.type}_0`,
+              })
             )
             .then((allDocsResponse) => {
               return {
