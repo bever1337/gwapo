@@ -8,3 +8,7 @@
   word-break: normal !important;
   overflow: hidden;
 }
+
+.hide--everywhere {
+  display: none;
+}

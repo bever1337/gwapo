@@ -2,9 +2,12 @@ import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { useEffect, useRef } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 
-import itemIdClasses from "./itemId.module.css";
+import inventoryOutletClasses from "./outlet.module.css";
+
+import vaultOutletClasses from "../outlet.module.css";
 
 import containerItemClasses from "../../../Containers/Common/ContainerItem.module.css";
+import hideClasses from "../../../Elements/Hide.module.css";
 import elementsClasses from "../../../Elements/index.module.css";
 
 import { classNames } from "../../../../features/css/classnames";
@@ -46,11 +49,16 @@ export function VaultItemDialog(props: {}) {
   return (
     <aside
       className={classNames(
-        itemIdClasses["aside"],
-        !itemId && itemIdClasses["null"]
+        vaultOutletClasses["aside"],
+        inventoryOutletClasses["aside"],
+        !itemId && hideClasses["hide--everywhere"]
       )}
+      id="aside"
     >
-      <div className={classNames(itemIdClasses["sticky"])} ref={contentRef}>
+      <div
+        className={classNames(vaultOutletClasses["sticky"])}
+        ref={contentRef}
+      >
         <div
           // offset the height of an element in the contentA column
           style={{ height: "calc(0.5em + 2px)" }}
