@@ -24,7 +24,7 @@ const todoImageSrc = `${process.env.PUBLIC_URL}/icons/System/close-circle-fill.s
 export function Dungeons() {
   const readAccountAchievementsResult = readAccountAchievements.useQuery({});
   const readAchievementsResult = readAchievements.useQuery({
-    key: AchievementCategory.Dungeon,
+    category: AchievementCategory.Dungeon,
   });
   return (
     <Query result={readAchievementsResult}>
@@ -143,6 +143,9 @@ export function Dungeons() {
                   </label>
                   <ol>
                     {achievement?.tiers.map((tier, index, collection) => {
+                      // TODO make a separate component
+                      // decrement account AP as each tier is iterated/rendered
+                      // this can be o(n)
                       const requiredForTier = collection
                         .slice(0, index + 1)
                         .reduce(

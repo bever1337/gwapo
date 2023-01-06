@@ -99,22 +99,21 @@ export const achievementAdapter = createEntityAdapter<Achievement>();
 export const injectedApi = api.injectEndpoints({
   endpoints(build) {
     return {
-      readAchievements: build.query<EntityState<Achievement>, { key: any }>({
+      readAchievements: build.query<
+        EntityState<Achievement>,
+        { category: number }
+      >({
         providesTags() {
           return [{ type: "internal/pouches", id: "BEST" }];
         },
         async queryFn(queryArguments, queryApi) {
           return getDatabaseName(queryApi)
             .then((databaseName) =>
-              new PouchDB(databaseName, { adapter: "indexeddb" }).query(
-                "gw2_achievements/detailed_type",
-                {
-                  key: queryArguments.key,
-                  include_docs: true,
-                  startkey: "achievements_0",
-                  endkey: "achievements_\ufff0",
-                }
-              )
+              new PouchDB(databaseName, { adapter: "indexeddb" }).allDocs({
+                include_docs: true,
+                startkey: `achievements_${queryArguments.category}_0`,
+                endkey: `achievements_${queryArguments.category}_\ufff0`,
+              })
             )
             .then((allDocsResponse) => {
               return {

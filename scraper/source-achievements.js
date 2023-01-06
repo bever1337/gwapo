@@ -77,7 +77,7 @@ async function main() {
                   category: achievementCategory.id,
                   group: achievementGroup.id,
                   id: achievementId,
-                  _id: `achievements_${achievementId}`,
+                  _id: `achievements_${achievementCategory.id}_${achievementId}`,
                   $id: "gwapo/achievements",
                 };
               });
