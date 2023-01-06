@@ -15,7 +15,6 @@
   "bugs": {
     "url": "https://github.com/bever1337/gwapo/issues"
   },
-  "homepage": "https://github.com/bever1337/gwapo",
   "dependencies": {
     "@reduxjs/toolkit": "^1.8.6",
     "dotenv": "^16.0.3",
