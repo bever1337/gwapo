@@ -1,5 +1,3 @@
-import { Fragment, ReactElement } from "react";
-
 import dungeonsClasses from "./dungeons.module.css";
 
 import elementsClasses from "../../Elements/index.module.css";
@@ -21,7 +19,7 @@ const completeImageSrc = `${process.env.PUBLIC_URL}/icons/System/checkbox-circle
 const loaderImageSrc = `${process.env.PUBLIC_URL}/icons/System/loader-fill.svg`;
 const todoImageSrc = `${process.env.PUBLIC_URL}/icons/System/close-circle-fill.svg`;
 
-export function Dungeons() {
+export function PveDungeons() {
   const readAccountAchievementsResult = readAccountAchievements.useQuery({});
   const readAchievementsResult = readAchievements.useQuery({
     category: AchievementCategory.Dungeon,

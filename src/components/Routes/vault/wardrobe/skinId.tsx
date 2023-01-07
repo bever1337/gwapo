@@ -20,7 +20,7 @@ import { readSkins } from "../../../../features/store/api/read-skins";
 
 const errorImageSrc = `${process.env.PUBLIC_URL}/icons/System/error-warning-fill.svg`;
 
-export function SkinId() {
+export function WardrobeSkinId() {
   const contentRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   const backHref =

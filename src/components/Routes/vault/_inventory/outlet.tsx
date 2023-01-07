@@ -10,7 +10,7 @@ import { CharacterBags } from "../../../Containers/Character";
 import elementsClasses from "../../../Elements/index.module.css";
 import { SelectCharacter } from "../../../SelectCharacter";
 import { SharedInventory } from "../../../Containers/SharedInventory";
-import { VaultItemDialog } from "./itemId";
+import { InventoryItemId } from "./itemId";
 import { classNames } from "../../../../features/css/classnames";
 
 export function VaultInventoryOutlet() {
@@ -52,7 +52,7 @@ export function VaultInventoryOutlet() {
           />
           <Outlet />
         </div>
-        <VaultItemDialog />
+        <InventoryItemId />
       </main>
     </Fragment>
   );

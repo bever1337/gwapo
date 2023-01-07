@@ -2,7 +2,7 @@ import { Fragment, useContext } from "react";
 import { FormattedMessage } from "react-intl";
 import { useSearchParams } from "react-router-dom";
 
-import { SkinId } from "./skinId";
+import { WardrobeSkinId } from "./skinId";
 import wardrobeClasses from "./wardrobe.module.css";
 
 import vaultOutletClasses from "../outlet.module.css";
@@ -38,7 +38,7 @@ const UnknownComponent = (props: any) => {
   );
 };
 
-export function Wardrobe() {
+export function VaultWardrobe() {
   const [searchParams, setSearchParams] = useSearchParams();
   const readAccountSkinsResult = readAccountSkins.useQuery({});
   const readSkinTypesResult = readSkinTypes.useQuery({});
@@ -235,7 +235,7 @@ export function Wardrobe() {
               <ActiveComponent />
             </QuerySuccess>
           </div>
-          <SkinId />
+          <WardrobeSkinId />
         </main>
       </Query>
     </Fragment>

@@ -133,10 +133,13 @@ export function Authenticator() {
               `}
                 values={{
                   arenanetLink: (content) => (
-                    <a href="https://account.arena.net/applications">
+                    <a
+                      href="https://account.arena.net/applications"
+                      target="ArenaNet"
+                    >
                       {content}
                       <img
-                        alt=""
+                        alt="External link"
                         className={classNames(
                           flexFormClasses["link__icon--external"]
                         )}
@@ -145,10 +148,13 @@ export function Authenticator() {
                     </a>
                   ),
                   gw2WikiLink: (content) => (
-                    <a href="https://wiki.guildwars2.com/wiki/API:API_key">
+                    <a
+                      href="https://wiki.guildwars2.com/wiki/API:API_key"
+                      target="Gw2Wiki"
+                    >
                       {content}
                       <img
-                        alt=""
+                        alt="External link"
                         className={classNames(
                           flexFormClasses["link__icon--external"]
                         )}
@@ -174,6 +180,30 @@ export function Authenticator() {
                     [...(client?.permissions ?? [])]
                       .sort((a, b) => `${a}`.localeCompare(`${b}`))
                       .join(", "),
+                }}
+              />
+            </p>
+            <p>
+              <FormattedMessage
+                defaultMessage={
+                  "Manage API keys on your <arenanetLink>ArenaNet account page</arenanetLink>."
+                }
+                values={{
+                  arenanetLink: (content) => (
+                    <a
+                      href="https://account.arena.net/applications"
+                      target="ArenaNet"
+                    >
+                      {content}
+                      <img
+                        alt="External link"
+                        className={classNames(
+                          flexFormClasses["link__icon--external"]
+                        )}
+                        src={externalLinkImageSource}
+                      />
+                    </a>
+                  ),
                 }}
               />
             </p>

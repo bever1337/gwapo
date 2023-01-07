@@ -15,7 +15,7 @@ import { readItems } from "../../../../features/store/api/read-items";
 
 const errorImageSrc = `${process.env.PUBLIC_URL}/icons/System/error-warning-fill.svg`;
 
-export function VaultItemDialog(props: {}) {
+export function InventoryItemId(props: {}) {
   const contentRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   const backHref =
