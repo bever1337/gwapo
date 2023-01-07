@@ -9,13 +9,16 @@ import { QuerySuccess } from "../../Query/Success";
 
 import { classNames } from "../../../features/css/classnames";
 import { readAccountSkins } from "../../../features/store/api/read-account-skins";
-import type { Skin } from "../../../features/store/api/read-skins";
+import type {
+  Skin,
+  SkinDocument,
+} from "../../../features/store/api/read-skins";
 
 const lockImageSrc = `${process.env.PUBLIC_URL}/icons/System/lock-fill.svg`;
 
-export function SkinContainerItem(props: { skin: Skin }) {
+export function SkinContainerItem(props: { skin: Skin & SkinDocument }) {
   const [urlSearchParams] = useSearchParams();
-  urlSearchParams.set("skinId", `${props.skin.id}`);
+  urlSearchParams.set("skinId", `${props.skin._id}`);
   const readAccountSkinsResult = readAccountSkins.useQueryState({});
   const skinUnlocked =
     readAccountSkinsResult.data?.includes(props.skin.id) ?? false;
@@ -27,7 +30,7 @@ export function SkinContainerItem(props: { skin: Skin }) {
           hash: "#aside",
           search: `?${urlSearchParams.toString()}`,
         }}
-        state={{ from: props.skin.id }}
+        state={{ from: props.skin._id }}
       >
         <img
           className={classNames(

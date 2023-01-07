@@ -18,6 +18,8 @@ const errorImageSrc = `${process.env.PUBLIC_URL}/icons/System/error-warning-fill
 export function VaultItemDialog(props: {}) {
   const contentRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
+  const backHref =
+    (location.state?.from ? `#${location.state.from}` : location.hash) || "";
   const [searchParams] = useSearchParams();
   const itemId = searchParams.get("itemId");
   const { data } = readItems.useQuery(
@@ -35,17 +37,6 @@ export function VaultItemDialog(props: {}) {
     }
   }, [location.hash, location.key]);
 
-  const backLinkElement = (
-    <a
-      href={
-        (location.state?.from ? `#${location.state?.from}` : location.hash) ||
-        ""
-      }
-    >
-      back
-    </a>
-  );
-
   return (
     <aside
       className={classNames(
@@ -59,26 +50,119 @@ export function VaultItemDialog(props: {}) {
         className={classNames(vaultOutletClasses["sticky"])}
         ref={contentRef}
       >
-        <div
+        {/* <div
           // offset the height of an element in the contentA column
           style={{ height: "calc(0.5em + 2px)" }}
-        />
-        {backLinkElement}
-        <img
-          className={classNames(
-            containerItemClasses["item__img"],
-            containerItemClasses[currentItem?.rarity ?? ""]
-          )}
-          alt={currentItem?.name ?? ""}
-          src={currentItem ? currentItem?.icon ?? errorImageSrc : ""}
-          style={{ float: "left", margin: "0 1em 0.5em 0" }}
-        />
-        <h3 className={classNames(elementsClasses["no-margin"])}>
-          {currentItem?.name}
-        </h3>
-        <p>{currentItem?.description}</p>
-        <p>Type: {currentItem?.type}</p>
-        {backLinkElement}
+        /> */}
+        <a href={backHref}>back</a>
+        <table className={classNames(vaultOutletClasses["details__table"])}>
+          <thead>
+            <tr>
+              <th
+                className={classNames(
+                  vaultOutletClasses["details__table__header"],
+                  vaultOutletClasses["details__table__thead__header"]
+                )}
+                colSpan={2}
+              >
+                <h3 className={classNames(elementsClasses["no-margin"])}>
+                  {currentItem?.name}
+                  <img
+                    alt={currentItem?.name ?? ""}
+                    className={classNames(
+                      containerItemClasses["item__img"],
+                      vaultOutletClasses["details__table__thead__header__img"]
+                    )}
+                    src={currentItem ? currentItem?.icon ?? errorImageSrc : ""}
+                  />
+                </h3>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th
+                className={classNames(
+                  vaultOutletClasses["details__table__header"]
+                )}
+              >
+                Type
+              </th>
+              <td
+                className={classNames(
+                  vaultOutletClasses["details__table__cell"]
+                )}
+              >
+                {currentItem?.type}
+              </td>
+            </tr>
+            <tr>
+              <th
+                className={classNames(
+                  vaultOutletClasses["details__table__header"]
+                )}
+              >
+                Rarity
+              </th>
+              <td
+                className={classNames(
+                  vaultOutletClasses["details__table__cell"]
+                )}
+              >
+                {currentItem?.rarity}
+              </td>
+            </tr>
+            <tr>
+              <th
+                className={classNames(
+                  vaultOutletClasses["details__table__header"]
+                )}
+              >
+                Level
+              </th>
+              <td
+                className={classNames(
+                  vaultOutletClasses["details__table__cell"]
+                )}
+              >
+                {currentItem?.level}
+              </td>
+            </tr>
+            <tr>
+              <th
+                className={classNames(
+                  vaultOutletClasses["details__table__header"]
+                )}
+              >
+                Chat link
+              </th>
+              <td
+                className={classNames(
+                  vaultOutletClasses["details__table__cell"]
+                )}
+              >
+                {currentItem?.chat_link}
+              </td>
+            </tr>
+            <tr>
+              <th
+                className={classNames(
+                  vaultOutletClasses["details__table__header"]
+                )}
+              >
+                Description
+              </th>
+              <td
+                className={classNames(
+                  vaultOutletClasses["details__table__cell"]
+                )}
+              >
+                {currentItem?.description}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <a href={backHref}>back</a>
       </div>
     </aside>
   );

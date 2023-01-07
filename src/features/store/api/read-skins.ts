@@ -18,25 +18,43 @@ export interface Skin {
   type: "Armor";
 }
 
-export const skinAdapter = createEntityAdapter<Skin>();
+export interface SkinDocument {
+  $id: "gwapo/skin";
+  _id: `skin_${string}`;
+  _rev: string;
+}
+
+export const skinAdapter = createEntityAdapter<Skin & SkinDocument>();
 
 export const injectedApi = api.injectEndpoints({
   endpoints(build) {
     return {
-      readSkins: build.query<EntityState<Skin>, { type: string }>({
+      readSkins: build.query<
+        EntityState<Skin & SkinDocument>,
+        { type: string } | { key: string }
+      >({
         providesTags() {
           return [{ type: "internal/pouches", id: "BEST" }];
         },
-        async queryFn(queryArguments, queryApi) {
+        queryFn(queryArguments, queryApi) {
           return getDatabaseName(queryApi)
-            .then((databaseName) =>
-              new PouchDB(databaseName, { adapter: "indexeddb" }).allDocs({
-                endkey: `skin_${queryArguments.type}_\ufff0`,
+            .then(function queryPouchForSkins(databaseName) {
+              const pouch = new PouchDB(databaseName, {
+                adapter: "indexeddb",
+              });
+              if ("type" in queryArguments) {
+                return pouch.allDocs({
+                  endkey: `skin_${queryArguments.type}_\ufff0`,
+                  include_docs: true,
+                  startkey: `skin_${queryArguments.type}_0`,
+                });
+              }
+              return pouch.allDocs({
+                key: queryArguments.key,
                 include_docs: true,
-                startkey: `skin_${queryArguments.type}_0`,
-              })
-            )
-            .then((allDocsResponse) => {
+              });
+            })
+            .then(function reduceRowsIntoEntities(allDocsResponse) {
               return {
                 data: allDocsResponse.rows.reduce(
                   (acc, row) => skinAdapter.setOne(acc, row.doc as any),

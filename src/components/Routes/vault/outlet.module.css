@@ -78,3 +78,34 @@
     top: 0;
   }
 }
+
+.details__table {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+.details__table__thead__header__img {
+  border: 0;
+  display: inline;
+  height: 2.5rem;
+  margin-left: 0.5em;
+  vertical-align: middle;
+  width: 2.5rem;
+}
+
+.details__table__header {
+  border-right: 1px solid black;
+  padding: 0.25em 0.5em 0.25em 0.25em;
+  text-align: right;
+  vertical-align: top;
+}
+
+.details__table__cell {
+  padding: 0.25em 0.5em 0.25em 0.25em;
+  vertical-align: top;
+}
+
+.details__table__thead__header {
+  border-bottom: 1px solid black;
+  text-align: left;
+}

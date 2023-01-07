@@ -77,7 +77,7 @@ export function SkinContainer() {
                     containerItemClasses["item"],
                     lockedClassName
                   )}
-                  id={`${skinId}`}
+                  id={currentData?.entities[skinId]?._id}
                   key={skinId}
                 >
                   <SkinContainerItem skin={currentData?.entities[skinId]!} />
