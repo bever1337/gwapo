@@ -1,5 +1,6 @@
 .working {
   animation: spin 4s infinite;
+  animation-timing-function: linear;
 }
 
 @keyframes spin {

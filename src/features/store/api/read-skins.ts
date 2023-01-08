@@ -34,7 +34,10 @@ export const injectedApi = api.injectEndpoints({
         { type: string } | { key: string }
       >({
         providesTags() {
-          return [{ type: "internal/pouches", id: "BEST" }];
+          return [
+            { type: "internal/pouches", id: "LIST" },
+            { type: "internal/pouches", id: "skins" },
+          ];
         },
         queryFn(queryArguments, queryApi) {
           return getDatabaseName(queryApi)

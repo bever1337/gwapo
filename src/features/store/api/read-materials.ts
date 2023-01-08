@@ -30,7 +30,10 @@ export const injectedApi = api.injectEndpoints({
     return {
       readMaterials: build.query<ReadMaterialsResult, ReadMaterialsArguments>({
         providesTags() {
-          return [{ type: "internal/pouches", id: "BEST" }];
+          return [
+            { type: "internal/pouches", id: "LIST" },
+            { type: "internal/pouches", id: "materials" },
+          ];
         },
         queryFn(queryArguments, queryApi) {
           return getDatabaseName(queryApi)

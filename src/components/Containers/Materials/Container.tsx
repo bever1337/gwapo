@@ -86,19 +86,25 @@ export function MaterialsContainer({ materials }: { materials: Materials }) {
               accordionClasses["folder"]
             )}
           >
-            <ol
-              className={classNames(
-                containerClasses["container"],
-                elementsClasses["no-margin"]
-              )}
-            >
-              {readItemsResult.data?.ids.map((itemId) => (
-                <MaterialContainerItem
-                  key={itemId}
-                  material={readItemsResult.data?.entities[itemId]!}
-                />
-              ))}
-            </ol>
+            {(readItemsResult.data?.ids.length ?? 0) === 0 ? (
+              <p>
+                <FormattedMessage defaultMessage="GWAPO encountered an error loading crafting materials." />
+              </p> //
+            ) : (
+              <ol
+                className={classNames(
+                  containerClasses["container"],
+                  elementsClasses["no-margin"]
+                )}
+              >
+                {readItemsResult.data?.ids.map((itemId) => (
+                  <MaterialContainerItem
+                    key={itemId}
+                    material={readItemsResult.data?.entities[itemId]!}
+                  />
+                ))}
+              </ol>
+            )}
           </div>
         </section>
       </QuerySuccess>

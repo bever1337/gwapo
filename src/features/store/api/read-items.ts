@@ -24,7 +24,10 @@ export const injectedApi = api.injectEndpoints({
     return {
       readItems: build.query<ReadItemsResult, ReadItemsArguments>({
         providesTags() {
-          return [{ type: "internal/pouches", id: "BEST" }];
+          return [
+            { type: "internal/pouches", id: "LIST" },
+            { type: "internal/pouches", id: "items" },
+          ];
         },
         async queryFn({ ids }, queryApi) {
           return getDatabaseName(queryApi)

@@ -1,4 +1,7 @@
-const { pouch } = require("./common");
+require("dotenv").config({ path: `${process.cwd()}/scraper/.env` });
+const fs = require("fs");
+
+const { fetch, PouchDB } = require("./common");
 
 const BATCH_SIZE = 50;
 const BATCH_STEP = 5;
@@ -9,15 +12,6 @@ const achievementGroupsUrl =
 const achievementCategoriesUrl =
   "https://api.guildwars2.com/v2/achievements/categories";
 const achievementUrl = "https://api.guildwars2.com/v2/achievements";
-
-const fetch = (() => {
-  const fetchPromise = import("node-fetch").then(({ default: fetch }) => fetch);
-  return function (requestInfo, requestInit) {
-    return fetchPromise.then((resolvedFetch) =>
-      resolvedFetch(requestInfo, requestInit)
-    );
-  };
-})();
 
 function slowFetch(requestInfo, requestInit) {
   const fetchCtor = () =>
@@ -42,12 +36,20 @@ function slowFetch(requestInfo, requestInit) {
 }
 
 async function main() {
-  const achievementGroupUids = await slowFetch(achievementGroupsUrl);
-  const achievementGroups = await slowFetch(
-    `${achievementGroupsUrl}?ids=${achievementGroupUids.join(",")}`
-  );
-  const achievements = {};
+  const pouchName = `gwapo_${process.env.START_TIME}_achievements`;
+  const pouch = new PouchDB(pouchName, { adapter: "memory" });
 
+  console.log("Fetching achievement group ids");
+  const achievementGroupUids = await fetch(achievementGroupsUrl).then(
+    (response) => response.json()
+  );
+
+  console.log("Fetching achievement groups");
+  const achievementGroups = await fetch(
+    `${achievementGroupsUrl}?ids=${achievementGroupUids.join(",")}`
+  ).then((response) => response.json());
+
+  const achievements = {};
   for (
     let iterateAchievementGroups = 0;
     iterateAchievementGroups < achievementGroups.length;
@@ -71,7 +73,6 @@ async function main() {
         slowFetch(achievementCategoryIdsUrl).then(
           (batchedAchievementCategories) => {
             batchedAchievementCategories.forEach((achievementCategory) => {
-              console.debug(achievementCategory.name, achievementCategory.id);
               achievementCategory.achievements.forEach((achievementId) => {
                 achievements[achievementId] = {
                   category: achievementCategory.id,
@@ -120,6 +121,16 @@ async function main() {
     }
     await Promise.all(batch);
   }
+
+  console.log("Dumping achievements database");
+
+  await pouch.dump(
+    fs.createWriteStream(`${process.cwd()}/public/dump-achievements.txt`, {
+      encoding: "utf-8",
+    })
+  );
+
+  console.log("exit");
 }
 
 main();

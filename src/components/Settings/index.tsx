@@ -11,10 +11,9 @@ import { Installer } from "../Installer";
 
 import { classNames } from "../../features/css/classnames";
 import {
-  readGwapoDatabaseProgress,
-  selectProgress,
-} from "../../features/store/api/read-gwapo-database-progress";
-import { useSelector } from "react-redux";
+  firstDumpFinished,
+  readGwapoDatabases,
+} from "../../features/store/api/read-gwapo-databases";
 
 // declare string tempaltes outside JSX props for better syntax highlighting
 const closeImageSource = `${process.env.PUBLIC_URL}/icons/System/close-fill.svg`;
@@ -23,9 +22,10 @@ const settingsImageSource = `${process.env.PUBLIC_URL}/icons/System/settings-3-f
 /** */
 export function Settings(props: any) {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  readGwapoDatabaseProgress.useQuery({});
-  const progressPercent = useSelector(selectProgress);
-  const loadingDump = progressPercent >= 0 && progressPercent < 100;
+  const readDatabasesResult = readGwapoDatabases.useQuery({});
+  const bestDatabase = firstDumpFinished(readDatabasesResult);
+  const targetDatabaseId = readDatabasesResult.data?.ids[0];
+  const loadingDump = bestDatabase !== targetDatabaseId;
   return (
     <Fragment>
       <button

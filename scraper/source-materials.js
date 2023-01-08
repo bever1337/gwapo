@@ -1,4 +1,7 @@
-const { pouch } = require("./common");
+require("dotenv").config({ path: `${process.cwd()}/scraper/.env` });
+const fs = require("fs");
+
+const { fetch, PouchDB } = require("./common");
 
 const BATCH_SIZE = 50;
 const BATCH_STEP = 5;
@@ -6,7 +9,9 @@ const BATCH_TASK_MINIMUM_LENGTH = 1000;
 const ITEMS_URL = "https://api.guildwars2.com/v2/materials";
 
 async function main() {
-  const fetch = await import("node-fetch").then(({ default: fetch }) => fetch);
+  const pouchName = `gwapo_${process.env.START_TIME}_materials`;
+  const pouch = new PouchDB(pouchName, { adapter: "memory" });
+
   /** Fetch no faster than 1 second */
   const gatekeptFetch = (requestInfo, requestInit) =>
     Promise.all([
@@ -28,7 +33,7 @@ async function main() {
         }),
     ]);
 
-  console.log("Fetching item indices...");
+  console.log("Fetching materials indices...");
   /** @type {integer[]} */
   const itemIds = await fetch(ITEMS_URL).then((response) => response.json());
   console.log(`Found ${itemIds.length} items.`);
@@ -55,6 +60,14 @@ async function main() {
     }
     await Promise.all(batch);
   }
+
+  console.log("Dumping materials database");
+
+  await pouch.dump(
+    fs.createWriteStream(`${process.cwd()}/public/dump-materials.txt`, {
+      encoding: "utf-8",
+    })
+  );
 
   console.log("exit");
 }

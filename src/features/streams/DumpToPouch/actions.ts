@@ -19,12 +19,12 @@ interface DumpStreamContext {
   start_time: string;
 }
 
-/** Name of dump database AND id of dump checkpoint document in meta database */
-export const toDumpDatabaseName = (header: Omit<DumpStreamContext, "seq">) =>
-  `${header.db_info.db_name}/${header.start_time}`;
-/** Name of meta database that holds dump checkpoint documents */
-export const toMetaDatabaseName = (header: Omit<DumpStreamContext, "seq">) =>
-  header.db_info.db_name;
+/** `{{meta db}}_{{date}}_{{table}}` => `{{meta db}}` */
+export const dbNameToMetaDbName = (header: DumpHeader) =>
+  header.db_info.db_name.split("_")[0];
+/** `{{meta db}}_{{date}}_{{table}}` => `{{meta db}}_{{date}}` */
+export const dbNameToDumpDbName = (header: DumpHeader) =>
+  header.db_info.db_name.split("_").slice(0, 2).join("_");
 
 export class DumpStreamActions implements DumpToPouchSinkActions {
   /** Internal buffering of documents */
@@ -61,7 +61,7 @@ export class DumpStreamActions implements DumpToPouchSinkActions {
         if (pouchDbResponse.length > 0) {
           return Promise.reject("Error putting flushed docs");
         }
-        return this.metaPouch!.get(toDumpDatabaseName(this.header!));
+        return this.metaPouch!.get(this.header!.db_info.db_name);
       })
       .then((headerDocument) => {
         return this.metaPouch!.put({ ...headerDocument, seq: sequence });
@@ -75,14 +75,14 @@ export class DumpStreamActions implements DumpToPouchSinkActions {
   }
 
   initialize(header: DumpHeader) {
-    this.dumpPouch = new PouchDB(toDumpDatabaseName(header), {
+    this.dumpPouch = new PouchDB(dbNameToDumpDbName(header), {
       adapter: "indexeddb",
     });
-    this.metaPouch = new PouchDB(toMetaDatabaseName(header), {
+    this.metaPouch = new PouchDB(dbNameToMetaDbName(header), {
       adapter: "indexeddb",
     });
     return this.metaPouch
-      .get(toDumpDatabaseName(header))
+      .get(header.db_info.db_name)
       .then(
         // document exists, re-write contents for sanity check
         (savedDumpHeaderDocument) =>
@@ -98,7 +98,7 @@ export class DumpStreamActions implements DumpToPouchSinkActions {
         (reason) =>
           ({
             ...header,
-            _id: toDumpDatabaseName(header),
+            _id: header.db_info.db_name,
             $id: "dump",
             seq: 0,
           } as DumpHeaderDocument)
@@ -141,7 +141,7 @@ export class DumpStreamActions implements DumpToPouchSinkActions {
         if (pouchDbResponse.length > 0) {
           return Promise.reject("Error putting flushed docs");
         }
-        return this.metaPouch!.get(toDumpDatabaseName(this.header!));
+        return this.metaPouch!.get(this.header!.db_info.db_name);
       })
       .then((headerDocument) => {
         return this.metaPouch!.put({

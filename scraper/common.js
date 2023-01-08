@@ -1,7 +1,21 @@
 const PouchDB = require("pouchdb");
-const replicationStream = require("pouchdb-replication-stream");
+const pouchDbMemoryAdapter = require("pouchdb-adapter-memory");
+const pouchDbReplicationStream = require("pouchdb-replication-stream");
 
-PouchDB.plugin(replicationStream.plugin);
-PouchDB.adapter("writableStream", replicationStream.adapters.writableStream);
+PouchDB.plugin(pouchDbMemoryAdapter);
+PouchDB.plugin(pouchDbReplicationStream.plugin);
+PouchDB.adapter(
+  "writableStream",
+  pouchDbReplicationStream.adapters.writableStream
+);
 
-module.exports.pouch = new PouchDB("gwapo-db");
+module.exports.PouchDB = PouchDB;
+
+module.exports.fetch = (() => {
+  const fetchPromise = import("node-fetch").then(({ default: fetch }) => fetch);
+  return function fetch(requestInfo, requestInit) {
+    return fetchPromise.then((resolvedFetch) =>
+      resolvedFetch(requestInfo, requestInit)
+    );
+  };
+})();

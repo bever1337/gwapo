@@ -1,4 +1,7 @@
-const { pouch } = require("./common");
+require("dotenv").config({ path: `${process.cwd()}/scraper/.env` });
+const fs = require("fs");
+
+const { fetch, PouchDB } = require("./common");
 
 const BATCH_SIZE = 50;
 const BATCH_STEP = 5;
@@ -7,9 +10,7 @@ const ITEMS_URL = "https://api.guildwars2.com/v2/items";
 
 const gatekeptFetch = (requestInfo, requestInit) => {
   const fetchCtor = () =>
-    import("node-fetch")
-      .then(({ default: fetch }) => fetch(requestInfo, requestInit))
-      .then((response) => response.json());
+    fetch(requestInfo, requestInit).then((response) => response.json());
   return Promise.all([
     fetchCtor().catch((error) => {
       console.error(error);
@@ -25,9 +26,8 @@ const gatekeptFetch = (requestInfo, requestInit) => {
 };
 
 async function main() {
-  const fetch = await import("node-fetch").then(({ default: fetch }) => fetch);
-  /** Fetch no faster than 1 second */
-
+  const pouchName = `gwapo_${process.env.START_TIME}_items`;
+  const pouch = new PouchDB(pouchName, { adapter: "memory" });
   console.log("Fetching item indices...");
   /** @type {integer[]} */
   const itemIds = await fetch(ITEMS_URL).then((response) => response.json());
@@ -64,6 +64,14 @@ async function main() {
     }
     await Promise.all(batch);
   }
+
+  console.log("Dumping items database");
+
+  await pouch.dump(
+    fs.createWriteStream(`${process.cwd()}/public/dump-items.txt`, {
+      encoding: "utf-8",
+    })
+  );
 
   console.log("exit");
 }
