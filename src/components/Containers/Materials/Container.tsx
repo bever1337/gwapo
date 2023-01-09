@@ -80,32 +80,32 @@ export function MaterialsContainer({ materials }: { materials: Materials }) {
             </AccordionHeading>
             <AccordionControl onChange={setOpen} open={open} />
           </div>
-          <div
-            className={classNames(
-              !open && hideClasses["hide"],
-              accordionClasses["folder"]
-            )}
-          >
-            {(readItemsResult.data?.ids.length ?? 0) === 0 ? (
-              <p>
-                <FormattedMessage defaultMessage="GWAPO encountered an error loading crafting materials." />
-              </p> //
-            ) : (
-              <ol
-                className={classNames(
-                  containerClasses["container"],
-                  elementsClasses["no-margin"]
-                )}
-              >
-                {readItemsResult.data?.ids.map((itemId) => (
-                  <MaterialContainerItem
-                    key={itemId}
-                    material={readItemsResult.data?.entities[itemId]!}
-                  />
-                ))}
-              </ol>
-            )}
-          </div>
+          {(readItemsResult.data?.ids.length ?? 0) === 0 ? (
+            <p
+              className={classNames(
+                !open && hideClasses["hide"],
+                accordionClasses["folder"]
+              )}
+            >
+              <FormattedMessage defaultMessage="GWAPO encountered an error loading crafting materials." />
+            </p>
+          ) : (
+            <ol
+              className={classNames(
+                !open && hideClasses["hide"],
+                accordionClasses["folder"],
+                containerClasses["container"],
+                elementsClasses["no-margin"]
+              )}
+            >
+              {readItemsResult.data?.ids.map((itemId) => (
+                <MaterialContainerItem
+                  key={itemId}
+                  material={readItemsResult.data?.entities[itemId]!}
+                />
+              ))}
+            </ol>
+          )}
         </section>
       </QuerySuccess>
     </Query>

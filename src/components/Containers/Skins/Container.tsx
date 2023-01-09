@@ -51,42 +51,41 @@ export function SkinContainer() {
           {skinTypePartials?.filter((v) => !!v).join(", ")}
         </AccordionHeading>
       </div>
-      <div className={classNames(accordionClasses["folder"])}>
-        <ul
-          className={classNames(
-            containerClasses["container"],
-            elementsClasses["no-margin"]
-          )}
-        >
-          <Query result={readAccountSkinsResult}>
-            {currentData?.ids.map((skinId) => {
-              let lockedClassName = "";
-              if (readAccountSkinsResult.isSuccess) {
-                const skinIsUnlocked = readAccountSkinsResult.data?.includes(
-                  skinId as number
-                );
-                if (lockedFilter === "locked" && skinIsUnlocked) {
-                  lockedClassName = hideClasses["hide--everywhere"];
-                } else if (lockedFilter === "unlocked" && !skinIsUnlocked) {
-                  lockedClassName = hideClasses["hide--everywhere"];
-                }
-              }
-              return (
-                <li
-                  className={classNames(
-                    containerItemClasses["item"],
-                    lockedClassName
-                  )}
-                  id={currentData?.entities[skinId]?._id}
-                  key={skinId}
-                >
-                  <SkinContainerItem skin={currentData?.entities[skinId]!} />
-                </li>
+      <ul
+        className={classNames(
+          accordionClasses["folder"],
+          containerClasses["container"],
+          elementsClasses["no-margin"]
+        )}
+      >
+        <Query result={readAccountSkinsResult}>
+          {currentData?.ids.map((skinId) => {
+            let lockedClassName = "";
+            if (readAccountSkinsResult.isSuccess) {
+              const skinIsUnlocked = readAccountSkinsResult.data?.includes(
+                skinId as number
               );
-            })}
-          </Query>
-        </ul>
-      </div>
+              if (lockedFilter === "locked" && skinIsUnlocked) {
+                lockedClassName = hideClasses["hide--everywhere"];
+              } else if (lockedFilter === "unlocked" && !skinIsUnlocked) {
+                lockedClassName = hideClasses["hide--everywhere"];
+              }
+            }
+            return (
+              <li
+                className={classNames(
+                  containerItemClasses["item"],
+                  lockedClassName
+                )}
+                id={currentData?.entities[skinId]?._id}
+                key={skinId}
+              >
+                <SkinContainerItem skin={currentData?.entities[skinId]!} />
+              </li>
+            );
+          })}
+        </Query>
+      </ul>
     </section>
   );
 }

@@ -74,16 +74,15 @@ export function CharacterBags() {
           <div className={classNames(accordionClasses["tab"])}>
             <AccordionHeading>{null}</AccordionHeading>
           </div>
-          <div className={classNames(accordionClasses["folder"])}>
-            <ol
-              className={classNames(
-                containerClasses["container"],
-                elementsClasses["no-margin"]
-              )}
-            >
-              {emptyCharacterBag}
-            </ol>
-          </div>
+          <ol
+            className={classNames(
+              accordionClasses["folder"],
+              containerClasses["container"],
+              elementsClasses["no-margin"]
+            )}
+          >
+            {emptyCharacterBag}
+          </ol>
         </section>
       </QueryLoading>
       <QuerySuccess>
@@ -92,16 +91,15 @@ export function CharacterBags() {
             <div className={classNames(accordionClasses["tab"])}>
               <AccordionHeading>{null}</AccordionHeading>
             </div>
-            <div className={classNames(accordionClasses["folder"])}>
-              <ol
-                className={classNames(
-                  containerClasses["container"],
-                  elementsClasses["no-margin"]
-                )}
-              >
-                {emptyCharacterBag}
-              </ol>
-            </div>
+            <ol
+              className={classNames(
+                accordionClasses["folder"],
+                containerClasses["container"],
+                elementsClasses["no-margin"]
+              )}
+            >
+              {emptyCharacterBag}
+            </ol>
           </section>
         </QueryFetching>
         <Iif condition={!readCharactersInventoryResult.isFetching}>

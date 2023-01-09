@@ -41,34 +41,29 @@ export function CharacterBagContainer(props: {
           </AccordionHeading>
           <AccordionControl onChange={setOpen} open={open} />
         </div>
-        <div
+        <ol
           className={classNames(
+            containerClasses["container"],
+            elementsClasses["no-margin"],
             !open && hideClasses["hide"],
             accordionClasses["folder"]
           )}
         >
-          <ol
-            className={classNames(
-              containerClasses["container"],
-              elementsClasses["no-margin"]
-            )}
-          >
-            <Query result={readItemsResult}>
-              {props.characterBag?.inventory.map((characterBagItem, index) => (
-                // Warning: bag slots do not have any unique identifiers
-                // Features like filtering and sorting will not work until each item has a uid
-                // For now, we can assume this is safe because the list is static
-                <ContainerItem
-                  containerItem={characterBagItem}
-                  item={
-                    readItemsResult.data?.entities?.[characterBagItem?.id ?? ""]
-                  }
-                  key={index}
-                />
-              ))}
-            </Query>
-          </ol>
-        </div>
+          <Query result={readItemsResult}>
+            {props.characterBag?.inventory.map((characterBagItem, index) => (
+              // Warning: bag slots do not have any unique identifiers
+              // Features like filtering and sorting will not work until each item has a uid
+              // For now, we can assume this is safe because the list is static
+              <ContainerItem
+                containerItem={characterBagItem}
+                item={
+                  readItemsResult.data?.entities?.[characterBagItem?.id ?? ""]
+                }
+                key={index}
+              />
+            ))}
+          </Query>
+        </ol>
       </section>
     </Fragment>
   );

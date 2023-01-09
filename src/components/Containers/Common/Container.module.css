@@ -4,5 +4,4 @@
   grid-template-columns: repeat(auto-fill, calc(4rem + 4px));
   justify-content: flex-start;
   list-style: none;
-  padding: 0;
 }

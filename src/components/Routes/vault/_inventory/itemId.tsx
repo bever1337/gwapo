@@ -50,10 +50,6 @@ export function InventoryItemId(props: {}) {
         className={classNames(vaultOutletClasses["sticky"])}
         ref={contentRef}
       >
-        {/* <div
-          // offset the height of an element in the contentA column
-          style={{ height: "calc(0.5em + 2px)" }}
-        /> */}
         <a href={backHref}>back</a>
         <table className={classNames(vaultOutletClasses["details__table"])}>
           <thead>

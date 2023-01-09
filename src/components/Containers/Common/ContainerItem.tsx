@@ -17,6 +17,7 @@ const loaderImageSrc = `${process.env.PUBLIC_URL}/icons/System/loader-fill.svg`;
 export function ContainerItem(props: {
   containerItem: {
     id: number;
+    charges?: number;
     count: number;
   } | null;
   item?: Item;
@@ -69,6 +70,9 @@ export function ContainerItem(props: {
           typeof props.containerItem?.count === "number" ? (
             <span className={classNames(containerItemClasses["item__count"])}>
               {props.containerItem.count}
+              {typeof props.containerItem?.charges === "number"
+                ? ` (${props.containerItem.charges})`
+                : ""}
             </span>
           ) : null
         )}
