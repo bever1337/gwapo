@@ -42,35 +42,45 @@ export function CharacterBags() {
   return (
     <Query result={readCharactersInventoryResult}>
       <QueryUninitialized>
-        <section>
-          <div className={classNames(accordionClasses["tab"])}>
-            <AccordionHeading>{null}</AccordionHeading>
-          </div>
-          <div className={classNames(accordionClasses["folder"])}>
-            <p className={classNames(elementsClasses["no-margin"])}>
-              <FormattedMessage defaultMessage="GWAPO is waiting to load your character's inventory" />
-            </p>
-          </div>
-        </section>
+        <div className={classNames(accordionClasses["tab"])}>
+          <AccordionHeading>{null}</AccordionHeading>
+        </div>
+        <div className={classNames(accordionClasses["folder"])}>
+          <p className={classNames(elementsClasses["no-margin"])}>
+            <FormattedMessage defaultMessage="GWAPO is waiting to load your character's inventory" />
+          </p>
+        </div>
       </QueryUninitialized>
       <QueryError>
-        <section>
-          <div className={classNames(accordionClasses["tab"])}>
-            <AccordionHeading>{null}</AccordionHeading>
-          </div>
-          <div className={classNames(accordionClasses["folder"])}>
-            <p className={classNames(elementsClasses["no-margin"])}>
-              {authenticationError ? (
-                <FormattedMessage defaultMessage="Please provide GWAPO an API token with the necessary scopes." />
-              ) : (
-                <FormattedMessage defaultMessage="GWAPO encountered an error loading your character's inventory." />
-              )}
-            </p>
-          </div>
-        </section>
+        <div className={classNames(accordionClasses["tab"])}>
+          <AccordionHeading>{null}</AccordionHeading>
+        </div>
+        <div className={classNames(accordionClasses["folder"])}>
+          <p className={classNames(elementsClasses["no-margin"])}>
+            {authenticationError ? (
+              <FormattedMessage defaultMessage="Please provide GWAPO an API token with the necessary scopes." />
+            ) : (
+              <FormattedMessage defaultMessage="GWAPO encountered an error loading your character's inventory." />
+            )}
+          </p>
+        </div>
       </QueryError>
       <QueryLoading>
-        <section>
+        <div className={classNames(accordionClasses["tab"])}>
+          <AccordionHeading>{null}</AccordionHeading>
+        </div>
+        <ol
+          className={classNames(
+            accordionClasses["folder"],
+            containerClasses["container"],
+            elementsClasses["no-margin"]
+          )}
+        >
+          {emptyCharacterBag}
+        </ol>
+      </QueryLoading>
+      <QuerySuccess>
+        <QueryFetching>
           <div className={classNames(accordionClasses["tab"])}>
             <AccordionHeading>{null}</AccordionHeading>
           </div>
@@ -83,24 +93,6 @@ export function CharacterBags() {
           >
             {emptyCharacterBag}
           </ol>
-        </section>
-      </QueryLoading>
-      <QuerySuccess>
-        <QueryFetching>
-          <section>
-            <div className={classNames(accordionClasses["tab"])}>
-              <AccordionHeading>{null}</AccordionHeading>
-            </div>
-            <ol
-              className={classNames(
-                accordionClasses["folder"],
-                containerClasses["container"],
-                elementsClasses["no-margin"]
-              )}
-            >
-              {emptyCharacterBag}
-            </ol>
-          </section>
         </QueryFetching>
         <Iif condition={!readCharactersInventoryResult.isFetching}>
           {readCharactersInventoryResult.currentData?.map((bag, index) => {

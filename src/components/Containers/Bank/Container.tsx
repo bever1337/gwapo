@@ -34,42 +34,40 @@ export function BankContainer(props: {
   );
   return (
     <Fragment>
-      <section>
-        <div className={classNames(accordionClasses["tab"])}>
-          <AccordionHeading onChange={setOpen}>
-            <FormattedMessage
-              defaultMessage="Bank Tab {bankTab}"
-              values={{
-                bankTab: props.bankTab + 1,
-              }}
+      <div className={classNames(accordionClasses["tab"])}>
+        <AccordionHeading onChange={setOpen}>
+          <FormattedMessage
+            defaultMessage="Bank Tab {bankTab}"
+            values={{
+              bankTab: props.bankTab + 1,
+            }}
+          />
+        </AccordionHeading>
+        <AccordionControl onChange={setOpen} open={open} />
+      </div>
+      <ol
+        className={classNames(
+          accordionClasses["folder"],
+          !open && hideClasses["hide"],
+          containerClasses["container"],
+          elementsClasses["no-margin"]
+        )}
+      >
+        <Query result={readItemsResult}>
+          {props.accountBankItems.map((accountBankTabItem, index) => (
+            // Warning: account bank slots do not have any unique identifiers
+            // Features like filtering and sorting will not work until each item has a uid
+            // For now, we can assume this is safe because the list is static
+            <ContainerItem
+              containerItem={accountBankTabItem}
+              item={
+                readItemsResult.data?.entities?.[accountBankTabItem?.id ?? ""]
+              }
+              key={index}
             />
-          </AccordionHeading>
-          <AccordionControl onChange={setOpen} open={open} />
-        </div>
-        <ol
-          className={classNames(
-            accordionClasses["folder"],
-            !open && hideClasses["hide"],
-            containerClasses["container"],
-            elementsClasses["no-margin"]
-          )}
-        >
-          <Query result={readItemsResult}>
-            {props.accountBankItems.map((accountBankTabItem, index) => (
-              // Warning: account bank slots do not have any unique identifiers
-              // Features like filtering and sorting will not work until each item has a uid
-              // For now, we can assume this is safe because the list is static
-              <ContainerItem
-                containerItem={accountBankTabItem}
-                item={
-                  readItemsResult.data?.entities?.[accountBankTabItem?.id ?? ""]
-                }
-                key={index}
-              />
-            ))}
-          </Query>
-        </ol>
-      </section>
+          ))}
+        </Query>
+      </ol>
     </Fragment>
   );
 }

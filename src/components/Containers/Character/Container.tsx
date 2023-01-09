@@ -33,38 +33,36 @@ export function CharacterBagContainer(props: {
   );
   return (
     <Fragment>
-      <section>
-        <div className={classNames(accordionClasses["tab"])}>
-          <AccordionHeading onChange={setOpen}>
-            {readItemsResult.data?.entities[props.characterBag?.id ?? ""]
-              ?.name ?? ""}
-          </AccordionHeading>
-          <AccordionControl onChange={setOpen} open={open} />
-        </div>
-        <ol
-          className={classNames(
-            containerClasses["container"],
-            elementsClasses["no-margin"],
-            !open && hideClasses["hide"],
-            accordionClasses["folder"]
-          )}
-        >
-          <Query result={readItemsResult}>
-            {props.characterBag?.inventory.map((characterBagItem, index) => (
-              // Warning: bag slots do not have any unique identifiers
-              // Features like filtering and sorting will not work until each item has a uid
-              // For now, we can assume this is safe because the list is static
-              <ContainerItem
-                containerItem={characterBagItem}
-                item={
-                  readItemsResult.data?.entities?.[characterBagItem?.id ?? ""]
-                }
-                key={index}
-              />
-            ))}
-          </Query>
-        </ol>
-      </section>
+      <div className={classNames(accordionClasses["tab"])}>
+        <AccordionHeading onChange={setOpen}>
+          {readItemsResult.data?.entities[props.characterBag?.id ?? ""]?.name ??
+            ""}
+        </AccordionHeading>
+        <AccordionControl onChange={setOpen} open={open} />
+      </div>
+      <ol
+        className={classNames(
+          containerClasses["container"],
+          elementsClasses["no-margin"],
+          !open && hideClasses["hide"],
+          accordionClasses["folder"]
+        )}
+      >
+        <Query result={readItemsResult}>
+          {props.characterBag?.inventory.map((characterBagItem, index) => (
+            // Warning: bag slots do not have any unique identifiers
+            // Features like filtering and sorting will not work until each item has a uid
+            // For now, we can assume this is safe because the list is static
+            <ContainerItem
+              containerItem={characterBagItem}
+              item={
+                readItemsResult.data?.entities?.[characterBagItem?.id ?? ""]
+              }
+              key={index}
+            />
+          ))}
+        </Query>
+      </ol>
     </Fragment>
   );
 }

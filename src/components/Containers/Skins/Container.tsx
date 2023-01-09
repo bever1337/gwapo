@@ -1,5 +1,6 @@
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { useSearchParams } from "react-router-dom";
+import { Fragment } from "react";
 
 import { SkinContainerItem } from "./ContainerItem";
 
@@ -44,14 +45,14 @@ export function SkinContainer() {
   const lockedFilter = urlSearchParams.get("lockedFilter") ?? "any";
 
   return (
-    <section>
+    <Fragment>
       <div className={classNames(accordionClasses["tab"])}>
         <AccordionHeading>
           {/** Tab applies extra styles when it's empty. Doing extra work to ensure heading is not a single white-space */}
           {skinTypePartials?.filter((v) => !!v).join(", ")}
         </AccordionHeading>
       </div>
-      <ul
+      <ol
         className={classNames(
           accordionClasses["folder"],
           containerClasses["container"],
@@ -85,7 +86,7 @@ export function SkinContainer() {
             );
           })}
         </Query>
-      </ul>
-    </section>
+      </ol>
+    </Fragment>
   );
 }

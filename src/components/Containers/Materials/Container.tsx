@@ -1,5 +1,5 @@
 import { skipToken } from "@reduxjs/toolkit/dist/query";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { FormattedMessage } from "react-intl";
 
 import { MaterialContainerItem } from "./ContainerItem";
@@ -23,14 +23,14 @@ import type { Materials } from "../../../features/store/api/read-materials";
 
 function Skeleton(props: { children: any; materials: Materials }) {
   return (
-    <section>
+    <Fragment>
       <div className={classNames(accordionClasses["tab"])}>
         <AccordionHeading>{props.materials.name}</AccordionHeading>
       </div>
       <div className={classNames(accordionClasses["folder"])}>
         {props.children}
       </div>
-    </section>
+    </Fragment>
   );
 }
 
@@ -73,40 +73,38 @@ export function MaterialsContainer({ materials }: { materials: Materials }) {
         </Skeleton>
       </QueryError>
       <QuerySuccess>
-        <section>
-          <div className={classNames(accordionClasses["tab"])}>
-            <AccordionHeading onChange={setOpen}>
-              {materials.name}
-            </AccordionHeading>
-            <AccordionControl onChange={setOpen} open={open} />
-          </div>
-          {(readItemsResult.data?.ids.length ?? 0) === 0 ? (
-            <p
-              className={classNames(
-                !open && hideClasses["hide"],
-                accordionClasses["folder"]
-              )}
-            >
-              <FormattedMessage defaultMessage="GWAPO encountered an error loading crafting materials." />
-            </p>
-          ) : (
-            <ol
-              className={classNames(
-                !open && hideClasses["hide"],
-                accordionClasses["folder"],
-                containerClasses["container"],
-                elementsClasses["no-margin"]
-              )}
-            >
-              {readItemsResult.data?.ids.map((itemId) => (
-                <MaterialContainerItem
-                  key={itemId}
-                  material={readItemsResult.data?.entities[itemId]!}
-                />
-              ))}
-            </ol>
-          )}
-        </section>
+        <div className={classNames(accordionClasses["tab"])}>
+          <AccordionHeading onChange={setOpen}>
+            {materials.name}
+          </AccordionHeading>
+          <AccordionControl onChange={setOpen} open={open} />
+        </div>
+        {(readItemsResult.data?.ids.length ?? 0) === 0 ? (
+          <p
+            className={classNames(
+              !open && hideClasses["hide"],
+              accordionClasses["folder"]
+            )}
+          >
+            <FormattedMessage defaultMessage="GWAPO encountered an error loading crafting materials." />
+          </p>
+        ) : (
+          <ol
+            className={classNames(
+              !open && hideClasses["hide"],
+              accordionClasses["folder"],
+              containerClasses["container"],
+              elementsClasses["no-margin"]
+            )}
+          >
+            {readItemsResult.data?.ids.map((itemId) => (
+              <MaterialContainerItem
+                key={itemId}
+                material={readItemsResult.data?.entities[itemId]!}
+              />
+            ))}
+          </ol>
+        )}
       </QuerySuccess>
     </Query>
   );

@@ -25,39 +25,35 @@ export function SharedInventory() {
   return (
     <Query result={readAccountInventoryResult}>
       <QueryUninitialized>
-        <section>
-          <div className={classNames(accordionClasses["tab"])}>
-            <AccordionHeading>
-              <FormattedMessage defaultMessage="Shared Inventory" />
-            </AccordionHeading>
-          </div>
-          <div className={classNames(accordionClasses["folder"])}>
-            <p className={classNames(elementsClasses["no-margin"])}>
-              <FormattedMessage defaultMessage="GWAPO is waiting to load your shared inventory" />
-            </p>
-          </div>
-        </section>
+        <div className={classNames(accordionClasses["tab"])}>
+          <AccordionHeading>
+            <FormattedMessage defaultMessage="Shared Inventory" />
+          </AccordionHeading>
+        </div>
+        <div className={classNames(accordionClasses["folder"])}>
+          <p className={classNames(elementsClasses["no-margin"])}>
+            <FormattedMessage defaultMessage="GWAPO is waiting to load your shared inventory" />
+          </p>
+        </div>
       </QueryUninitialized>
       <QueryLoading>
         <SharedInventoryContainer slots={[null, null]} />
       </QueryLoading>
       <QueryError>
-        <section>
-          <div className={classNames(accordionClasses["tab"])}>
-            <AccordionHeading>
-              <FormattedMessage defaultMessage="Shared Inventory" />
-            </AccordionHeading>
-          </div>
-          <div className={classNames(accordionClasses["folder"])}>
-            <p className={classNames(elementsClasses["no-margin"])}>
-              {authenticationError ? (
-                <FormattedMessage defaultMessage="Please provide GWAPO an API token with the necessary scopes." />
-              ) : (
-                <FormattedMessage defaultMessage="GWAPO encountered an error loading your shared inventory." />
-              )}
-            </p>
-          </div>
-        </section>
+        <div className={classNames(accordionClasses["tab"])}>
+          <AccordionHeading>
+            <FormattedMessage defaultMessage="Shared Inventory" />
+          </AccordionHeading>
+        </div>
+        <div className={classNames(accordionClasses["folder"])}>
+          <p className={classNames(elementsClasses["no-margin"])}>
+            {authenticationError ? (
+              <FormattedMessage defaultMessage="Please provide GWAPO an API token with the necessary scopes." />
+            ) : (
+              <FormattedMessage defaultMessage="GWAPO encountered an error loading your shared inventory." />
+            )}
+          </p>
+        </div>
       </QueryError>
       <QuerySuccess>
         <SharedInventoryContainer

@@ -37,39 +37,35 @@ export function SharedInventoryContainer(props: {
   );
   return (
     <Fragment>
-      <section>
-        <div className={classNames(accordionClasses["tab"])}>
-          <AccordionHeading onChange={setOpen}>
-            <FormattedMessage defaultMessage="Shared Inventory" />
-          </AccordionHeading>
-          <AccordionControl onChange={setOpen} open={open} />
-        </div>
-        <ol
-          className={classNames(
-            !open && hideClasses["hide"],
-            elementsClasses["no-margin"],
-            accordionClasses["folder"],
-            containerClasses["container"]
-          )}
-        >
-          <Query result={readItemsResult}>
-            {props.slots.map((sharedInventoryItem, index) => (
-              // Warning: shared inventory slots do not have any unique identifiers
-              // Features like filtering and sorting will not work until each item has a uid
-              // For now, we can assume this is safe because the list is static
-              <ContainerItem
-                containerItem={sharedInventoryItem}
-                item={
-                  readItemsResult.data?.entities?.[
-                    sharedInventoryItem?.id ?? ""
-                  ]
-                }
-                key={index}
-              />
-            ))}
-          </Query>
-        </ol>
-      </section>
+      <div className={classNames(accordionClasses["tab"])}>
+        <AccordionHeading onChange={setOpen}>
+          <FormattedMessage defaultMessage="Shared Inventory" />
+        </AccordionHeading>
+        <AccordionControl onChange={setOpen} open={open} />
+      </div>
+      <ol
+        className={classNames(
+          !open && hideClasses["hide"],
+          elementsClasses["no-margin"],
+          accordionClasses["folder"],
+          containerClasses["container"]
+        )}
+      >
+        <Query result={readItemsResult}>
+          {props.slots.map((sharedInventoryItem, index) => (
+            // Warning: shared inventory slots do not have any unique identifiers
+            // Features like filtering and sorting will not work until each item has a uid
+            // For now, we can assume this is safe because the list is static
+            <ContainerItem
+              containerItem={sharedInventoryItem}
+              item={
+                readItemsResult.data?.entities?.[sharedInventoryItem?.id ?? ""]
+              }
+              key={index}
+            />
+          ))}
+        </Query>
+      </ol>
     </Fragment>
   );
 }

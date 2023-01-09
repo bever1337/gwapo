@@ -47,37 +47,33 @@ export function VaultBank() {
   return (
     <Query result={readAccountBankResult}>
       <QueryUninitialized>
-        <section>
-          <div className={classNames(accordionClasses["tab"])}>
-            <AccordionHeading>
-              <FormattedMessage defaultMessage="Bank Tab" />
-            </AccordionHeading>
-          </div>
-          <div className={classNames(accordionClasses["folder"])}>
-            <p className={classNames(elementsClasses["no-margin"])}>
-              <FormattedMessage defaultMessage="GWAPO is waiting to load your account's vault" />
-            </p>
-          </div>
-        </section>
+        <div className={classNames(accordionClasses["tab"])}>
+          <AccordionHeading>
+            <FormattedMessage defaultMessage="Bank Tab" />
+          </AccordionHeading>
+        </div>
+        <div className={classNames(accordionClasses["folder"])}>
+          <p className={classNames(elementsClasses["no-margin"])}>
+            <FormattedMessage defaultMessage="GWAPO is waiting to load your account's vault" />
+          </p>
+        </div>
       </QueryUninitialized>
       <QueryLoading>{skeletonVaultContainer}</QueryLoading>
       <QueryError>
-        <section>
-          <div className={classNames(accordionClasses["tab"])}>
-            <AccordionHeading>
-              <FormattedMessage defaultMessage="Bank Tab" />
-            </AccordionHeading>
-          </div>
-          <div className={classNames(accordionClasses["folder"])}>
-            <p className={classNames(elementsClasses["no-margin"])}>
-              {authenticationError ? (
-                <FormattedMessage defaultMessage="Please provide GWAPO an API token with the necessary scopes." />
-              ) : (
-                <FormattedMessage defaultMessage="GWAPO encountered an error loading your account's vault." />
-              )}
-            </p>
-          </div>
-        </section>
+        <div className={classNames(accordionClasses["tab"])}>
+          <AccordionHeading>
+            <FormattedMessage defaultMessage="Bank Tab" />
+          </AccordionHeading>
+        </div>
+        <div className={classNames(accordionClasses["folder"])}>
+          <p className={classNames(elementsClasses["no-margin"])}>
+            {authenticationError ? (
+              <FormattedMessage defaultMessage="Please provide GWAPO an API token with the necessary scopes." />
+            ) : (
+              <FormattedMessage defaultMessage="GWAPO encountered an error loading your account's vault." />
+            )}
+          </p>
+        </div>
       </QueryError>
       <QuerySuccess>
         {accountBankTabs.map(mapAccountBankTabToElement)}

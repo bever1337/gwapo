@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 
 import { AccordionHeading } from "../../../Accordion/Heading";
@@ -14,7 +15,7 @@ import { readMaterials } from "../../../../features/store/api/read-materials";
 
 function Skeleton(props: { children: any }) {
   return (
-    <section>
+    <Fragment>
       <div className={classNames(accordionClasses["tab"])}>
         <AccordionHeading>
           <FormattedMessage defaultMessage="Crafting Materials" />
@@ -23,7 +24,7 @@ function Skeleton(props: { children: any }) {
       <div className={classNames(accordionClasses["folder"])}>
         {props.children}
       </div>
-    </section>
+    </Fragment>
   );
 }
 
