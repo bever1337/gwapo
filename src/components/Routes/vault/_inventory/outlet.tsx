@@ -46,10 +46,6 @@ export function VaultInventoryOutlet() {
           <CharacterBags />
         </div>
         <div style={{ gridArea: "b" }}>
-          <div
-            // offset the height of an element in the contentA column
-            style={{ height: "calc(0.5em + 2px)" }}
-          />
           <Outlet />
         </div>
         <InventoryItemId />

@@ -2,6 +2,16 @@
   grid-area: c;
 }
 
+.main {
+  display: grid;
+  gap: 0.5rem;
+  align-items: flex-start;
+  grid-template:
+    "a" auto
+    "b" auto
+    "c" auto / 1fr;
+}
+
 @media screen and (min-width: 64rem) {
   .main {
     display: grid;

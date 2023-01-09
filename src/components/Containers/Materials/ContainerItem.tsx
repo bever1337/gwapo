@@ -29,7 +29,10 @@ export function MaterialContainerItem({ material }: { material: Item }) {
         state={{ from: elementId }}
       >
         <img
-          className={classNames(containerItemClasses["item__img"])}
+          className={classNames(
+            containerItemClasses["item__img"],
+            containerItemClasses[material.rarity]
+          )}
           alt={material.name}
           src={material.icon}
         />

@@ -60,8 +60,8 @@
 .aside {
   border: 1px solid black;
   box-sizing: border-box;
-  min-height: calc(100vh - 2rem);
-  margin: 1rem 0;
+  min-height: calc(100vh - 1rem);
+  margin: 0;
   padding: 1rem;
 }
 
@@ -69,6 +69,7 @@
   .aside {
     border: 0px;
     height: auto;
+    min-height: auto;
     padding: 0;
     margin: 0;
   }
