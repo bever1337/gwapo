@@ -62,7 +62,12 @@ export function Authenticator() {
   const externalLinkImageSource = `${process.env.PUBLIC_URL}/icons/System/external-link-fill.svg`;
   return (
     <Fragment>
-      <div className={classNames(accordionClasses["tab"])}>
+      <div
+        className={classNames(
+          accordionClasses["tab"],
+          !open && accordionClasses["tab--closed"]
+        )}
+      >
         <AccordionHeading onChange={setOpen}>
           <FormattedMessage defaultMessage="Authentication" />
         </AccordionHeading>

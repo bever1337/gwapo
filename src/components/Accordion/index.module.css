@@ -6,6 +6,10 @@
   grid-template:
     "heading control" auto
     "aside control" auto / 1fr auto;
+  margin: 0;
+}
+
+.tab--closed {
   margin: -1px 0;
 }
 

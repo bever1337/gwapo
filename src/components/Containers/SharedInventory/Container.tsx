@@ -37,7 +37,12 @@ export function SharedInventoryContainer(props: {
   );
   return (
     <Fragment>
-      <div className={classNames(accordionClasses["tab"])}>
+      <div
+        className={classNames(
+          accordionClasses["tab"],
+          !open && accordionClasses["tab--closed"]
+        )}
+      >
         <AccordionHeading onChange={setOpen}>
           <FormattedMessage defaultMessage="Shared Inventory" />
         </AccordionHeading>

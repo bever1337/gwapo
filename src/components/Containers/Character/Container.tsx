@@ -33,7 +33,12 @@ export function CharacterBagContainer(props: {
   );
   return (
     <Fragment>
-      <div className={classNames(accordionClasses["tab"])}>
+      <div
+        className={classNames(
+          accordionClasses["tab"],
+          !open && accordionClasses["tab--closed"]
+        )}
+      >
         <AccordionHeading onChange={setOpen}>
           {readItemsResult.data?.entities[props.characterBag?.id ?? ""]?.name ??
             ""}

@@ -14,6 +14,7 @@
 
 @media screen and (min-width: 64rem) {
   .main {
+    align-items: initial;
     display: grid;
     gap: 1rem;
     grid-template:
