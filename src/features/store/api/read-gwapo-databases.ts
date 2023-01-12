@@ -1,4 +1,4 @@
-import { createEntityAdapter, createSelector } from "@reduxjs/toolkit";
+import { createEntityAdapter } from "@reduxjs/toolkit";
 import type { EntityState } from "@reduxjs/toolkit";
 import type { BaseQueryApi } from "@reduxjs/toolkit/src/query/baseQueryTypes";
 
@@ -11,8 +11,13 @@ import type { DumpHeaderDocument } from "../../streams/DumpToPouch/types";
 const databaseDumpAdapter = createEntityAdapter<
   { id: string } & EntityState<DumpHeaderDocument>
 >({
+  /** Assuming we don't perform this operation often. Not ideal. */
   sortComparer(headerA, headerB) {
-    return new Date(headerB.id).getTime() - new Date(headerA.id).getTime();
+    // header id looks like `gwapo_{timestamp}`
+    return (
+      new Date(`${headerB.id}`.split("_")[1] ?? 0).getTime() -
+      new Date(`${headerA.id}`.split("_")[1] ?? 0).getTime()
+    );
   },
 });
 const databaseDumpSelectors = databaseDumpAdapter.getSelectors();

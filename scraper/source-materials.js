@@ -3,7 +3,7 @@ const fs = require("fs");
 
 const { fetch, PouchDB } = require("./common");
 
-const BATCH_SIZE = 50;
+const BATCH_SIZE = 200;
 const BATCH_STEP = 5;
 const BATCH_TASK_MINIMUM_LENGTH = 1000;
 const ITEMS_URL = "https://api.guildwars2.com/v2/materials";
