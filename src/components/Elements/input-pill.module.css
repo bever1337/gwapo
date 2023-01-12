@@ -12,13 +12,11 @@
 .input:checked + .label,
 .input:checked + .label:hover {
   background-color: #000000;
-  color: #ffffff;
 }
 
 .label {
   border: 1px solid #000000;
   background-color: transparent;
-  color: #000000;
   display: inline-block;
   border-radius: 1em;
   padding: 0.25em 0.75em;

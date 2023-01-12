@@ -16,6 +16,7 @@
 }
 
 .icon {
+  filter: invert(1);
   height: 1em;
   vertical-align: text-bottom;
   width: 1em;

@@ -29,6 +29,7 @@ export function Settings(props: any) {
   return (
     <Fragment>
       <button
+        className={classNames(settingsClasses["button"])}
         onClick={() => {
           dialogRef.current?.showModal();
         }}
@@ -38,10 +39,9 @@ export function Settings(props: any) {
           alt="Settings"
           className={classNames(loadingDump && settingsClasses["working"])}
           src={settingsImageSource}
+          style={{ height: "1.25em", width: "1.25em" }}
         />
-        <span className={classNames(hideClasses["hide"])}>
-          <FormattedMessage defaultMessage="Click to open settings" />
-        </span>
+        <FormattedMessage defaultMessage="Settings" />
       </button>
       <dialog className={classNames(dialogClasses["dialog"])} ref={dialogRef}>
         <form

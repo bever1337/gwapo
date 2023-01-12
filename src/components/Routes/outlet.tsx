@@ -1,7 +1,12 @@
 import { Fragment } from "react";
+import { FormattedMessage } from "react-intl";
 import { Link, Outlet } from "react-router-dom";
 
+import indexClasses from "./index.module.css";
+
 import { Settings } from "../Settings";
+
+import { classNames } from "../../features/css/classnames";
 
 export function AppOutlet() {
   // declare string tempaltes outside JSX props for better syntax highlighting
@@ -9,21 +14,47 @@ export function AppOutlet() {
 
   return (
     <Fragment>
-      <header
-        style={{
-          alignItems: "center",
-          borderBottom: "1px solid black",
-          display: "flex",
-          justifyContent: "space-between",
-          marginBottom: "0.5rem",
-          paddingBottom: "0.5rem",
-        }}
-      >
-        <Link to="/">
-          <img alt="Home" src={homeImageSource} />
-          Gwapo
-        </Link>
-        <Settings />
+      <header>
+        <nav className={classNames(indexClasses["nav"])}>
+          <div
+            className={classNames(indexClasses["nav__item"])}
+            style={{ gridArea: "home" }}
+          >
+            <Link to="/">
+              <FormattedMessage defaultMessage="Home">
+                {(nodes) => (
+                  <img alt={nodes as any as string} src={homeImageSource} />
+                )}
+              </FormattedMessage>
+              Gwapo
+            </Link>
+          </div>
+          <ul className={classNames(indexClasses["nav__list"])}>
+            <li className={classNames(indexClasses["nav__item"])}>
+              <Link to="/pve/dungeons">
+                <img
+                  alt=""
+                  src={process.env.PUBLIC_URL + "/icons/System/shield-fill.svg"}
+                />
+                <FormattedMessage defaultMessage="PvE" />
+              </Link>
+            </li>
+            <li className={classNames(indexClasses["nav__item"])}>
+              <Link to="/vault/bank">
+                <img
+                  alt=""
+                  src={
+                    process.env.PUBLIC_URL + "/icons/Finance/safe-2-fill.svg"
+                  }
+                />
+                <FormattedMessage defaultMessage="Vault" />
+              </Link>
+            </li>
+          </ul>
+          <div style={{ gridArea: "settings" }}>
+            <Settings />
+          </div>
+        </nav>
       </header>
       <Outlet />
     </Fragment>

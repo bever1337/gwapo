@@ -1,4 +1,4 @@
-import { Fragment, useContext } from "react";
+import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { useSearchParams } from "react-router-dom";
 
@@ -8,10 +8,9 @@ import wardrobeClasses from "./wardrobe.module.css";
 import vaultOutletClasses from "../outlet.module.css";
 
 import { SkinContainer } from "../../../Containers/Skins/Container";
-import elementsClasses from "../../../Elements/index.module.css";
+import hideClasses from "../../../Elements/Hide.module.css";
 import fieldsetClasses from "../../../Elements/input-pill.module.css";
 import inputPillClasses from "../../../Elements/input-pill.module.css";
-import hideClasses from "../../../Elements/Hide.module.css";
 import { Query } from "../../../Query";
 import { QueryError } from "../../../Query/Error";
 import { QueryLoading } from "../../../Query/Loading";
@@ -48,12 +47,7 @@ export function VaultWardrobe() {
   return (
     <Fragment>
       <Query result={readSkinTypesResult}>
-        <h2
-          className={classNames(
-            elementsClasses["no-margin"],
-            vaultOutletClasses["heading--2"]
-          )}
-        >
+        <h2 className={classNames(hideClasses["hide"])}>
           <FormattedMessage defaultMessage="Wardrobe" />
         </h2>
         <main

@@ -4,6 +4,7 @@ import { Link, Outlet } from "react-router-dom";
 
 import vaultOutletClasses from "./outlet.module.css";
 
+import hideClasses from "../../Elements/Hide.module.css";
 import elementsClasses from "../../Elements/index.module.css";
 
 import { classNames } from "../../../features/css/classnames";
@@ -17,12 +18,7 @@ export function VaultOutlet() {
   return (
     <Fragment>
       <div className={classNames(vaultOutletClasses["grid"])}>
-        <h1
-          className={classNames(
-            elementsClasses["no-margin"],
-            vaultOutletClasses["heading--1"]
-          )}
-        >
+        <h1 className={classNames(hideClasses["hide"])}>
           <FormattedMessage defaultMessage="Vault" />
         </h1>
         <nav

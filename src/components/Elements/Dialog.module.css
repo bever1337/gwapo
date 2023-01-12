@@ -1,5 +1,7 @@
 .dialog[open] {
+  background-color: #111;
   box-sizing: border-box;
+  color: white;
   display: grid;
   grid-template: "formA" auto "main" 1fr "formB" auto / 1fr;
   height: 36rem;

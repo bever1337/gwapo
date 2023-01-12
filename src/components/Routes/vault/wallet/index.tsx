@@ -1,14 +1,11 @@
 import { Fragment } from "react";
-import {
-  FormattedMessage,
-  FormattedNumber,
-  FormattedNumberParts,
-} from "react-intl";
+import { FormattedMessage, FormattedNumber } from "react-intl";
 
 import vaultOutletClasses from "../outlet.module.css";
 
 import { separateCopperCoins } from "../../../Currency/coin";
 import currencyClasses from "../../../Currency/index.module.css";
+import hideClasses from "../../../Elements/Hide.module.css";
 import elementsClasses from "../../../Elements/index.module.css";
 import { Query } from "../../../Query";
 import { QueryError } from "../../../Query/Error";
@@ -28,12 +25,7 @@ export function VaultWallet() {
   const readAccountWalletResult = readAccountWallet.useQuery({});
   return (
     <Fragment>
-      <h2
-        className={classNames(
-          elementsClasses["no-margin"],
-          vaultOutletClasses["heading--2"]
-        )}
-      >
+      <h2 className={classNames(hideClasses["hide"])}>
         <FormattedMessage defaultMessage="Wallet" />
       </h2>
       <main className={classNames(vaultOutletClasses["main"])}>

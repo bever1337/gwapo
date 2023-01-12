@@ -7,7 +7,7 @@ import inventoryOutletClasses from "./outlet.module.css";
 import vaultOutletClasses from "../outlet.module.css";
 
 import { CharacterBags } from "../../../Containers/Character";
-import elementsClasses from "../../../Elements/index.module.css";
+import hideClasses from "../../../Elements/Hide.module.css";
 import { SelectCharacter } from "../../../SelectCharacter";
 import { SharedInventory } from "../../../Containers/SharedInventory";
 import { InventoryItemId } from "./itemId";
@@ -16,12 +16,7 @@ import { classNames } from "../../../../features/css/classnames";
 export function VaultInventoryOutlet() {
   return (
     <Fragment>
-      <h2
-        className={classNames(
-          elementsClasses["no-margin"],
-          vaultOutletClasses["heading--2"]
-        )}
-      >
+      <h2 className={classNames(hideClasses["hide"])}>
         <Routes>
           <Route
             path="bank/*"
