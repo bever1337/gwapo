@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
-import { Link, Outlet } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 
 import indexClasses from "./index.module.css";
 
@@ -16,31 +16,48 @@ export function AppOutlet() {
     <Fragment>
       <header>
         <nav className={classNames(indexClasses["nav"])}>
-          <div
-            className={classNames(indexClasses["nav__item"])}
-            style={{ gridArea: "home" }}
-          >
-            <Link to="/">
-              <FormattedMessage defaultMessage="Home">
-                {(nodes) => (
-                  <img alt={nodes as any as string} src={homeImageSource} />
-                )}
-              </FormattedMessage>
-              Gwapo
-            </Link>
-          </div>
           <ul className={classNames(indexClasses["nav__list"])}>
-            <li className={classNames(indexClasses["nav__item"])}>
-              <Link to="/pve/dungeons">
+            <li>
+              <NavLink
+                className={({ isActive }) =>
+                  classNames(
+                    indexClasses["nav__item__link"],
+                    isActive && indexClasses["nav__item__link--active"]
+                  )
+                }
+                to="/"
+              >
+                <img alt="" src={homeImageSource} />
+                Gwapo
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                className={({ isActive }) =>
+                  classNames(
+                    indexClasses["nav__item__link"],
+                    isActive && indexClasses["nav__item__link--active"]
+                  )
+                }
+                to="/pve"
+              >
                 <img
                   alt=""
                   src={process.env.PUBLIC_URL + "/icons/System/shield-fill.svg"}
                 />
                 <FormattedMessage defaultMessage="PvE" />
-              </Link>
+              </NavLink>
             </li>
-            <li className={classNames(indexClasses["nav__item"])}>
-              <Link to="/vault/bank">
+            <li>
+              <NavLink
+                className={({ isActive }) =>
+                  classNames(
+                    indexClasses["nav__item__link"],
+                    isActive && indexClasses["nav__item__link--active"]
+                  )
+                }
+                to="/vault"
+              >
                 <img
                   alt=""
                   src={
@@ -48,7 +65,7 @@ export function AppOutlet() {
                   }
                 />
                 <FormattedMessage defaultMessage="Vault" />
-              </Link>
+              </NavLink>
             </li>
           </ul>
           <div style={{ gridArea: "settings" }}>

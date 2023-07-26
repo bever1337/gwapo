@@ -39,9 +39,10 @@ export function Settings(props: any) {
           alt="Settings"
           className={classNames(loadingDump && settingsClasses["working"])}
           src={settingsImageSource}
-          style={{ height: "1.25em", width: "1.25em" }}
         />
-        <FormattedMessage defaultMessage="Settings" />
+        <span className={classNames(hideClasses["hide"])}>
+          <FormattedMessage defaultMessage="Settings" />
+        </span>
       </button>
       <dialog className={classNames(dialogClasses["dialog"])} ref={dialogRef}>
         <form

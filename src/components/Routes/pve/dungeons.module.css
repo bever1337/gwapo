@@ -1,23 +1,31 @@
+.block {
+}
+
 .list {
-  column-width: 36rem;
+  column-width: 28rem;
   list-style: none;
-  padding: 0;
+  padding: 1rem;
+  margin: 0;
 }
 
 .item {
-  border: 1px solid #000000;
+  background-color: #eeeeee;
+  border: 1px solid #f6f6f6;
+  box-shadow: 2px 5px 6px #666666;
   break-inside: avoid;
   margin: 1rem 0;
-  padding: 1rem;
 }
 
 .item:first-of-type {
   margin-top: 0;
 }
 
+.item:last-of-type {
+  margin-bottom: 0;
+}
+
 .icon {
-  filter: invert(1);
   height: 1em;
-  vertical-align: text-bottom;
+  vertical-align: middle;
   width: 1em;
 }

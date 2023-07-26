@@ -1,19 +1,30 @@
 .button {
-  background-color: #000044;
-  border-radius: 0.25rem;
-  border: 0;
-  box-shadow: inset 1px 1px 2px #444, inset -1px -1px 2px #222,
-    2px 2px 4px #111111, -2px -2px 5px #333333;
+  background-color: #32328d;
+  border: 0.25em solid #000000;
+  box-shadow: 1px 1px 0.125em #000000, -0.1em -0.1em 0.125em #ffffff,
+    inset 1px 4px 0.5em #4a4aa4;
   color: white;
-  padding: 0.5rem 1rem 0.5rem 0.75rem;
+  padding: 0.25rem;
+  margin-top: -0.5rem;
+}
+
+.button:hover,
+.button:focus {
+  box-shadow: 1px 1px 0.25em #000000, -0.1em -0.1em 0.125em #ffffff,
+    inset 2px 4px 0.5em #5e5eb9;
+}
+
+.button:active {
+  box-shadow: 1px 1px 0.25em #000000, -0.1em -0.1em 0.125em #ffffff,
+    inset 1px 2px 0.25em #131337;
 }
 
 .button > img {
   filter: invert(1);
-  height: 1.25em;
-  margin-right: 0.5em;
+  height: 1.5em;
+  /* margin-right: 0.5em; */
   vertical-align: middle;
-  width: 1.25em;
+  width: 1.5em;
 }
 
 .working {

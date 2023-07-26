@@ -41,7 +41,6 @@ export function VaultOutlet() {
                   className={classNames(vaultOutletClasses["nav__item__img"])}
                   src={safe2FillSvg}
                 />
-                <br />
                 <FormattedMessage defaultMessage="Bank" />
               </Link>
             </li>
@@ -52,7 +51,6 @@ export function VaultOutlet() {
                   className={classNames(vaultOutletClasses["nav__item__img"])}
                   src={gridFillSvg}
                 />
-                <br />
                 <FormattedMessage defaultMessage="Materials" />
               </Link>
             </li>
@@ -63,7 +61,6 @@ export function VaultOutlet() {
                   className={classNames(vaultOutletClasses["nav__item__img"])}
                   src={shirtFillSvg}
                 />
-                <br />
                 <FormattedMessage defaultMessage="Wardrobe" />
               </Link>
             </li>
@@ -74,7 +71,6 @@ export function VaultOutlet() {
                   className={classNames(vaultOutletClasses["nav__item__img"])}
                   src={copperCoinFillSvg}
                 />
-                <br />
                 <FormattedMessage defaultMessage="Wallet" />
               </Link>
             </li>

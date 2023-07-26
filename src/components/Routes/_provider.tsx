@@ -1,6 +1,7 @@
 import {
   createBrowserRouter,
   createRoutesFromElements,
+  Navigate,
   Route,
   RouterProvider,
 } from "react-router-dom";
@@ -22,14 +23,18 @@ const router = createBrowserRouter(
       <Route element={<Index />} index />
       <Route element={<PveOutlet />} path="pve">
         <Route element={<PveDungeons />} path="dungeons" />
+        <Route element={<Navigate to="dungeons" replace={true} />} index />
+        <Route element={<Navigate to="dungeons" replace={true} />} path="*" />
       </Route>
       <Route element={<VaultOutlet />} path="vault">
-        <Route element={<VaultInventoryOutlet />} path="*">
+        <Route element={<VaultInventoryOutlet />}>
           <Route element={<VaultBank />} path="bank" />
           <Route element={<VaultMaterials />} path="materials" />
         </Route>
         <Route element={<VaultWallet />} path="wallet" />
         <Route element={<VaultWardrobe />} path="wardrobe" />
+        <Route element={<Navigate to="bank" replace={true} />} index />
+        <Route element={<Navigate to="bank" replace={true} />} path="*" />
       </Route>
     </Route>
   ),

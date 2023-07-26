@@ -62,13 +62,7 @@ export function Installer() {
                 {`${targetDatabaseId}`.split("_")[1]}
               </>
             </p>
-            <ul
-              className={classNames(
-                elementsClasses["no-margin"],
-                elementsClasses["no-padding"],
-                elementsClasses["list--no-style"]
-              )}
-            >
+            <ul className={classNames(elementsClasses["list--no-style"])}>
               {targetDatabase?.ids.map((partialDumpId) => {
                 const partialDump = targetDatabase.entities[partialDumpId];
                 const partialDumpProgressRatio = Math.round(
