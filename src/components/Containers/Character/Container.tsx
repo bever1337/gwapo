@@ -61,7 +61,7 @@ export function CharacterBagContainer(props: {
             <ContainerItem
               containerItem={characterBagItem}
               item={
-                readItemsResult.data?.entities?.[characterBagItem?.id ?? ""]
+                readItemsResult.data?.entities?.[characterBagItem?.id ?? ""]!
               }
               key={index}
             />

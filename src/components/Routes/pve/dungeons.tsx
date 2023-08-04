@@ -16,10 +16,10 @@ import { readAccountAchievements } from "../../../features/store/api/read-accoun
 import { readAchievements } from "./read-dungeons";
 import type { DungeonAchievement } from "./read-dungeons";
 
-const completeImageSrc = `${process.env.PUBLIC_URL}/icons/System/checkbox-circle-fill.svg`;
-const errorImageSrc = `${process.env.PUBLIC_URL}/icons/System/error-warning-fill.svg`;
-const loaderImageSrc = `${process.env.PUBLIC_URL}/icons/System/loader-fill.svg`;
-const todoImageSrc = `${process.env.PUBLIC_URL}/icons/System/close-circle-fill.svg`;
+const completeImageSrc = `/icons/System/checkbox-circle-fill.svg`;
+// const errorImageSrc = `/icons/System/error-warning-fill.svg`;
+const loaderImageSrc = `/icons/System/loader-fill.svg`;
+const todoImageSrc = `/icons/System/close-circle-fill.svg`;
 
 function DungeonObjectives(props: {
   achievement: DungeonAchievement;

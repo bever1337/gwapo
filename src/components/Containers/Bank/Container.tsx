@@ -66,7 +66,7 @@ export function BankContainer(props: {
             <ContainerItem
               containerItem={accountBankTabItem}
               item={
-                readItemsResult.data?.entities?.[accountBankTabItem?.id ?? ""]
+                readItemsResult.data?.entities?.[accountBankTabItem?.id ?? ""]!
               }
               key={index}
             />

@@ -59,7 +59,7 @@ export function Authenticator() {
   const [open, setOpen] = useState(!client); // accordion state
   const [initiate, mutationResult] = readTokenInfo.useMutation();
   const authenticatorState = deriveAuthenticatorState(client, mutationResult);
-  const externalLinkImageSource = `${process.env.PUBLIC_URL}/icons/System/external-link-fill.svg`;
+  const externalLinkImageSource = `/icons/System/external-link-fill.svg`;
   return (
     <Fragment>
       <div

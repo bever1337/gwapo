@@ -64,7 +64,7 @@ export function SharedInventoryContainer(props: {
             <ContainerItem
               containerItem={sharedInventoryItem}
               item={
-                readItemsResult.data?.entities?.[sharedInventoryItem?.id ?? ""]
+                readItemsResult.data?.entities?.[sharedInventoryItem?.id ?? ""]!
               }
               key={index}
             />

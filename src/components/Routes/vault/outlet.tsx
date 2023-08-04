@@ -9,10 +9,10 @@ import elementsClasses from "../../Elements/index.module.css";
 
 import { classNames } from "../../../features/css/classnames";
 
-const safe2FillSvg = `${process.env.PUBLIC_URL}/icons/Finance/safe-2-fill.svg`;
-const gridFillSvg = `${process.env.PUBLIC_URL}/icons/Design/grid-fill.svg`;
-// const shirtFillSvg = `${process.env.PUBLIC_URL}/icons/Others/shirt-fill.svg`;
-const copperCoinFillSvg = `${process.env.PUBLIC_URL}/icons/Finance/copper-coin-fill.svg`;
+const safe2FillSvg = `/icons/Finance/safe-2-fill.svg`;
+const gridFillSvg = `/icons/Design/grid-fill.svg`;
+// const shirtFillSvg = `/icons/Others/shirt-fill.svg`;
+const copperCoinFillSvg = `/icons/Finance/copper-coin-fill.svg`;
 
 export function VaultOutlet() {
   return (

@@ -62,7 +62,7 @@ function baseQuery(
       };
     }
     nextArguments.params ??= {};
-    nextArguments.params.access_token = access_token;
+    nextArguments.params["access_token"] = access_token;
   }
   return rawBaseQuery(nextArguments, queryApi, extraOptions);
 }

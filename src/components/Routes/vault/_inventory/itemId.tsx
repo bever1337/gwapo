@@ -13,7 +13,7 @@ import elementsClasses from "../../../Elements/index.module.css";
 import { classNames } from "../../../../features/css/classnames";
 import { readItems } from "../../../../features/store/api/read-items";
 
-const errorImageSrc = `${process.env.PUBLIC_URL}/icons/System/error-warning-fill.svg`;
+const errorImageSrc = `/icons/System/error-warning-fill.svg`;
 
 export function InventoryItemId(props: {}) {
   const contentRef = useRef<HTMLDivElement>(null);

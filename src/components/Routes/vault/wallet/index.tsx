@@ -82,7 +82,7 @@ export function VaultWallet() {
                                 );
                               return (
                                 <>
-                                  <FormattedNumber value={gold} /> gold,{" "}
+                                  <FormattedNumber value={gold ?? 0} /> gold,{" "}
                                   {silver} silver, {copper} copper
                                 </>
                               );

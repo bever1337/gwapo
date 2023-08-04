@@ -10,7 +10,7 @@ import { classNames } from "../../features/css/classnames";
 
 export function AppOutlet() {
   // declare string tempaltes outside JSX props for better syntax highlighting
-  const homeImageSource = `${process.env.PUBLIC_URL}/icons/Buildings/home-2-fill.svg`;
+  const homeImageSource = `/icons/Buildings/home-2-fill.svg`;
 
   return (
     <Fragment>
@@ -41,10 +41,7 @@ export function AppOutlet() {
                 }
                 to="/pve"
               >
-                <img
-                  alt=""
-                  src={process.env.PUBLIC_URL + "/icons/System/shield-fill.svg"}
-                />
+                <img alt="" src={"/icons/System/shield-fill.svg"} />
                 <FormattedMessage defaultMessage="PvE" />
               </NavLink>
             </li>
@@ -58,12 +55,7 @@ export function AppOutlet() {
                 }
                 to="/vault"
               >
-                <img
-                  alt=""
-                  src={
-                    process.env.PUBLIC_URL + "/icons/Finance/safe-2-fill.svg"
-                  }
-                />
+                <img alt="" src={"/icons/Finance/safe-2-fill.svg"} />
                 <FormattedMessage defaultMessage="Vault" />
               </NavLink>
             </li>

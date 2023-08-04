@@ -12,8 +12,8 @@ import { Installer } from "../Installer";
 import { classNames } from "../../features/css/classnames";
 
 // declare string tempaltes outside JSX props for better syntax highlighting
-const closeImageSource = `${process.env.PUBLIC_URL}/icons/System/close-fill.svg`;
-const settingsImageSource = `${process.env.PUBLIC_URL}/icons/System/settings-3-fill.svg`;
+const closeImageSource = `/icons/System/close-fill.svg`;
+const settingsImageSource = `/icons/System/settings-3-fill.svg`;
 
 /** */
 export function Settings(props: any) {

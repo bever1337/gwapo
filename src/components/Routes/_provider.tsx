@@ -36,7 +36,7 @@ const router = createBrowserRouter(
       </Route>
     </Route>
   ),
-  { basename: process.env.PUBLIC_URL }
+  { basename: "/" }
 );
 
 export function RoutesProvider() {

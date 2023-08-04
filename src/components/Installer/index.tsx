@@ -1,10 +1,9 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useState } from "react";
 import { FormattedMessage } from "react-intl";
 
 import { AccordionControl } from "../Accordion/Control";
 import { AccordionHeading } from "../Accordion/Heading";
 import accordionClasses from "../Accordion/index.module.css";
-import elementsClasses from "../Elements/index.module.css";
 import hideClasses from "../Elements/Hide.module.css";
 import { Query } from "../Query";
 import { QueryError } from "../Query/Error";

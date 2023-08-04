@@ -11,8 +11,8 @@ import { QueryUninitialized } from "../../Query/Uninitialized";
 import { classNames } from "../../../features/css/classnames";
 import type { Item } from "../../../types/item";
 
-const errorImageSrc = `${process.env.PUBLIC_URL}/icons/System/error-warning-fill.svg`;
-const loaderImageSrc = `${process.env.PUBLIC_URL}/icons/System/loader-fill.svg`;
+const errorImageSrc = `/icons/System/error-warning-fill.svg`;
+const loaderImageSrc = `/icons/System/loader-fill.svg`;
 
 export function ContainerItem(props: {
   containerItem: {
@@ -62,7 +62,8 @@ export function ContainerItem(props: {
           <img
             className={classNames(
               containerItemClasses["item__img"],
-              containerItemClasses[props.item?.rarity ?? ""]
+              props.item?.rarity &&
+                containerItemClasses[props.item?.rarity ?? ""]
             )}
             alt={props.item?.name ?? ""}
             src={props.containerItem ? props.item?.icon ?? errorImageSrc : ""}
