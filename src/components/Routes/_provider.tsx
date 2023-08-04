@@ -26,7 +26,7 @@ const router = createBrowserRouter(
         <Route element={<Navigate to="dungeons" replace={true} />} path="*" />
       </Route>
       <Route element={<VaultOutlet />} path="vault">
-        <Route element={<VaultInventoryOutlet />}>
+        <Route element={<VaultInventoryOutlet />} path="*">
           <Route element={<VaultBank />} path="bank" />
           <Route element={<VaultMaterials />} path="materials" />
         </Route>
