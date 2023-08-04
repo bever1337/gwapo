@@ -113,3 +113,8 @@ export interface Item {
     [k: string]: unknown;
   };
 }
+
+export interface ItemDoc extends Item {
+  _id: `items_${Item["id"]}`;
+  $id: "gwapo/items";
+}

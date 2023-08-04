@@ -10,10 +10,6 @@ import hideClasses from "../Elements/Hide.module.css";
 import { Installer } from "../Installer";
 
 import { classNames } from "../../features/css/classnames";
-import {
-  firstDumpFinished,
-  readGwapoDatabases,
-} from "../../features/store/api/read-gwapo-databases";
 
 // declare string tempaltes outside JSX props for better syntax highlighting
 const closeImageSource = `${process.env.PUBLIC_URL}/icons/System/close-fill.svg`;
@@ -22,10 +18,6 @@ const settingsImageSource = `${process.env.PUBLIC_URL}/icons/System/settings-3-f
 /** */
 export function Settings(props: any) {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const readDatabasesResult = readGwapoDatabases.useQuery({});
-  const bestDatabase = firstDumpFinished(readDatabasesResult);
-  const targetDatabaseId = readDatabasesResult.data?.ids[0];
-  const loadingDump = bestDatabase !== targetDatabaseId;
   return (
     <Fragment>
       <button
@@ -37,7 +29,7 @@ export function Settings(props: any) {
       >
         <img
           alt="Settings"
-          className={classNames(loadingDump && settingsClasses["working"])}
+          className={classNames(false && settingsClasses["working"])}
           src={settingsImageSource}
         />
         <span className={classNames(hideClasses["hide"])}>

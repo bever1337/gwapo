@@ -1,6 +1,6 @@
 import { api } from ".";
 
-import { AccessToken } from "../../../types/token";
+import type { AccessToken } from "../../../types/token";
 
 const gw2SchemaVersion = "2019-05-22T00:00:00.000Z";
 

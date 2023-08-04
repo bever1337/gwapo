@@ -1,11 +1,9 @@
 import { createEntityAdapter } from "@reduxjs/toolkit";
 import type { EntityState } from "@reduxjs/toolkit";
 
-import { getDatabaseName } from "./read-gwapo-databases";
-
 import { api } from ".";
 
-import { PouchDB } from "../../pouch";
+import { getPouch } from "../../pouch";
 
 import type { Item } from "../../../types/item";
 
@@ -30,13 +28,11 @@ export const injectedApi = api.injectEndpoints({
           ];
         },
         async queryFn({ ids }, queryApi) {
-          return getDatabaseName(queryApi)
-            .then((databaseName) =>
-              new PouchDB(databaseName, { adapter: "indexeddb" }).allDocs({
-                keys: ids.map((itemId) => `items_${itemId}`),
-                include_docs: true,
-              })
-            )
+          return getPouch()
+            .allDocs({
+              keys: ids.map((itemId) => `items_${itemId}`),
+              include_docs: true,
+            })
             .then((allDocsResponse) => {
               const entityState = itemsEntityAdapter.setAll(
                 initialState,

@@ -1,11 +1,9 @@
 import { createEntityAdapter } from "@reduxjs/toolkit";
 import type { EntityState } from "@reduxjs/toolkit";
 
-import { getDatabaseName } from "./read-gwapo-databases";
-
 import { api } from ".";
 
-import { PouchDB } from "../../pouch";
+import { getPouch } from "../../pouch";
 
 export interface Currency {
   id: number;
@@ -40,14 +38,12 @@ export const injectedApi = api.injectEndpoints({
           ];
         },
         queryFn(queryArguments, queryApi) {
-          return getDatabaseName(queryApi)
-            .then((databaseName) =>
-              new PouchDB(databaseName, { adapter: "indexeddb" }).allDocs({
-                include_docs: true,
-                startkey: "currencies_0",
-                endkey: "currencies_\ufff0",
-              })
-            )
+          return getPouch()
+            .allDocs({
+              include_docs: true,
+              startkey: "currencies_0",
+              endkey: "currencies_\ufff0",
+            })
             .then((response) => ({
               data: currenciesEntityAdapter.setAll(
                 initialState,

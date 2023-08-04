@@ -11,7 +11,7 @@ import { classNames } from "../../../features/css/classnames";
 
 const safe2FillSvg = `${process.env.PUBLIC_URL}/icons/Finance/safe-2-fill.svg`;
 const gridFillSvg = `${process.env.PUBLIC_URL}/icons/Design/grid-fill.svg`;
-const shirtFillSvg = `${process.env.PUBLIC_URL}/icons/Others/shirt-fill.svg`;
+// const shirtFillSvg = `${process.env.PUBLIC_URL}/icons/Others/shirt-fill.svg`;
 const copperCoinFillSvg = `${process.env.PUBLIC_URL}/icons/Finance/copper-coin-fill.svg`;
 
 export function VaultOutlet() {
@@ -52,16 +52,6 @@ export function VaultOutlet() {
                   src={gridFillSvg}
                 />
                 <FormattedMessage defaultMessage="Materials" />
-              </Link>
-            </li>
-            <li className={classNames(vaultOutletClasses["nav__item"])}>
-              <Link to="/vault/wardrobe">
-                <img
-                  alt=""
-                  className={classNames(vaultOutletClasses["nav__item__img"])}
-                  src={shirtFillSvg}
-                />
-                <FormattedMessage defaultMessage="Wardrobe" />
               </Link>
             </li>
             <li className={classNames(vaultOutletClasses["nav__item"])}>

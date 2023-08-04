@@ -15,7 +15,6 @@ import { VaultMaterials } from "./vault/_inventory/materials";
 import { VaultInventoryOutlet } from "./vault/_inventory/outlet";
 import { VaultOutlet } from "./vault/outlet";
 import { VaultWallet } from "./vault/wallet";
-import { VaultWardrobe } from "./vault/wardrobe";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -32,7 +31,6 @@ const router = createBrowserRouter(
           <Route element={<VaultMaterials />} path="materials" />
         </Route>
         <Route element={<VaultWallet />} path="wallet" />
-        <Route element={<VaultWardrobe />} path="wardrobe" />
         <Route element={<Navigate to="bank" replace={true} />} index />
         <Route element={<Navigate to="bank" replace={true} />} path="*" />
       </Route>

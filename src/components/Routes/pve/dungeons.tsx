@@ -1,3 +1,5 @@
+import { FormattedMessage } from "react-intl";
+
 import dungeonsClasses from "./dungeons.module.css";
 
 import elementsClasses from "../../Elements/index.module.css";
@@ -8,20 +10,11 @@ import { QuerySuccess } from "../../Query/Success";
 import { QueryUninitialized } from "../../Query/Uninitialized";
 
 import { classNames } from "../../../features/css/classnames";
-import {
-  AccountAchievement,
-  readAccountAchievements,
-} from "../../../features/store/api/read-account-achievements";
-import {
-  Achievement,
-  readAchievements,
-} from "../../../features/store/api/read-achievements";
-import { FormattedMessage } from "react-intl";
-import { Fragment } from "react";
+import type { AccountAchievement } from "../../../features/store/api/read-account-achievements";
+import { readAccountAchievements } from "../../../features/store/api/read-account-achievements";
 
-enum AchievementCategory {
-  Dungeon = 27,
-}
+import { readAchievements } from "./read-dungeons";
+import type { DungeonAchievement } from "./read-dungeons";
 
 const completeImageSrc = `${process.env.PUBLIC_URL}/icons/System/checkbox-circle-fill.svg`;
 const errorImageSrc = `${process.env.PUBLIC_URL}/icons/System/error-warning-fill.svg`;
@@ -29,8 +22,8 @@ const loaderImageSrc = `${process.env.PUBLIC_URL}/icons/System/loader-fill.svg`;
 const todoImageSrc = `${process.env.PUBLIC_URL}/icons/System/close-circle-fill.svg`;
 
 function DungeonObjectives(props: {
-  achievement: Achievement;
-  accountAchievement?: AccountAchievement;
+  achievement: DungeonAchievement;
+  accountAchievement: AccountAchievement | undefined;
 }) {
   if ((props.achievement.bits?.length ?? 0) === 0) {
     return null;
@@ -42,9 +35,12 @@ function DungeonObjectives(props: {
       </h4>
       <ol className={classNames(elementsClasses["list--no-style"])}>
         {props.achievement?.bits?.map((bit, index) => {
+          // this could _theoretically_ iterate a lot for achievements with lots of bits
+          // instead, create a mutable array of account achievement bits and shift off bits as-completed
           const bitComplete = props.accountAchievement?.bits?.includes(index);
           return (
             <li key={index}>
+              {/* context is 'readAccountAchievements' */}
               <QueryUninitialized>
                 <img
                   alt=""
@@ -85,77 +81,47 @@ function DungeonObjectives(props: {
 }
 
 function DungeonRewards(props: {
-  achievement: Achievement;
-  accountAchievement?: AccountAchievement;
+  achievement: DungeonAchievement;
+  accountAchievement: AccountAchievement | undefined;
 }) {
-  const sumAchievementTiers = (props.achievement?.tiers ?? []).reduce(
-    (acc, tier) => acc + (tier?.count ?? 0),
-    0
-  );
-  // DungeonRewards always requires an achievement, but do divide-by-zero sanity check
-  const accountAchievementProgressRatio = Math.round(
-    ((props.accountAchievement?.current ?? 0) /
-      Math.max(1, sumAchievementTiers)) *
-      100
-  );
   return (
     <>
       <h4 className={classNames(elementsClasses["no-margin"])}>
         <FormattedMessage defaultMessage="Rewards" />
       </h4>
-      <label style={{ display: "inline-block" }}>
-        <FormattedMessage defaultMessage="Progress" />
-        <span style={{ float: "right" }}>
-          <QueryUninitialized>
-            <img
-              alt=""
-              className={classNames(dungeonsClasses["icon"])}
-              src={loaderImageSrc}
-            />
-          </QueryUninitialized>
-          <QueryLoading>
-            <img
-              alt=""
-              className={classNames(dungeonsClasses["icon"])}
-              src={loaderImageSrc}
-            />
-          </QueryLoading>
-          <QueryError>
-            <img
-              alt=""
-              className={classNames(dungeonsClasses["icon"])}
-              src={errorImageSrc}
-            />
-          </QueryError>
-          <QuerySuccess>{`${accountAchievementProgressRatio}%`}</QuerySuccess>
-        </span>
-        <br />
-        <progress
-          max={sumAchievementTiers}
-          value={props.accountAchievement?.current ?? 0}
-        />
-      </label>
       <ol className={classNames(elementsClasses["list--no-style"])}>
-        {props.achievement?.tiers.map((tier, index, collection) => {
-          // TODO make a separate component
-          // decrement account AP as each tier is iterated/rendered
-          // this can be o(n)
-          const requiredForTier = collection
-            .slice(0, index + 1)
-            .reduce((acc, prevTier) => acc + (prevTier?.count ?? 0), 0);
+        {props.achievement?.tiers?.map((tier, index) => {
           const tierComplete =
-            (props.accountAchievement?.current ?? 0) >= requiredForTier;
+            (props.accountAchievement?.current ?? 0) >= tier.cumulative_count;
           return (
             <li key={index}>
-              <img
+              {/* <img
                 alt=""
                 className={classNames(dungeonsClasses["icon"])}
                 src={tierComplete ? completeImageSrc : todoImageSrc}
-              />
-              Tier {index + 1} - {tier.points} AP
+              /> */}
+              <p>
+                <FormattedMessage
+                  defaultMessage="Tier {tier}"
+                  values={{
+                    tier: index + 1,
+                  }}
+                />
+              </p>
+              <p>
+                <span className={classNames(dungeonsClasses["ratio"])}>
+                  {tier.points}
+                </span>
+                <br />
+                Points
+              </p>
             </li>
           );
         })}
+        {props.achievement.rewards?.map((reward, index) => (
+          // warning, index key
+          <li key={index}>{reward.type}</li>
+        ))}
       </ol>
     </>
   );
@@ -165,19 +131,47 @@ function Dungeon({ achievementId }: { achievementId: number }) {
   const readAccountAchievementsResult = readAccountAchievements.useQueryState(
     {}
   );
-  const readAchievementsResult = readAchievements.useQueryState({
-    category: AchievementCategory.Dungeon,
-  });
+  const readAchievementsResult = readAchievements.useQueryState({});
   const accountAchievement =
     readAccountAchievementsResult.data?.entities[achievementId];
   const achievement = readAchievementsResult.data!.entities[achievementId];
 
   return (
-    <li className={classNames(dungeonsClasses["item"])} key={achievementId}>
-      <h3 className={classNames()}>{achievement?.name}</h3>
-      <hr />
+    <li className={classNames(dungeonsClasses["item"])}>
+      <h3 className={classNames(dungeonsClasses["achievement__heading"])}>
+        {achievement?.name}
+      </h3>
+      <p className={classNames()}>
+        <FormattedMessage defaultMessage="Tier:" />
+        <span className={classNames(dungeonsClasses["ratio"])}>
+          <FormattedMessage
+            defaultMessage="{currentTier}/{maximumTier}"
+            values={{
+              currentTier:
+                (achievement?.tiers?.findLastIndex(
+                  (tier) =>
+                    (accountAchievement?.current ?? 0) >= tier.cumulative_count
+                ) ?? -1) + 1,
+              maximumTier: achievement?.tiers?.length ?? 0,
+            }}
+          />
+        </span>
+        <span style={{ display: "inline-block", padding: "0 0.5em" }}>
+          {"\u007C"}
+        </span>
+        <FormattedMessage defaultMessage="Objectives:" />
+        <span className={classNames(dungeonsClasses["ratio"])}>
+          <FormattedMessage
+            defaultMessage="{currentProgress}/{maximumRequired}"
+            values={{
+              currentProgress: accountAchievement?.bits?.length ?? 0,
+              maximumRequired: achievement?.bits?.length ?? 0,
+            }}
+          />
+        </span>
+      </p>
       <p className={classNames()}>{achievement?.description}</p>
-      <p className={classNames(elementsClasses["no-margin"])}>
+      <p className={classNames()}>
         <FormattedMessage
           defaultMessage="Requires: {requirement}"
           values={{
@@ -199,9 +193,7 @@ function Dungeon({ achievementId }: { achievementId: number }) {
 
 export function PveDungeons() {
   const readAccountAchievementsResult = readAccountAchievements.useQuery({});
-  const readAchievementsResult = readAchievements.useQuery({
-    category: AchievementCategory.Dungeon,
-  });
+  const readAchievementsResult = readAchievements.useQuery({});
   return (
     <main>
       <Query result={readAchievementsResult}>
@@ -227,6 +219,11 @@ export function PveDungeons() {
           </ol>
         </QuerySuccess>
       </Query>
+      <p>
+        <FormattedMessage
+          defaultMessage={`\u2020 Per-character dungeon progress cannot be tracked.`}
+        />
+      </p>
     </main>
   );
 }
