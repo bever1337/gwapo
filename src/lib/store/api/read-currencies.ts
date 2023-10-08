@@ -48,7 +48,7 @@ export const injectedApi = api.injectEndpoints({
 							),
 							error: undefined
 						}))
-						.catch((reason) => ({ data: undefined, error: reason }));
+						.catch((reason) => ({ data: undefined, error: reason?.toString?.() ?? `${reason}` }));
 				}
 			})
 		};

@@ -10,5 +10,5 @@ if (browser) {
 
 export const PouchDB = PouchDBModule.default;
 const pouchOptions = browser ? { adapter: 'indexeddb' } : {};
-export const DB_NAME = browser ? 'gwapo' : 'http://localhost:5984/gwapo';
+export const DB_NAME = browser ? 'gwapo' : 'http://127.0.0.1:5984/gwapo';
 export const getPouch = () => new PouchDB(DB_NAME, pouchOptions);
