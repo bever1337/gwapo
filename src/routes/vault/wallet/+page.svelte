@@ -15,19 +15,19 @@
 	$: ({ data: wallet, status: readWalletStatus } = $readAccountWalletStore);
 </script>
 
-<ol class="currency__list">
+<ol class="currencies__list">
 	{#each currencies?.ids ?? [] as currencyId}
 		{@const currency = currencies?.entities[currencyId]}
-		<li class="currency__list__item">
-			<div class="currency__picture" style="grid-area: img;">
-				<div class="squiggle--child" />
-				<img alt={currency?.name} class="currency__img" src={currency?.icon} />
+		<li class="currencies__list__item">
+			<div class="currency__picture">
+				<div class="currency__picture__border" />
+				<img alt={currency?.name} class="currency__picture__img" src={currency?.icon} />
 			</div>
-			<h3 class="currency__header" style="grid-area: header;">
+			<label class="currency__name" for={`controlCurrency${currencyId}`}>
 				{currency?.name}
-			</h3>
-			<input class="currency__control" style="grid-area: control;" type="checkbox" />
-			<p class="currency__wallet" style="grid-area: wallet;">
+			</label>
+			<input class="currency__control" id={`controlCurrency${currencyId}`} type="checkbox" />
+			<p class="currency__wallet">
 				{#if readWalletStatus === 'fulfilled'}
 					{wallet?.entities[currencyId]?.value ?? 0}
 				{:else if readWalletStatus === 'rejected'}
@@ -36,7 +36,7 @@
 					{'\u00a0'}
 				{/if}
 			</p>
-			<p class="currency__description" style="grid-area: description;">
+			<p class="currency__description">
 				{currency?.description}
 			</p>
 		</li>
@@ -53,22 +53,20 @@
 </svg>
 
 <style>
-	.currency__list {
+	.currencies__list {
 		column-gap: 1rem;
-		columns: 7 26rem;
+		columns: 7 25rem;
 		list-style: none;
 		margin: 0;
-		max-width: 188rem;
+		max-width: 182rem;
 		padding: 0;
 	}
 
-	.currency__list__item {
+	.currencies__list__item {
 		align-items: center;
-		/* border: 1px solid rgba(0, 0, 0, 0.5); */
 		box-shadow: 3px 2px 6px rgba(0, 0, 0, 0.6);
 		break-inside: avoid;
 		display: grid;
-		/* gap: 1rem; */
 		grid-template:
 			'img header control' auto
 			'img wallet wallet' auto
@@ -77,42 +75,51 @@
 		padding: 0.5rem;
 	}
 
+	.currency__control {
+		align-self: start;
+		grid-area: control;
+		height: 2.75rem;
+		width: 2.75rem;
+	}
+
 	.currency__description {
 		border-top: 1px solid rgba(0, 0, 0, 0.4);
 		display: none;
+		grid-area: description;
 		padding: 1rem 0.5rem 0.5rem 0.5rem;
 		margin: 0.5em 0 0 0;
-	}
-
-	.currency__control {
-		align-self: start;
-		height: 2.75rem;
-		width: 2.75rem;
 	}
 
 	.currency__control:checked ~ .currency__description {
 		display: block;
 	}
 
-	.currency__header {
+	.currency__name {
+		font-size: 1.17rem;
 		font-weight: normal;
+		grid-area: header;
 		margin: 0.5rem 0.5rem 0.25rem 1rem;
 	}
 
 	.currency__picture {
 		display: inline-block;
+		grid-area: img;
 		height: calc(4rem + 4px);
 		position: relative;
 		width: calc(4rem + 4px);
 	}
 
-	.currency__wallet {
-		align-self: center;
-		font-size: 1.5rem;
-		margin: 0 0.5rem 0.25rem 1rem;
+	.currency__picture__border {
+		border: 3px solid rgba(0, 0, 0, 0.9);
+		background: rgba(0, 0, 0, 0.9);
+		display: inline-block;
+		filter: url(#squiggle);
+		height: 4rem;
+		position: absolute;
+		width: 4rem;
 	}
 
-	.currency__img {
+	.currency__picture__img {
 		filter: drop-shadow(4px 3px 10px rgba(255, 255, 255, 0.5));
 		height: 4rem;
 		left: 3px;
@@ -121,13 +128,10 @@
 		width: 4rem;
 	}
 
-	.squiggle--child {
-		border: 3px solid rgba(0, 0, 0, 0.9);
-		background: rgba(0, 0, 0, 0.9);
-		display: inline-block;
-		filter: url(#squiggle);
-		height: 4rem;
-		position: absolute;
-		width: 4rem;
+	.currency__wallet {
+		align-self: center;
+		font-size: 1.5rem;
+		grid-area: wallet;
+		margin: 0 0.5rem 0.25rem 1rem;
 	}
 </style>
