@@ -15,7 +15,6 @@
 				<a href="/vault/wallet">wallet</a>
 			</li>
 		</ul>
-		<button>settings</button>
 	</nav>
 </header>
 
