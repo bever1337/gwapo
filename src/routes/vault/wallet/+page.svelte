@@ -138,13 +138,24 @@
 							{@const [gold, silver, copper] = separateCopperCoins(
 								wallet?.entities[currencyId]?.value ?? 0
 							)}
-							{intl.formatMessage(
-								{
-									defaultMessage: '{gold} gold, {silver} silver, {copper} copper',
-									id: '1'
-								},
-								{ gold: intl.formatNumber(gold), silver, copper }
-							)}
+							{intl.formatNumber(gold)}<img
+								alt=""
+								aria-hidden="true"
+								class="currency--coin__img"
+								src="/gw2/gold_coin.png"
+							/>
+							{`${silver}`}<img
+								alt=""
+								aria-hidden="true"
+								class="currency--coin__img"
+								src="/gw2/silver_coin.png"
+							/>
+							{`${copper}`}<img
+								alt=""
+								aria-hidden="true"
+								class="currency--coin__img"
+								src="/gw2/copper_coin.png"
+							/>
 						{:else}
 							{intl.formatNumber(wallet?.entities[currencyId]?.value ?? 0)}
 						{/if}
@@ -275,6 +286,13 @@
 	.currencies__span {
 		column-span: all;
 		margin: 0 0 1rem 0;
+	}
+
+	.currency--coin__img {
+		height: 1.7rem;
+		margin-right: 1ch;
+		vertical-align: text-bottom;
+		width: 1.7rem;
 	}
 
 	.currency__control {
