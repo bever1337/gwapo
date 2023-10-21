@@ -24,12 +24,13 @@
 
 <script lang="ts">
 	import { browser } from '$app/environment';
-	import { storeCtx } from '$lib/context';
-	import { intl } from '$lib/intl';
-	import { useQuery } from '$lib/rtk-svelte/hooks';
-	import { hydrate } from '$lib/store/actions';
-	import { readAccountWallet } from '$lib/store/api/read-account-wallet';
-	import { readCurrencies } from '$lib/store/api/read-currencies';
+	import { storeCtx } from '$lib/context.js';
+	import { intl } from '$lib/intl/index.js';
+	import { useQuery } from '$lib/rtk-svelte/hooks.js';
+	import { hydrate } from '$lib/store/actions.js';
+	import { readAccountWallet } from '$lib/store/api/read-account-wallet.js';
+	import { readCurrencies } from '$lib/store/api/read-currencies.js';
+	import { separateCopperCoins } from '$lib/types/currency.js';
 
 	export let data;
 
@@ -133,7 +134,20 @@
 				</label>
 				<p class="currency__wallet">
 					{#if readWalletStatus === 'fulfilled'}
-						{intl.formatNumber(wallet?.entities[currencyId]?.value ?? 0)}
+						{#if currency?.id === 1}
+							{@const [gold, silver, copper] = separateCopperCoins(
+								wallet?.entities[currencyId]?.value ?? 0
+							)}
+							{intl.formatMessage(
+								{
+									defaultMessage: '{gold} gold, {silver} silver, {copper} copper',
+									id: '1'
+								},
+								{ gold: intl.formatNumber(gold), silver, copper }
+							)}
+						{:else}
+							{intl.formatNumber(wallet?.entities[currencyId]?.value ?? 0)}
+						{/if}
 					{:else if readWalletStatus === 'rejected'}
 						{'?'}
 					{:else}
