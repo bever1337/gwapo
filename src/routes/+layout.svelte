@@ -79,18 +79,18 @@
 		--primary--800: 63 63 60;
 		--primary--900: 30 30 28;
 		--elevation--1: 1px 1px 2px rgb(var(--black) / 0.2);
-		--elevation--2: 2px 1px 4px rgb(var(--black) / 0.5);
-		--elevation--3: 3px 2px 6px rgb(var(--black) / 0.5);
-		--elevation--4: 3px 2px 6px rgb(var(--black) / 0.5);
+		--elevation--2: 2px 1px 4px rgb(var(--black) / 0.2);
+		--elevation--3: 3px 2px 6px rgb(var(--black) / 0.3);
+		--elevation--4: 3px 2px 6px rgb(var(--black) / 0.3);
 		--elevation--4--height: 40;
-		--elevation--5: 4px 6px 1rem rgb(var(--black) / 0.5);
+		--elevation--5: 4px 6px 0.5rem rgb(var(--black) / 0.4);
 		--elevation--5--height: 50;
-		--elevation--6: 4px 6px 1rem rgb(var(--black) / 0.5);
+		--elevation--6: 4px 6px 0.5rem rgb(var(--black) / 0.4);
 		--elevation--6--height: 60;
 	}
 
 	:global(body) {
-		background-color: rgb(var(--primary--200));
+		background-color: rgb(var(--primary--50));
 		margin: 0;
 		overflow-y: scroll;
 	}
@@ -109,16 +109,6 @@
 		transition: all 3s linear;
 		width: 100%;
 		z-index: var(--elevation--5--height);
-	}
-
-	@keyframes slidein {
-		from {
-			top: -100vh;
-		}
-
-		to {
-			top: 3.25rem;
-		}
 	}
 
 	.hide {

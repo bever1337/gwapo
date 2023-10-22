@@ -67,107 +67,109 @@
 	}
 </script>
 
-<div class="banner">
-	<img alt="A pile of coins" class="banner__img" src={`/Currency_Exchange_banner.jpg`} />
-	<h1 class="banner__header">Wallet</h1>
-</div>
-<form class="currencies" on:reset={onReset}>
-	<nav class="currencies__nav">
-		<label class="currencies__nav__filter">
-			<img
-				alt=""
-				aria-hidden="true"
-				class="currencies__nav__filter__icon"
-				src="/ri/search-line.svg"
-			/>
-			<span class="hide">Search currencies</span>
-			<input
-				bind:value={needle}
-				class="currencies__nav__filter__input touch-area"
-				disabled={!browser}
-				name="filterCurrencies"
-				placeholder="Search"
-				type="search"
-			/>
-		</label>
-		<button class="currencies__nav__reset touch-area" disabled={!browser} type="reset">
-			<span class="hide">Reset</span>
-			<img alt="filter" src="/ri/filter-off-fill.svg" />
-		</button>
-		<label class="currencies__nav__expand-all">
-			<span class="hide">Expand all</span>
-			<input
-				checked={expandAllSelected}
-				class="hide"
-				disabled={!browser}
-				name="expandAllCurrencies"
-				on:change={onChangeExpandAllCurrencies}
-				type="checkbox"
-			/>
-			<img alt="" class="checkbox-icon--up touch-area" src="/ri/arrow-up-s-line.svg" />
-			<img alt="" class="checkbox-icon--down touch-area" src="/ri/arrow-down-s-line.svg" />
-		</label>
-	</nav>
-	<div class="currencies__span" />
-	<ol class="currencies__list">
-		{#each filteredCurrencies as currencyId}
-			{@const currency = currencies?.entities[currencyId]}
-			<li class="currencies__list__item">
-				<div class="currency__picture">
-					<div class="currency__picture__border" />
-					<img alt={currency?.name} class="currency__picture__img" src={currency?.icon} />
-				</div>
-				<label class="currency__name" for={`controlCurrency${currencyId}`}>
-					{currency?.name}
-				</label>
-				<input
-					bind:group={selected}
-					class="hide"
-					id={`controlCurrency${currencyId}`}
-					name={`controlCurrency${currencyId}`}
-					type="checkbox"
-					value={currencyId}
+<main class="main">
+	<div class="banner">
+		<img alt="A pile of coins" class="banner__img" src={`/Currency_Exchange_banner.jpg`} />
+		<h1 class="banner__header">Wallet</h1>
+	</div>
+	<form class="currencies" on:reset={onReset}>
+		<nav class="currencies__nav">
+			<label class="currencies__nav__filter">
+				<img
+					alt=""
+					aria-hidden="true"
+					class="currencies__nav__filter__icon"
+					src="/ri/search-line.svg"
 				/>
-				<label class="currency__control" for={`controlCurrency${currencyId}`}>
-					<img alt="" class="checkbox-icon--up touch-area" src="/ri/arrow-up-s-line.svg" />
-					<img alt="" class="checkbox-icon--down touch-area" src="/ri/arrow-down-s-line.svg" />
-				</label>
-				<p class="currency__wallet">
-					{#if readWalletStatus === 'fulfilled'}
-						{#if currency?.id === 1}
-							{@const [gold, silver, copper] = separateCopperCoins(
-								wallet?.entities[currencyId]?.value ?? 0
-							)}
-							{intl.formatNumber(gold)}<img
-								alt="gold"
-								class="currency__wallet__coin-img"
-								src="/gw2/gold_coin.png"
-							/>{`${silver}`}<img
-								alt="silver"
-								class="currency__wallet__coin-img"
-								src="/gw2/silver_coin.png"
-							/>{`${copper}`}<img
-								alt="copper"
-								class="currency__wallet__coin-img"
-								src="/gw2/copper_coin.png"
-							/>
+				<span class="hide">Search currencies</span>
+				<input
+					bind:value={needle}
+					class="currencies__nav__filter__input touch-area"
+					disabled={!browser}
+					name="filterCurrencies"
+					placeholder="Search"
+					type="search"
+				/>
+			</label>
+			<button class="currencies__nav__reset touch-area" disabled={!browser} type="reset">
+				<span class="hide">Reset</span>
+				<img alt="filter" src="/ri/filter-off-fill.svg" />
+			</button>
+			<label class="currencies__nav__expand-all">
+				<span class="hide">Expand all</span>
+				<input
+					checked={expandAllSelected}
+					class="hide"
+					disabled={!browser}
+					name="expandAllCurrencies"
+					on:change={onChangeExpandAllCurrencies}
+					type="checkbox"
+				/>
+				<img alt="" class="checkbox-icon--up touch-area" src="/ri/arrow-up-s-line.svg" />
+				<img alt="" class="checkbox-icon--down touch-area" src="/ri/arrow-down-s-line.svg" />
+			</label>
+		</nav>
+		<div class="currencies__span" />
+		<ol class="currencies__list">
+			{#each filteredCurrencies as currencyId}
+				{@const currency = currencies?.entities[currencyId]}
+				<li class="currencies__list__item">
+					<div class="currency__picture">
+						<div class="currency__picture__border" />
+						<img alt={currency?.name} class="currency__picture__img" src={currency?.icon} />
+					</div>
+					<label class="currency__name" for={`controlCurrency${currencyId}`}>
+						{currency?.name}
+					</label>
+					<input
+						bind:group={selected}
+						class="hide"
+						id={`controlCurrency${currencyId}`}
+						name={`controlCurrency${currencyId}`}
+						type="checkbox"
+						value={currencyId}
+					/>
+					<label class="currency__control" for={`controlCurrency${currencyId}`}>
+						<img alt="" class="checkbox-icon--up touch-area" src="/ri/arrow-up-s-line.svg" />
+						<img alt="" class="checkbox-icon--down touch-area" src="/ri/arrow-down-s-line.svg" />
+					</label>
+					<p class="currency__wallet">
+						{#if readWalletStatus === 'fulfilled'}
+							{#if currency?.id === 1}
+								{@const [gold, silver, copper] = separateCopperCoins(
+									wallet?.entities[currencyId]?.value ?? 0
+								)}
+								{intl.formatNumber(gold)}<img
+									alt="gold"
+									class="currency__wallet__coin-img"
+									src="/gw2/gold_coin.png"
+								/>{`${silver}`}<img
+									alt="silver"
+									class="currency__wallet__coin-img"
+									src="/gw2/silver_coin.png"
+								/>{`${copper}`}<img
+									alt="copper"
+									class="currency__wallet__coin-img"
+									src="/gw2/copper_coin.png"
+								/>
+							{:else}
+								{intl.formatNumber(wallet?.entities[currencyId]?.value ?? 0)}
+							{/if}
+						{:else if readWalletStatus === 'rejected'}
+							{'?'}
 						{:else}
-							{intl.formatNumber(wallet?.entities[currencyId]?.value ?? 0)}
+							{'\u00a0'}
 						{/if}
-					{:else if readWalletStatus === 'rejected'}
-						{'?'}
-					{:else}
-						{'\u00a0'}
-					{/if}
-				</p>
-				<p class="currency__description">
-					{currency?.description}
-				</p>
-			</li>
-		{/each}
-	</ol>
-</form>
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="0" width="0">
+					</p>
+					<p class="currency__description">
+						{currency?.description}
+					</p>
+				</li>
+			{/each}
+		</ol>
+	</form>
+</main>
+<svg class="hide" xmlns="http://www.w3.org/2000/svg" version="1.1" height="0" width="0">
 	<defs>
 		<filter id="squiggle">
 			<feTurbulence type="fractalNoise" id="turbulence" baseFrequency=".07" numOctaves="4" />
@@ -179,7 +181,10 @@
 <style>
 	.banner {
 		background-color: #071530;
+		border-radius: 1rem 1rem 0 0;
+		box-shadow: var(--elevation--2);
 		line-height: 0;
+		margin: 0;
 		overflow: hidden;
 		position: relative;
 	}
@@ -220,10 +225,11 @@
 	}
 
 	.currencies {
+		box-shadow: var(--elevation--2);
 		column-gap: 1rem;
 		columns: 6 25rem;
 		list-style: none;
-		padding: 0 1rem;
+		padding: 0 1rem 1rem 1rem;
 	}
 
 	.currencies__list {
@@ -361,12 +367,6 @@
 		min-width: 2.75rem;
 	}
 
-	/* begin checkbox/form-control selectors */
-
-	.checkbox-icon--up {
-		fill: green !important;
-	}
-
 	*:checked ~ .checkbox-icon--up,
 	*:checked ~ .currency__control > .checkbox-icon--up,
 	*:not(checked) ~ .checkbox-icon--down,
@@ -381,5 +381,11 @@
 	*:not(checked) ~ .currency__control > .checkbox-icon--up,
 	*:checked ~ .currency__description {
 		display: block;
+	}
+
+	.main {
+		background: rgb(var(--primary--200));
+		border-radius: 1rem 1rem 0 0;
+		margin: 0 1rem 1rem 1rem;
 	}
 </style>
