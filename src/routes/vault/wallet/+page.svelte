@@ -92,7 +92,7 @@
 		</label>
 		<button class="currencies__nav__reset touch-area" disabled={!browser} type="reset">
 			<span class="hide">Reset</span>
-			<img alt="filter" src={`/ri/filter-off-fill.svg`} />
+			<img alt="filter" src="/ri/filter-off-fill.svg" />
 		</button>
 		<label class="currencies__nav__expand-all">
 			<span class="hide">Expand all</span>
@@ -139,21 +139,16 @@
 								wallet?.entities[currencyId]?.value ?? 0
 							)}
 							{intl.formatNumber(gold)}<img
-								alt=""
-								aria-hidden="true"
-								class="currency--coin__img"
+								alt="gold"
+								class="currency__wallet__coin-img"
 								src="/gw2/gold_coin.png"
-							/>
-							{`${silver}`}<img
-								alt=""
-								aria-hidden="true"
-								class="currency--coin__img"
+							/>{`${silver}`}<img
+								alt="silver"
+								class="currency__wallet__coin-img"
 								src="/gw2/silver_coin.png"
-							/>
-							{`${copper}`}<img
-								alt=""
-								aria-hidden="true"
-								class="currency--coin__img"
+							/>{`${copper}`}<img
+								alt="copper"
+								class="currency__wallet__coin-img"
 								src="/gw2/copper_coin.png"
 							/>
 						{:else}
@@ -228,7 +223,7 @@
 		column-gap: 1rem;
 		columns: 6 25rem;
 		list-style: none;
-		padding: 0;
+		padding: 0 1rem;
 	}
 
 	.currencies__list {
@@ -238,7 +233,8 @@
 	.currencies__list__item {
 		align-items: center;
 		border-radius: 0.25rem;
-		box-shadow: 3px 2px 6px rgba(0, 0, 0, 0.6);
+		background-color: rgb(var(--primary--50));
+		box-shadow: var(--elevation--1);
 		break-inside: avoid;
 		display: grid;
 		grid-template:
@@ -250,13 +246,14 @@
 	}
 
 	.currencies__nav {
+		background-color: rgb(var(--primary--50));
 		border-radius: 0.25rem;
-		box-shadow: 3px 2px 6px rgba(0, 0, 0, 0.6);
+		box-shadow: var(--elevation--1);
 		break-inside: avoid;
 		display: flex;
 		flex-flow: row nowrap;
 		padding: 0.5rem;
-		margin: 1rem 0;
+		margin: 1rem 0 0 0;
 	}
 
 	.currencies__nav__expand-all {
@@ -286,13 +283,6 @@
 	.currencies__span {
 		column-span: all;
 		margin: 0 0 1rem 0;
-	}
-
-	.currency--coin__img {
-		height: 1.7rem;
-		margin-right: 1ch;
-		vertical-align: text-bottom;
-		width: 1.7rem;
 	}
 
 	.currency__control {
@@ -348,6 +338,13 @@
 		margin: 0 0.5rem 0.25rem 1rem;
 	}
 
+	.currency__wallet__coin-img {
+		height: 1.5rem;
+		margin: 0 1ch 0 0.25ch;
+		vertical-align: text-bottom;
+		width: 1.5rem;
+	}
+
 	.hide {
 		position: absolute;
 		display: block;
@@ -365,6 +362,10 @@
 	}
 
 	/* begin checkbox/form-control selectors */
+
+	.checkbox-icon--up {
+		fill: green !important;
+	}
 
 	*:checked ~ .checkbox-icon--up,
 	*:checked ~ .currency__control > .checkbox-icon--up,
