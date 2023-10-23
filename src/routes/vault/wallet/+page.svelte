@@ -119,16 +119,20 @@
 				<input
 					bind:value={needle}
 					class="currencies__nav__filter__input touch-area"
-					disabled={!browser}
 					name="filterCurrencies"
 					placeholder="Search"
 					type="search"
 				/>
 			</label>
-			<button class="currencies__nav__reset touch-area" disabled={!browser} type="reset">
-				<img alt="filter" class="currencies__nav__reset__img" src="/ri/filter-off-fill.svg" />
-				<span>Reset</span>
-			</button>
+			<div class="currencies__nav__control">
+				<button class="currencies__nav__reset touch-area" type="reset">
+					<img alt="filter" class="currencies__nav__reset__img" src="/ri/filter-off-fill.svg" />
+					<span>Reset</span>
+				</button>
+				<button class="currencies__nav__submit touch-area" class:hide={browser} type="submit">
+					<span>Search</span>
+				</button>
+			</div>
 			<label class="currencies__nav__expand-all">
 				<span class="hide">Expand all</span>
 				<input
@@ -196,8 +200,8 @@
 							{:else}
 								{intl.formatNumber(wallet?.entities[currencyId]?.value ?? 0)}
 							{/if}
-						{:else if readWalletStatus === 'rejected'}
-							{'?'}
+							<!-- {:else if readWalletStatus === 'rejected'} -->
+							<!-- {'?'} -->
 						{:else}
 							{'\u00a0'}
 						{/if}
@@ -293,16 +297,32 @@
 		grid-template:
 			'select toggle' auto
 			'name null' auto
-			'reset null' auto / 1fr auto;
+			'control null' auto / 1fr auto;
 		justify-content: flex-start;
 		padding: 0.5rem;
 		margin: 1rem 0;
 	}
 
-	@media screen and (min-width: 48rem) {
+	@media screen and (min-width: 42rem) {
 		.currencies__nav {
-			grid-template: 'select name reset toggle' auto / 16rem 16rem auto 1fr;
+			grid-template:
+				'select name toggle' auto
+				'control control null' auto / 16rem 16rem 1fr;
 		}
+	}
+
+	@media screen and (min-width: 56rem) {
+		.currencies__nav {
+			grid-template: 'select name control toggle' auto / 16rem 16rem auto 1fr;
+		}
+	}
+
+	.currencies__nav__control {
+		align-items: center;
+		display: flex;
+		grid-area: control;
+		justify-content: space-between;
+		max-width: 16rem;
 	}
 
 	.currencies__nav__expand-all {
@@ -319,7 +339,7 @@
 		display: flex;
 		flex-flow: row nowrap;
 		grid-area: name;
-		max-width: 16em;
+		max-width: 16rem;
 		padding: 0 0 0 0.5rem;
 		width: 100%;
 	}
@@ -347,7 +367,6 @@
 	}
 
 	.currencies__nav__reset {
-		grid-area: reset;
 		justify-self: flex-start;
 	}
 
@@ -366,6 +385,36 @@
 		grid-area: select;
 		max-width: 16rem;
 		padding: 0.125rem 1rem 0.125rem 0.5rem;
+	}
+
+	.currencies__nav__submit {
+		animation: 4s linear 0s 1 fadeIn;
+		background-color: rgb(var(--primary--900));
+		border: 1px solid rgb(var(--primary--700));
+		border-radius: 0.25em;
+		box-shadow: var(--elevation--1);
+		color: rgb(var(--primary--50));
+		font-size: 1.25rem;
+		opacity: 1;
+		padding: 0.25rem 1rem;
+	}
+
+	@keyframes fadeIn {
+		0% {
+			opacity: 0;
+		}
+		99% {
+			opacity: 0;
+		}
+		100% {
+			opacity: 1;
+		}
+	}
+
+	@media screen and (min-width: 56rem) {
+		.currencies__nav__submit {
+			margin: 0 1rem;
+		}
 	}
 
 	.currency__control {
