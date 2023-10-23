@@ -295,6 +295,12 @@
 		margin: 1rem 0;
 	}
 
+	@media screen and (min-width: 48rem) {
+		.currencies__nav {
+			grid-template: 'select name reset toggle' auto / 16rem 16rem auto 1fr;
+		}
+	}
+
 	.currencies__nav__expand-all {
 		grid-area: toggle;
 		margin-left: auto;
