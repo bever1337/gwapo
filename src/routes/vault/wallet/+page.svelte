@@ -4,11 +4,7 @@
 
 	const uFuzzy = new UFuzzy();
 	const emptyArray: any[] = [];
-	function filterCurrencies(needle: string, currencies?: ReadCurrenciesResult): Currency['id'][] {
-		if (!currencies) {
-			return emptyArray;
-		}
-
+	function filterCurrencies(needle: string, currencies: ReadCurrenciesResult): Currency['id'][] {
 		const isNeedle = typeof needle === 'string' && needle.length > 0;
 		if (!isNeedle) {
 			return currencies?.ids ?? emptyArray;
@@ -29,7 +25,7 @@
 	import { useQuery } from '$lib/rtk-svelte/hooks.js';
 	import { hydrate } from '$lib/store/actions.js';
 	import { readAccountWallet } from '$lib/store/api/read-account-wallet.js';
-	import { readCurrencies } from '$lib/store/api/read-currencies.js';
+	import { CurrencyCategory, readCurrencies } from '$lib/store/api/read-currencies.js';
 	import { separateCopperCoins } from '$lib/types/currency.js';
 
 	export let data;
@@ -41,15 +37,38 @@
 	const readAccountWalletStore = useQuery(readAccountWallet)(store)({});
 	$: ({ data: wallet, status: readWalletStatus } = $readAccountWalletStore);
 
+	$: supportedCurrencies =
+		currencies?.ids.filter((currencyId) => {
+			const entity = currencies?.entities[currencyId];
+			const walletEntity = wallet?.entities[currencyId];
+			if (!entity) return false;
+			const inWallet = (walletEntity?.value ?? 0) > 0;
+			if (inWallet) return true;
+			return entity?.deprecated !== true;
+		}) ?? [];
+
+	let category: -1 | CurrencyCategory = -1;
+	$: currenciesInCategory =
+		category === -1
+			? supportedCurrencies
+			: supportedCurrencies.filter((currencyId) => {
+					const entity = currencies?.entities[currencyId];
+					if (!entity) return false;
+					return entity.category === category;
+			  });
+
 	let needle = '';
-	let filteredCurrencies: Currency['id'][] = [];
-	$: filteredCurrencies = filterCurrencies(needle, currencies);
+	$: filteredCurrencies = filterCurrencies(needle, {
+		ids: currenciesInCategory,
+		entities: currencies?.entities ?? {}
+	});
 
 	let selected: number[] = [];
 	let expandAllSelected: boolean;
 	$: expandAllSelected = selected.length === (currencies?.ids.length ?? 0);
 
 	function onReset() {
+		category = -1;
 		needle = '';
 		selected = [];
 	}
@@ -74,6 +93,17 @@
 	</div>
 	<form class="currencies" on:reset={onReset}>
 		<nav class="currencies__nav">
+			<label class="currencies__nav__select">
+				<select bind:value={category} class="currencies__nav__select__input touch-area">
+					<option value={-1} label="All Currencies" />
+					<option value={CurrencyCategory.General} label="General" />
+					<option value={CurrencyCategory.Competitive} label="Competitive" />
+					<option value={CurrencyCategory.Instanced} label="Instanced" />
+					<option value={CurrencyCategory.Keys} label="Keys" />
+					<option value={CurrencyCategory.Maps} label="Maps" />
+					<option value={CurrencyCategory.Activity} label="Activity" />
+				</select>
+			</label>
 			<label class="currencies__nav__filter">
 				<img
 					alt=""
@@ -92,8 +122,8 @@
 				/>
 			</label>
 			<button class="currencies__nav__reset touch-area" disabled={!browser} type="reset">
-				<span class="hide">Reset</span>
-				<img alt="filter" src="/ri/filter-off-fill.svg" />
+				<img alt="filter" class="currencies__nav__reset__img" src="/ri/filter-off-fill.svg" />
+				<span>Reset</span>
 			</button>
 			<label class="currencies__nav__expand-all">
 				<span class="hide">Expand all</span>
@@ -105,8 +135,12 @@
 					on:change={onChangeExpandAllCurrencies}
 					type="checkbox"
 				/>
-				<img alt="" class="checkbox-icon--up touch-area" src="/ri/arrow-up-s-line.svg" />
-				<img alt="" class="checkbox-icon--down touch-area" src="/ri/arrow-down-s-line.svg" />
+				<svg class="checkbox-icon checkbox-icon--up" viewBox="0 0 24 24">
+					<use href="/ri/arrow-right-s-line.svg#path" />
+				</svg>
+				<svg class="checkbox-icon checkbox-icon--down" viewBox="0 0 24 24">
+					<use href="/ri/arrow-down-s-line.svg#path" />
+				</svg>
 			</label>
 		</nav>
 		<ol class="currencies__list">
@@ -129,8 +163,12 @@
 						value={currencyId}
 					/>
 					<label class="currency__control" for={`controlCurrency${currencyId}`}>
-						<img alt="" class="checkbox-icon--up touch-area" src="/ri/arrow-up-s-line.svg" />
-						<img alt="" class="checkbox-icon--down touch-area" src="/ri/arrow-down-s-line.svg" />
+						<svg class="checkbox-icon checkbox-icon--up" viewBox="0 0 24 24">
+							<use href="/ri/arrow-right-s-line.svg#path" />
+						</svg>
+						<svg class="checkbox-icon checkbox-icon--down" viewBox="0 0 24 24">
+							<use href="/ri/arrow-down-s-line.svg#path" />
+						</svg>
 					</label>
 					<p class="currency__wallet">
 						{#if readWalletStatus === 'fulfilled'}
@@ -193,7 +231,7 @@
 	}
 
 	.banner__img {
-		height: 33vh;
+		height: 25vh;
 		max-height: 12rem;
 		max-width: 36rem;
 		min-height: 8rem;
@@ -246,34 +284,78 @@
 		box-shadow: var(--elevation--1);
 		break-inside: avoid;
 		column-span: all;
-		display: flex;
-		flex-flow: row nowrap;
+		display: grid;
+		gap: 1em;
+		grid-template:
+			'select toggle' auto
+			'name null' auto
+			'reset null' auto / 1fr auto;
+		justify-content: flex-start;
 		padding: 0.5rem;
 		margin: 1rem 0;
 	}
 
 	.currencies__nav__expand-all {
+		grid-area: toggle;
 		margin-left: auto;
 	}
 
 	.currencies__nav__filter {
-		display: contents;
+		align-items: center;
+		background-color: rgb(var(--primary--50));
+		border: 1px solid rgb(var(--primary--900));
+		border-radius: 0.25rem;
+		box-sizing: border-box;
+		display: flex;
+		flex-flow: row nowrap;
+		grid-area: name;
+		max-width: 16em;
+		padding: 0 0 0 0.5rem;
+		width: 100%;
+	}
+
+	.currencies__nav__filter:focus-within {
+		background-color: rgb(var(--white));
+		outline: 2px solid royalblue;
 	}
 
 	.currencies__nav__filter__icon {
-		align-self: center;
 		height: 1.75rem;
 		width: 1.75rem;
 	}
 
 	.currencies__nav__filter__input {
+		background-color: transparent;
+		border: 0 solid transparent;
 		font-size: 1.25rem;
-		max-width: 16em;
-		padding: 0.125rem 0.5rem;
+		padding: 0.25rem;
+		width: 100%;
+	}
+
+	.currencies__nav__filter__input:focus {
+		outline: none;
 	}
 
 	.currencies__nav__reset {
-		margin: 0 1em;
+		grid-area: reset;
+		justify-self: flex-start;
+	}
+
+	.currencies__nav__reset__img {
+		height: 1.75rem;
+		width: 1.75rem;
+	}
+
+	.currencies__nav__select {
+		display: contents;
+	}
+
+	.currencies__nav__select__input {
+		box-sizing: border-box;
+		font-size: 1.25rem;
+		grid-area: select;
+		max-width: 16rem;
+		padding: 0.125rem 1rem 0.125rem 0.5rem;
 	}
 
 	.currency__control {
@@ -350,6 +432,11 @@
 	.touch-area {
 		min-height: 2.75rem;
 		min-width: 2.75rem;
+	}
+
+	.checkbox-icon {
+		height: 2.75rem;
+		width: 2.75rem;
 	}
 
 	*:checked ~ .checkbox-icon--up,

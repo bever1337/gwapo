@@ -5,8 +5,19 @@ import { api } from '.';
 
 import { getPouch } from '../../pouch';
 
+export enum CurrencyCategory {
+	General,
+	Competitive,
+	Instanced,
+	Keys,
+	Maps,
+	Activity
+}
+
 export interface Currency {
+	category: CurrencyCategory;
 	id: number;
+	deprecated?: true;
 	description: string;
 	icon: string;
 	name: string;
