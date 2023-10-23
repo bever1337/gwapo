@@ -68,9 +68,9 @@
 </script>
 
 <main class="main">
+	<h1 class="banner__header">Wallet</h1>
 	<div class="banner">
 		<img alt="A pile of coins" class="banner__img" src={`/Currency_Exchange_banner.jpg`} />
-		<h1 class="banner__header">Wallet</h1>
 	</div>
 	<form class="currencies" on:reset={onReset}>
 		<nav class="currencies__nav">
@@ -109,7 +109,6 @@
 				<img alt="" class="checkbox-icon--down touch-area" src="/ri/arrow-down-s-line.svg" />
 			</label>
 		</nav>
-		<div class="currencies__span" />
 		<ol class="currencies__list">
 			{#each filteredCurrencies as currencyId}
 				{@const currency = currencies?.entities[currencyId]}
@@ -181,35 +180,25 @@
 <style>
 	.banner {
 		background-color: #071530;
-		border-radius: 1rem 1rem 0 0;
-		box-shadow: var(--elevation--2);
 		line-height: 0;
-		margin: 0;
-		overflow: hidden;
 		position: relative;
 	}
 
 	.banner__header {
-		bottom: 0;
-		color: white;
-		text-shadow: 2px 1px 8px rgba(0, 0, 0, 0.75);
-		font-size: 5rem;
-		line-height: 1em;
+		background: rgb(var(--primary--900));
+		color: rgb(var(--primary--50));
+		line-height: 1.2em;
 		margin: 0;
-		padding: 1rem 2rem;
-		position: absolute;
-		z-index: 1;
+		padding: 0.5rem 1rem;
 	}
 
 	.banner__img {
-		filter: blur(0.05vw);
 		height: 33vh;
-		max-height: 24rem;
-		max-width: 80rem;
-		min-height: 12rem;
+		max-height: 12rem;
+		max-width: 36rem;
+		min-height: 8rem;
 		object-fit: cover;
-		object-position: 50% 66%;
-		position: relative;
+		object-position: 17% 66%;
 		width: 100%;
 	}
 
@@ -221,11 +210,11 @@
 		width: 100%;
 		height: 100%;
 		display: block;
-		background: linear-gradient(to right, rgba(0, 0, 0, 0) 72rem, rgba(6, 18, 43, 1) 80rem);
+		background: linear-gradient(to right, rgba(0, 0, 0, 0) 30rem, rgba(6, 18, 43, 1) 36rem);
 	}
 
 	.currencies {
-		box-shadow: var(--elevation--2);
+		box-sizing: border-box;
 		column-gap: 1rem;
 		columns: 6 25rem;
 		list-style: none;
@@ -256,10 +245,11 @@
 		border-radius: 0.25rem;
 		box-shadow: var(--elevation--1);
 		break-inside: avoid;
+		column-span: all;
 		display: flex;
 		flex-flow: row nowrap;
 		padding: 0.5rem;
-		margin: 1rem 0 0 0;
+		margin: 1rem 0;
 	}
 
 	.currencies__nav__expand-all {
@@ -284,11 +274,6 @@
 
 	.currencies__nav__reset {
 		margin: 0 1em;
-	}
-
-	.currencies__span {
-		column-span: all;
-		margin: 0 0 1rem 0;
 	}
 
 	.currency__control {
@@ -384,8 +369,15 @@
 	}
 
 	.main {
-		background: rgb(var(--primary--200));
-		border-radius: 1rem 1rem 0 0;
-		margin: 0 1rem 1rem 1rem;
+		background: linear-gradient(
+			to bottom,
+			rgba(6, 18, 43, 1) 12rem,
+			rgba(6, 18, 43, 1) 16rem,
+			rgba(236, 236, 232, 1) 28rem
+		);
+		box-shadow: var(--elevation--2);
+		margin: 0 auto 1rem auto;
+		max-width: 112rem;
+		width: calc(100vw - 2rem);
 	}
 </style>
