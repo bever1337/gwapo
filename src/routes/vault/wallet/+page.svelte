@@ -91,10 +91,14 @@
 	<div class="banner">
 		<img alt="A pile of coins" class="banner__img" src={`/Currency_Exchange_banner.jpg`} />
 	</div>
-	<form class="currencies" on:reset={onReset}>
+	<form class="currencies" action="/vault/wallet" on:reset={onReset}>
 		<nav class="currencies__nav">
 			<label class="currencies__nav__select">
-				<select bind:value={category} class="currencies__nav__select__input touch-area">
+				<select
+					bind:value={category}
+					class="currencies__nav__select__input touch-area"
+					name="selectCurrencies"
+				>
 					<option value={-1} label="All Currencies" />
 					<option value={CurrencyCategory.General} label="General" />
 					<option value={CurrencyCategory.Competitive} label="Competitive" />
@@ -223,8 +227,8 @@
 	}
 
 	.banner__header {
-		background: rgb(var(--primary--900));
-		color: rgb(var(--primary--50));
+		background-color: rgb(var(--primary--50));
+		color: rgb(var(--primary--900));
 		line-height: 1.2em;
 		margin: 0;
 		padding: 0.5rem 1rem;
@@ -254,7 +258,7 @@
 	.currencies {
 		box-sizing: border-box;
 		column-gap: 1rem;
-		columns: 6 25rem;
+		columns: 6 24rem;
 		list-style: none;
 		padding: 0 1rem 1rem 1rem;
 	}
@@ -469,7 +473,7 @@
 			rgba(236, 236, 232, 1) 28rem
 		);
 		box-shadow: var(--elevation--2);
-		margin: 0 auto 1rem auto;
+		margin: 1rem auto;
 		max-width: 112rem;
 		width: calc(100vw - 2rem);
 	}

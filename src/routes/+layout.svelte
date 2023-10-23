@@ -90,7 +90,7 @@
 	}
 
 	:global(body) {
-		background-color: rgb(var(--primary--50));
+		background-color: rgb(var(--primary--800));
 		margin: 0;
 		overflow-y: scroll;
 	}
@@ -125,11 +125,10 @@
 	.nav {
 		align-items: center;
 		box-shadow: var(--elevation--6);
-		background-color: rgb(var(--primary--900));
+		background-color: rgb(var(--primary--50));
 		display: flex;
 		flex-flow: row nowrap;
 		justify-content: space-between;
-		margin: 0 0 1rem 0;
 		position: relative;
 		z-index: var(--elevation--6--height);
 	}
@@ -139,7 +138,7 @@
 	}
 
 	.nav__heading > a {
-		color: rgb(var(--primary--100));
+		color: rgb(var(--primary--900));
 	}
 
 	.nav__list {
@@ -152,7 +151,7 @@
 
 	.nav__open-nav {
 		align-self: stretch;
-		background-color: rgb(var(--primary--900));
+		background-color: transparent;
 		border: 0;
 		box-sizing: border-box;
 		min-height: 2.75rem;
@@ -162,7 +161,7 @@
 	}
 
 	.nav__open-nav--opened {
-		background-color: rgb(var(--primary--800));
+		background-color: rgb(var(--primary--300));
 	}
 
 	.nav__open-settings {
