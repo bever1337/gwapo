@@ -2,6 +2,9 @@
 	import UFuzzy from '@leeoniya/ufuzzy';
 	import type { Currency, ReadCurrenciesResult } from '$lib/store/api/read-currencies';
 
+	const GEMS = [1600, 800, 400, 100];
+	const GOLD = [500, 250, 100, 50];
+
 	const uFuzzy = new UFuzzy();
 	const emptyArray: any[] = [];
 	function filterCurrencies(needle: string, currencies: ReadCurrenciesResult): Currency['id'][] {
@@ -25,10 +28,13 @@
 	import { useQuery } from '$lib/rtk-svelte/hooks.js';
 	import { hydrate } from '$lib/store/actions.js';
 	import { readAccountWallet } from '$lib/store/api/read-account-wallet.js';
+	import { readCommerceExchangeCoins } from '$lib/store/api/read-commerce-exchange-coints';
+	import { readCommerceExchangeGems } from '$lib/store/api/read-commerce-exchange-gems';
 	import { CurrencyCategory, readCurrencies } from '$lib/store/api/read-currencies.js';
 	import { separateCopperCoins } from '$lib/types/currency.js';
 
-	import CommerceExchange from './commerceExchange.svelte';
+	import CoinExchangeItem from './coinExchangeItem.svelte';
+	import GemExchangeItem from './gemExchangeItem.svelte';
 
 	export let data;
 
@@ -38,6 +44,17 @@
 	$: ({ data: currencies } = $readCurrenciesStore);
 	const readAccountWalletStore = useQuery(readAccountWallet)(store)({});
 	$: ({ data: wallet, status: readWalletStatus } = $readAccountWalletStore);
+
+	let inputGems: number = 25;
+	const getReadCommerceExchangeGemsStore = useQuery(readCommerceExchangeGems)(store);
+	$: readCommerceExchangeGemsStore = getReadCommerceExchangeGemsStore({
+		gems: inputGems
+	});
+	let inputGold: number = 10;
+	const getReadCommerceExchangeCoinsStore = useQuery(readCommerceExchangeCoins)(store);
+	$: readCommerceExchangeCoinsStore = getReadCommerceExchangeCoinsStore({
+		coins: inputGold * 10000
+	});
 
 	$: supportedCurrencies =
 		currencies?.ids.filter((currencyId) => {
@@ -187,7 +204,23 @@
 						</label>
 						<p class="currency__wallet currency__wallet--conversion">Currency Exchange</p>
 						<div class="currency__description" style="background-color: goldenrod;">
-							<CommerceExchange />
+							{#each GEMS as gemsToExchange}
+								<p><GemExchangeItem quantity={gemsToExchange} /></p>
+							{/each}
+							<p>
+								<input bind:value={inputGems} max={9999} min={1} type="number" />
+								<br />
+								{$readCommerceExchangeGemsStore.data?.quantity ?? 0}
+							</p>
+							<hr />
+							{#each GOLD as goldToExchange}
+								<p><CoinExchangeItem quantity={goldToExchange} /></p>
+							{/each}
+							<p>
+								<input bind:value={inputGold} max={999} min={1} type="number" />
+								<br />
+								{$readCommerceExchangeCoinsStore.data?.quantity ?? 0}
+							</p>
 						</div>
 					</li>
 				{/if}
