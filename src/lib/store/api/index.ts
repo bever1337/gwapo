@@ -38,7 +38,7 @@ function baseQuery(args: FetchArgs, queryApi: BaseQueryApi, extraOptions: BaseQu
 	if (extraOptions.baseUrl) {
 		nextArguments.url = `${extraOptions.baseUrl}${args.url}`;
 	}
-	if (Array.isArray(extraOptions.scope)) {
+	if (Array.isArray(extraOptions.scope) && extraOptions.scope.length > 0) {
 		// request is Gw2 authenticated api
 		const queryIsInScope = selectInScope(queryApi.getState() as RootState, extraOptions.scope);
 		const access_token = (queryApi.getState() as RootState).client.access?.access_token;

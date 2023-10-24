@@ -28,6 +28,8 @@
 	import { CurrencyCategory, readCurrencies } from '$lib/store/api/read-currencies.js';
 	import { separateCopperCoins } from '$lib/types/currency.js';
 
+	import CommerceExchange from './commerceExchange.svelte';
+
 	export let data;
 
 	const store = storeCtx.get();
@@ -88,9 +90,6 @@
 
 <main class="main">
 	<h1 class="banner__header">Wallet</h1>
-	<div class="banner">
-		<img alt="A pile of coins" class="banner__img" src={`/Currency_Exchange_banner.jpg`} />
-	</div>
 	<form class="currencies" action="/vault/wallet" on:reset={onReset}>
 		<nav class="currencies__nav">
 			<label class="currencies__nav__select">
@@ -152,9 +151,47 @@
 			</label>
 		</nav>
 		<ol class="currencies__list">
-			{#each filteredCurrencies as currencyId}
+			{#each filteredCurrencies as currencyId, index (currencyId)}
 				{@const currency = currencies?.entities[currencyId]}
-				<li class="currencies__list__item">
+				{@const previousCurrencyId = filteredCurrencies[index - 1] ?? -1}
+				{@const previousCurrency = currencies?.entities[previousCurrencyId]}
+				{@const currencyIsCoin = (currency?.id ?? 0) === 1}
+				{@const currencyWasGem = (previousCurrency?.id ?? 0) === 4}
+				{@const showConversionDialog = currencyIsCoin && currencyWasGem}
+				{#if showConversionDialog}
+					<li class="currencies__list__item currencies__list__item--conversion">
+						<div class="currency__picture" />
+						<label
+							class="currency__name currency__name--conversion"
+							for="controlCurrencyConversion"
+						>
+							Trade {previousCurrency?.name}s and {currency?.name}s!
+						</label>
+						<input
+							class="hide"
+							id="controlCurrencyConversion"
+							name="controlCurrencyConversion"
+							type="checkbox"
+							value="conversion"
+						/>
+						<label
+							class="currency__control currency__control--conversion"
+							for="controlCurrencyConversion"
+						>
+							<svg class="checkbox-icon checkbox-icon--up" viewBox="0 0 24 24">
+								<use href="/ri/arrow-right-s-line.svg#path" />
+							</svg>
+							<svg class="checkbox-icon checkbox-icon--down" viewBox="0 0 24 24">
+								<use href="/ri/arrow-down-s-line.svg#path" />
+							</svg>
+						</label>
+						<p class="currency__wallet currency__wallet--conversion">Currency Exchange</p>
+						<div class="currency__description" style="background-color: goldenrod;">
+							<CommerceExchange />
+						</div>
+					</li>
+				{/if}
+				<li class="currencies__list__item currencies__list__item--currency">
 					<div class="currency__picture">
 						<div class="currency__picture__border" />
 						<img alt={currency?.name} class="currency__picture__img" src={currency?.icon} />
@@ -180,7 +217,7 @@
 					</label>
 					<p class="currency__wallet">
 						{#if readWalletStatus === 'fulfilled'}
-							{#if currency?.id === 1}
+							{#if currencyIsCoin}
 								{@const [gold, silver, copper] = separateCopperCoins(
 									wallet?.entities[currencyId]?.value ?? 0
 								)}
@@ -224,39 +261,10 @@
 </svg>
 
 <style>
-	.banner {
-		background-color: #071530;
-		line-height: 0;
-		position: relative;
-	}
-
 	.banner__header {
-		background-color: rgb(var(--primary--50));
 		color: rgb(var(--primary--900));
-		line-height: 1.2em;
 		margin: 0;
-		padding: 0.5rem 1rem;
-	}
-
-	.banner__img {
-		height: 25vh;
-		max-height: 12rem;
-		max-width: 36rem;
-		min-height: 8rem;
-		object-fit: cover;
-		object-position: 17% 66%;
-		width: 100%;
-	}
-
-	.banner:after {
-		content: ' ';
-		position: absolute;
-		left: 0;
-		top: 0;
-		width: 100%;
-		height: 100%;
-		display: block;
-		background: linear-gradient(to right, rgba(0, 0, 0, 0) 30rem, rgba(6, 18, 43, 1) 36rem);
+		padding: 1rem 1rem 0 1rem;
 	}
 
 	.currencies {
@@ -274,7 +282,6 @@
 	.currencies__list__item {
 		align-items: center;
 		border-radius: 0.25rem;
-		background-color: rgb(var(--primary--50));
 		box-shadow: var(--elevation--1);
 		break-inside: avoid;
 		display: grid;
@@ -282,12 +289,24 @@
 			'img header control' auto
 			'img wallet wallet' auto
 			'description description description' auto / auto 1fr auto;
+		list-style: none;
 		margin: 0 0 1rem 0;
 		padding: 0.5rem;
 	}
 
-	.currencies__nav {
+	.currencies__list__item--currency {
 		background-color: rgb(var(--primary--50));
+	}
+
+	.currencies__list__item--conversion {
+		background: url('/gw2/Currency_Exchange_banner.jpg');
+		background-repeat: no-repeat;
+		background-size: 100% auto;
+		background-position: 0% 0%;
+	}
+
+	.currencies__nav {
+		background-color: rgb(var(--primary--200));
 		border-radius: 0.25rem;
 		box-shadow: var(--elevation--1);
 		break-inside: avoid;
@@ -300,7 +319,7 @@
 			'control null' auto / 1fr auto;
 		justify-content: flex-start;
 		padding: 0.5rem;
-		margin: 1rem 0;
+		margin: 0 0 1rem 0;
 	}
 
 	@media screen and (min-width: 42rem) {
@@ -422,6 +441,10 @@
 		grid-area: control;
 	}
 
+	.currency__control--conversion {
+		fill: white;
+	}
+
 	.currency__description {
 		border-top: 1px solid rgba(0, 0, 0, 0.4);
 		grid-area: description;
@@ -434,6 +457,11 @@
 		font-weight: normal;
 		grid-area: header;
 		margin: 0.5rem 0.5rem 0.25rem 1rem;
+	}
+
+	.currency__name--conversion {
+		color: rgb(var(--primary--50));
+		text-shadow: 2px 2px 4px rgb(var(--black));
 	}
 
 	.currency__picture {
@@ -468,6 +496,11 @@
 		font-size: 1.5rem;
 		grid-area: wallet;
 		margin: 0 0.5rem 0.25rem 1rem;
+	}
+
+	.currency__wallet--conversion {
+		color: rgb(var(--primary--50));
+		text-shadow: 1px 1px 3px rgb(var(--black));
 	}
 
 	.currency__wallet__coin-img {
@@ -515,15 +548,38 @@
 	}
 
 	.main {
+		background: white;
 		background: linear-gradient(
-			to bottom,
-			rgba(6, 18, 43, 1) 12rem,
-			rgba(6, 18, 43, 1) 16rem,
-			rgba(236, 236, 232, 1) 28rem
-		);
+				to bottom,
+				rgba(255, 255, 255, 0),
+				rgba(255, 255, 255, 0) 8rem,
+				rgba(255, 255, 255, 0.4) 16rem,
+				rgba(255, 255, 255, 0.9) 32rem,
+				rgba(255, 255, 255, 1)
+			),
+			url('/gw2/pattern3.jpg');
+		background-repeat: no-repeat;
+		background-size: 100% auto;
 		box-shadow: var(--elevation--2);
 		margin: 1rem auto;
 		max-width: 112rem;
+		position: relative;
 		width: calc(100vw - 2rem);
+	}
+
+	/* If the background image fails to fill canvas,
+	  this pseudo element ensures a white background */
+	.main::before {
+		background: white;
+		bottom: 0;
+		content: '';
+		display: block;
+		height: 100%;
+		left: 0;
+		position: absolute;
+		right: 0;
+		top: 0;
+		width: 100%;
+		z-index: -1;
 	}
 </style>
