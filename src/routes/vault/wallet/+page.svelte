@@ -33,6 +33,7 @@
 	import { CurrencyCategory, readCurrencies } from '$lib/store/api/read-currencies.js';
 	import { separateCopperCoins } from '$lib/types/currency.js';
 
+	import Coins from './coins.svelte';
 	import CoinExchangeItem from './coinExchangeItem.svelte';
 	import GemExchangeItem from './gemExchangeItem.svelte';
 
@@ -42,6 +43,8 @@
 	store.dispatch(hydrate(data));
 	const readCurrenciesStore = useQuery(readCurrencies)(store)({});
 	$: ({ data: currencies } = $readCurrenciesStore);
+	$: coins = currencies?.entities[1];
+	$: gems = currencies?.entities[4];
 	const readAccountWalletStore = useQuery(readAccountWallet)(store)({});
 	$: ({ data: wallet, status: readWalletStatus } = $readAccountWalletStore);
 
@@ -204,23 +207,80 @@
 						</label>
 						<p class="currency__wallet currency__wallet--conversion">Currency Exchange</p>
 						<div class="currency__description" style="background-color: goldenrod;">
+							<p>Trade gems for gold</p>
 							{#each GEMS as gemsToExchange}
 								<p><GemExchangeItem quantity={gemsToExchange} /></p>
 							{/each}
 							<p>
-								<input bind:value={inputGems} max={9999} min={1} type="number" />
+								<input
+									bind:value={inputGems}
+									max={9999}
+									min={1}
+									style="max-width: 4em;"
+									type="number"
+								/><img
+									class="img"
+									alt={gems?.name}
+									src={gems?.icon}
+									style="height: 1.25em; width:1.25em;"
+								/>
+								=>
+								<Coins copper={$readCommerceExchangeGemsStore.data?.quantity ?? 0} />
 								<br />
-								{$readCommerceExchangeGemsStore.data?.quantity ?? 0}
+								@<Coins copper={$readCommerceExchangeGemsStore.data?.coins_per_gem ?? 0} />
 							</p>
+							<button
+								disabled={$readAccountWalletStore.status !== 'fulfilled'}
+								on:click={function onClick() {
+									inputGems = Math.max(
+										1,
+										Math.min($readAccountWalletStore.data?.entities?.[4]?.value ?? 0, 9999)
+									);
+								}}
+							>
+								set max
+							</button>
 							<hr />
+							<p>Trade gold for gems</p>
 							{#each GOLD as goldToExchange}
 								<p><CoinExchangeItem quantity={goldToExchange} /></p>
 							{/each}
 							<p>
-								<input bind:value={inputGold} max={999} min={1} type="number" />
-								<br />
+								<input
+									bind:value={inputGold}
+									max={999}
+									min={1}
+									style="max-width: 4em;"
+									type="number"
+								/><img
+									class="img"
+									alt={coins?.name}
+									src={coins?.icon}
+									style="height: 1.25em; width:1.25em;"
+								/>
+								=>
 								{$readCommerceExchangeCoinsStore.data?.quantity ?? 0}
+								<img
+									class="img"
+									alt={gems?.name}
+									src={gems?.icon}
+									style="height: 1.25em; width:1.25em;"
+								/>
+								<br />
+								@<Coins copper={$readCommerceExchangeCoinsStore.data?.coins_per_gem ?? 0} />
 							</p>
+							<button
+								disabled={$readAccountWalletStore.status !== 'fulfilled'}
+								on:click={function onClick() {
+									inputGold = Math.max(
+										1,
+										Math.min(
+											Math.floor(($readAccountWalletStore.data?.entities?.[1]?.value ?? 0) / 10000),
+											999
+										)
+									);
+								}}>set max</button
+							>
 						</div>
 					</li>
 				{/if}

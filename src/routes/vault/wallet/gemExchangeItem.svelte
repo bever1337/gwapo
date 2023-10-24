@@ -21,6 +21,7 @@
 
 	$: ({ data: currencies } = $readCurrenciesStore);
 	$: gems = currencies?.entities[4];
+
 	$: readCommerceExchangeGemsStore = getExchangeGemsStore({ gems: quantity });
 	$: ({ data = initialState } = $readCommerceExchangeGemsStore);
 </script>
@@ -29,7 +30,8 @@
 <img class="img" alt={gems?.name} src={gems?.icon} />
 =>
 <Coins copper={data.quantity} />
-<br />@<Coins copper={data.coins_per_gem} />/{gems?.name}
+<br />
+@<Coins copper={data.coins_per_gem} />
 
 <style>
 	.img {

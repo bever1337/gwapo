@@ -7,10 +7,14 @@
 	$: [goldOut, silverOut, copperOut] = separateCopperCoins(copper);
 </script>
 
-{intl.formatNumber(goldOut)}
-<img class="img" alt="gold" src="/gw2/gold_coin.png" />
-{intl.formatNumber(silverOut)}
-<img class="img" alt="silver" src="/gw2/silver_coin.png" />
+{#if goldOut > 0}
+	{intl.formatNumber(goldOut)}
+	<img class="img" alt="gold" src="/gw2/gold_coin.png" />
+{/if}
+{#if silverOut > 0 || goldOut > 0}
+	{intl.formatNumber(silverOut)}
+	<img class="img" alt="silver" src="/gw2/silver_coin.png" />
+{/if}
 {intl.formatNumber(copperOut)}
 <img class="img" alt="copper" src="/gw2/copper_coin.png" />
 

@@ -32,7 +32,8 @@
 =>
 {data?.quantity ?? 0}
 <img class="img" alt={gems?.name} src={gems?.icon} />
-<br />@<Coins copper={data.coins_per_gem} />/{gems?.name}
+<br />
+@<Coins copper={data.coins_per_gem} />
 
 <style>
 	.img {
