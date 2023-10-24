@@ -1,66 +1,12 @@
 <script lang="ts">
 	import { getSvelteStore, storeCtx } from '$lib/context';
+	import Navigation from './navigation.svelte';
 
 	const store = getSvelteStore();
 	storeCtx.set(store);
-
-	let dialog: HTMLDialogElement;
-	$: open = false;
-
-	function closeDialog() {
-		dialog?.close();
-	}
 </script>
 
-<header>
-	<nav class="nav">
-		<button
-			class="nav__open-nav"
-			class:nav__open-nav--opened={open}
-			type="button"
-			on:click={function onClickToggleDialog() {
-				open = !open;
-				if (open) {
-					dialog?.show();
-				} else {
-					dialog?.close();
-				}
-			}}
-		>
-			<img alt="closed" class:hide={open} src="/ri/menu-fold-line.svg" />
-			<img alt="opened" class:hide={!open} src="/ri/menu-unfold-line.svg" />
-		</button>
-		<h1 class="nav__heading"><a href="/">Gwapo</a></h1>
-		<button class="nav__open-settings">
-			<span class="hide">settings</span>
-			<img alt="settings" src="/ri/settings-4-line.svg" />
-		</button>
-	</nav>
-</header>
-
-<dialog
-	bind:this={dialog}
-	class="dialog"
-	on:close={function onCloseDialog() {
-		open = false;
-	}}
->
-	<nav>
-		<ul class="nav__list">
-			<li class="nav__list__item">
-				<a href="/" on:click={closeDialog}>home</a>
-			</li>
-			<li class="nav__list__item">
-				<p>vault</p>
-				<ul class="nav__list">
-					<li class="nav__list__item">
-						<a href="/vault/wallet" on:click={closeDialog}>wallet</a>
-					</li>
-				</ul>
-			</li>
-		</ul>
-	</nav>
-</dialog>
+<Navigation />
 
 <slot />
 
@@ -93,88 +39,5 @@
 		background-color: rgb(var(--primary--800));
 		margin: 0;
 		overflow-y: scroll;
-	}
-
-	.dialog {
-		background-color: rgb(var(--primary--200));
-		border: 0px solid transparent;
-		box-shadow: inset 0 6px 4px -4px rgb(var(--black) / 0.4), var(--elevation--5);
-		box-sizing: border-box;
-		min-height: calc(100vh - 3.25rem);
-		margin: 0;
-		max-width: 45rem;
-		padding: 1rem;
-		position: absolute;
-		top: 3.25rem;
-		transition: all 3s linear;
-		width: 100%;
-		z-index: var(--elevation--5--height);
-	}
-
-	.hide {
-		position: absolute;
-		display: block;
-		height: 1px;
-		width: 1px;
-		left: -10000px;
-		right: -10000px;
-		word-break: normal !important;
-		overflow: hidden;
-	}
-
-	.nav {
-		align-items: center;
-		box-shadow: var(--elevation--6);
-		background-color: rgb(var(--primary--50));
-		display: flex;
-		flex-flow: row nowrap;
-		justify-content: space-between;
-		position: relative;
-		z-index: var(--elevation--6--height);
-	}
-
-	.nav__heading {
-		margin: 0;
-	}
-
-	.nav__heading > a {
-		color: rgb(var(--primary--900));
-	}
-
-	.nav__list {
-		margin: 0;
-	}
-
-	.nav__list__item {
-		/* display: inline-block; */
-	}
-
-	.nav__open-nav {
-		align-self: stretch;
-		background-color: transparent;
-		border: 0;
-		box-sizing: border-box;
-		min-height: 2.75rem;
-		outline-offset: -0.25rem;
-		width: 2.75rem;
-		padding: 0.25rem;
-	}
-
-	.nav__open-nav--opened {
-		background-color: rgb(var(--primary--300));
-	}
-
-	.nav__open-settings {
-		box-sizing: border-box;
-		margin: 0.25rem 0.5rem;
-		padding: 0.25rem;
-		height: 2.75rem;
-		width: 2.75rem;
-	}
-
-	.nav__open-nav > img,
-	.nav__open-settings > img {
-		height: 2rem;
-		width: 2rem;
 	}
 </style>

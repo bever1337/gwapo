@@ -38,8 +38,6 @@
 	$: ({ data: readCommerceExchange50Gold } = $readCommerceExchange50GoldStore);
 	const readCommerceExchange10GoldStore = getExchangeCoinsStore({ coins: 10 * 10000 });
 	$: ({ data: readCommerceExchange10Gold } = $readCommerceExchange10GoldStore);
-	const readCommerceExchange1GoldStore = getExchangeCoinsStore({ coins: 1 * 10000 });
-	$: ({ data: readCommerceExchange1Gold } = $readCommerceExchange1GoldStore);
 </script>
 
 <p>
@@ -105,14 +103,6 @@
 	{readCommerceExchange10Gold?.quantity ?? 0}
 	{gems?.name} @
 	{readCommerceExchange10Gold?.coins_per_gem ?? 0}
-	{coins?.name}/{gems?.name}
-</p>
-<p>
-	{intl.formatNumber(1)}
-	{coins?.name} =>
-	{readCommerceExchange1Gold?.quantity ?? 0}
-	{gems?.name} @
-	{readCommerceExchange1Gold?.coins_per_gem ?? 0}
 	{coins?.name}/{gems?.name}
 </p>
 

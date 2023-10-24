@@ -4,7 +4,7 @@ import { readCurrencies } from '$lib/store/api/read-currencies';
 import { getStore } from '$lib/store';
 
 const GEMS = [2000, 1200, 800, 400];
-const GOLD = [250, 100, 50, 10, 1];
+const GOLD = [250, 100, 50, 10];
 export async function load() {
 	const { dispatch, getState } = getStore();
 	await Promise.all([
