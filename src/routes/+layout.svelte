@@ -24,7 +24,7 @@
 		--primary--700: 94 94 91;
 		--primary--800: 63 63 60;
 		--primary--900: 30 30 28;
-		--elevation--1: 1px 1px 2px rgb(var(--black) / 0.2);
+		--elevation--1: 1px 1px 3px rgb(var(--black) / 0.2);
 		--elevation--2: 2px 1px 4px rgb(var(--black) / 0.2);
 		--elevation--3: 3px 2px 6px rgb(var(--black) / 0.3);
 		--elevation--4: 3px 2px 6px rgb(var(--black) / 0.3);

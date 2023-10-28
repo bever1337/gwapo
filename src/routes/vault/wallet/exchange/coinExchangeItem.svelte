@@ -1,12 +1,11 @@
 <script lang="ts">
+	import Coins from '$lib/components/coins.svelte';
 	import { storeCtx } from '$lib/context.js';
 	import { intl } from '$lib/intl/index.js';
 	import { useQuery } from '$lib/rtk-svelte/hooks.js';
 	import { readCurrencies } from '$lib/store/api/read-currencies.js';
 	import { readCommerceExchangeCoins } from '$lib/store/api/read-commerce-exchange-coints.js';
 	import type { CoinsExchangeRate } from '$lib/store/api/read-commerce-exchange-coints.js';
-
-	import Coins from './coins.svelte';
 
 	export let quantity: number;
 
@@ -27,17 +26,25 @@
 	$: ({ data = initialState } = $readCommerceExchangeCoinsStore);
 </script>
 
-{intl.formatNumber(quantity)}
-<img class="img" alt={coins?.name} src={coins?.icon} />
-=>
-{data?.quantity ?? 0}
-<img class="img" alt={gems?.name} src={gems?.icon} />
-<br />
-@<Coins copper={data.coins_per_gem} />
+<td class="td">
+	{intl.formatNumber(quantity)}
+	<img class="img" alt={coins?.name} src={coins?.icon} />
+</td>
+<td class="td">
+	{data?.quantity ?? 0}
+	<img class="img" alt={gems?.name} src={gems?.icon} />
+</td>
+<td class="td">
+	<Coins copper={data.coins_per_gem} />
+</td>
 
 <style>
 	.img {
 		height: 1.25em;
 		width: 1.25em;
+	}
+
+	.td {
+		padding: 0.25em 0.5em;
 	}
 </style>

@@ -21,6 +21,8 @@
 <style>
 	.img {
 		height: 1.25em;
+		margin: 0 1ch 0 0.25ch;
+		vertical-align: text-bottom;
 		width: 1.25em;
 	}
 </style>

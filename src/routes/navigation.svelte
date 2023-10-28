@@ -125,6 +125,18 @@
 						>
 							wallet
 						</a>
+						<ul>
+							<li>
+								<a
+									href="/vault/wallet/exchange"
+									on:click={function closeDialog() {
+										navDialog?.close();
+									}}
+								>
+									exchange
+								</a>
+							</li>
+						</ul>
 					</li>
 				</ul>
 			</li>

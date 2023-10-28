@@ -33,10 +33,6 @@
 	import { CurrencyCategory, readCurrencies } from '$lib/store/api/read-currencies.js';
 	import { separateCopperCoins } from '$lib/types/currency.js';
 
-	import Coins from './coins.svelte';
-	import CoinExchangeItem from './coinExchangeItem.svelte';
-	import GemExchangeItem from './gemExchangeItem.svelte';
-
 	export let data;
 
 	const store = storeCtx.get();
@@ -181,107 +177,12 @@
 				{#if showConversionDialog}
 					<li class="currencies__list__item currencies__list__item--conversion">
 						<div class="currency__picture" />
-						<label
-							class="currency__name currency__name--conversion"
-							for="controlCurrencyConversion"
-						>
+						<a class="currency__name currency__name--conversion" href="/vault/wallet/exchange">
+							View the Currency Exchange
+						</a>
+						<a class="currency__wallet currency__wallet--conversion" href="/vault/wallet/exchange">
 							Trade {previousCurrency?.name}s and {currency?.name}s!
-						</label>
-						<input
-							class="hide"
-							id="controlCurrencyConversion"
-							name="controlCurrencyConversion"
-							type="checkbox"
-							value="conversion"
-						/>
-						<label
-							class="currency__control currency__control--conversion"
-							for="controlCurrencyConversion"
-						>
-							<svg class="checkbox-icon checkbox-icon--up" viewBox="0 0 24 24">
-								<use href="/ri/arrow-right-s-line.svg#path" />
-							</svg>
-							<svg class="checkbox-icon checkbox-icon--down" viewBox="0 0 24 24">
-								<use href="/ri/arrow-down-s-line.svg#path" />
-							</svg>
-						</label>
-						<p class="currency__wallet currency__wallet--conversion">Currency Exchange</p>
-						<div class="currency__description" style="background-color: goldenrod;">
-							<p>Trade gems for gold</p>
-							{#each GEMS as gemsToExchange}
-								<p><GemExchangeItem quantity={gemsToExchange} /></p>
-							{/each}
-							<p>
-								<input
-									bind:value={inputGems}
-									max={9999}
-									min={1}
-									style="max-width: 4em;"
-									type="number"
-								/><img
-									class="img"
-									alt={gems?.name}
-									src={gems?.icon}
-									style="height: 1.25em; width:1.25em;"
-								/>
-								=>
-								<Coins copper={$readCommerceExchangeGemsStore.data?.quantity ?? 0} />
-								<br />
-								@<Coins copper={$readCommerceExchangeGemsStore.data?.coins_per_gem ?? 0} />
-							</p>
-							<button
-								disabled={$readAccountWalletStore.status !== 'fulfilled'}
-								on:click={function onClick() {
-									inputGems = Math.max(
-										1,
-										Math.min($readAccountWalletStore.data?.entities?.[4]?.value ?? 0, 9999)
-									);
-								}}
-							>
-								set max
-							</button>
-							<hr />
-							<p>Trade gold for gems</p>
-							{#each GOLD as goldToExchange}
-								<p><CoinExchangeItem quantity={goldToExchange} /></p>
-							{/each}
-							<p>
-								<input
-									bind:value={inputGold}
-									max={999}
-									min={1}
-									style="max-width: 4em;"
-									type="number"
-								/><img
-									class="img"
-									alt={coins?.name}
-									src={coins?.icon}
-									style="height: 1.25em; width:1.25em;"
-								/>
-								=>
-								{$readCommerceExchangeCoinsStore.data?.quantity ?? 0}
-								<img
-									class="img"
-									alt={gems?.name}
-									src={gems?.icon}
-									style="height: 1.25em; width:1.25em;"
-								/>
-								<br />
-								@<Coins copper={$readCommerceExchangeCoinsStore.data?.coins_per_gem ?? 0} />
-							</p>
-							<button
-								disabled={$readAccountWalletStore.status !== 'fulfilled'}
-								on:click={function onClick() {
-									inputGold = Math.max(
-										1,
-										Math.min(
-											Math.floor(($readAccountWalletStore.data?.entities?.[1]?.value ?? 0) / 10000),
-											999
-										)
-									);
-								}}>set max</button
-							>
-						</div>
+						</a>
 					</li>
 				{/if}
 				<li class="currencies__list__item currencies__list__item--currency">
@@ -396,6 +297,12 @@
 		background-repeat: no-repeat;
 		background-size: 100% auto;
 		background-position: 0% 0%;
+		border-radius: 0;
+		grid-template:
+			'img header' auto
+			'img wallet' auto / auto 1fr;
+		margin: -1rem 0.5rem 0 0.5rem;
+		padding: 1.75rem 0.5rem;
 	}
 
 	.currencies__nav {
@@ -534,10 +441,6 @@
 		grid-area: control;
 	}
 
-	.currency__control--conversion {
-		fill: white;
-	}
-
 	.currency__description {
 		border-top: 1px solid rgba(0, 0, 0, 0.4);
 		grid-area: description;
@@ -554,7 +457,14 @@
 
 	.currency__name--conversion {
 		color: rgb(var(--primary--50));
+		text-decoration: none;
 		text-shadow: 2px 2px 4px rgb(var(--black));
+	}
+
+	.currency__name--conversion:active,
+	.currency__name--conversion:focus,
+	.currency__name--conversion:hover {
+		text-decoration: underline;
 	}
 
 	.currency__picture {
