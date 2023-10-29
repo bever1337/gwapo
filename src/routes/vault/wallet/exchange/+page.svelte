@@ -35,14 +35,14 @@
 	});
 </script>
 
-<div class="main-width">
+<nav class="nav">
 	<a class="back-link" href="/vault/wallet">
 		<svg class="back-link__icon" viewBox="0 0 24 24">
 			<use href="/ri/arrow-left-double-line.svg#path" />
 		</svg>
 		Back to your wallet
 	</a>
-</div>
+</nav>
 <main class="main main-width">
 	<h2 class="header">Currency Exchange</h2>
 	<section class="section">
@@ -188,12 +188,13 @@
 		box-sizing: border-box;
 		columns: 2 36rem;
 		padding: 1rem 1rem 0 1rem;
+		margin: 1rem auto 2rem auto;
+		max-width: 75rem;
 	}
 
-	.main-width {
+	.nav {
 		margin: 1rem auto;
 		max-width: 75rem;
-		width: calc(100vw - 2rem);
 	}
 
 	.section {

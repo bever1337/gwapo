@@ -2,9 +2,6 @@
 	import UFuzzy from '@leeoniya/ufuzzy';
 	import type { Currency, ReadCurrenciesResult } from '$lib/store/api/read-currencies';
 
-	const GEMS = [1600, 800, 400, 100];
-	const GOLD = [500, 250, 100, 50];
-
 	const uFuzzy = new UFuzzy();
 	const emptyArray: any[] = [];
 	function filterCurrencies(needle: string, currencies: ReadCurrenciesResult): Currency['id'][] {
@@ -28,8 +25,6 @@
 	import { useQuery } from '$lib/rtk-svelte/hooks.js';
 	import { hydrate } from '$lib/store/actions.js';
 	import { readAccountWallet } from '$lib/store/api/read-account-wallet.js';
-	import { readCommerceExchangeCoins } from '$lib/store/api/read-commerce-exchange-coints';
-	import { readCommerceExchangeGems } from '$lib/store/api/read-commerce-exchange-gems';
 	import { CurrencyCategory, readCurrencies } from '$lib/store/api/read-currencies.js';
 	import { separateCopperCoins } from '$lib/types/currency.js';
 
@@ -39,21 +34,8 @@
 	store.dispatch(hydrate(data));
 	const readCurrenciesStore = useQuery(readCurrencies)(store)({});
 	$: ({ data: currencies } = $readCurrenciesStore);
-	$: coins = currencies?.entities[1];
-	$: gems = currencies?.entities[4];
 	const readAccountWalletStore = useQuery(readAccountWallet)(store)({});
 	$: ({ data: wallet, status: readWalletStatus } = $readAccountWalletStore);
-
-	let inputGems: number = 25;
-	const getReadCommerceExchangeGemsStore = useQuery(readCommerceExchangeGems)(store);
-	$: readCommerceExchangeGemsStore = getReadCommerceExchangeGemsStore({
-		gems: inputGems
-	});
-	let inputGold: number = 10;
-	const getReadCommerceExchangeCoinsStore = useQuery(readCommerceExchangeCoins)(store);
-	$: readCommerceExchangeCoinsStore = getReadCommerceExchangeCoinsStore({
-		coins: inputGold * 10000
-	});
 
 	$: supportedCurrencies =
 		currencies?.ids.filter((currencyId) => {
@@ -264,7 +246,7 @@
 	.currencies {
 		box-sizing: border-box;
 		column-gap: 1rem;
-		columns: 6 24rem;
+		columns: 4 24rem;
 		list-style: none;
 		padding: 0 1rem 1rem 1rem;
 	}
@@ -295,7 +277,7 @@
 	.currencies__list__item--conversion {
 		background: url('/gw2/Currency_Exchange_banner.jpg');
 		background-repeat: no-repeat;
-		background-size: 100% auto;
+		background-size: cover;
 		background-position: 0% 0%;
 		border-radius: 0;
 		grid-template:
@@ -365,7 +347,7 @@
 
 	.currencies__nav__filter:focus-within {
 		background-color: rgb(var(--white));
-		outline: 2px solid royalblue;
+		outline: auto;
 	}
 
 	.currencies__nav__filter__icon {
@@ -399,6 +381,8 @@
 	}
 
 	.currencies__nav__select__input {
+		border: 1px solid rgb(var(--primary--900));
+		border-radius: 0.25em;
 		box-sizing: border-box;
 		font-size: 1.25rem;
 		grid-area: select;
@@ -453,6 +437,8 @@
 		font-weight: normal;
 		grid-area: header;
 		margin: 0.5rem 0.5rem 0.25rem 1rem;
+		overflow-wrap: anywhere;
+		word-break: normal;
 	}
 
 	.currency__name--conversion {
@@ -551,7 +537,7 @@
 	}
 
 	.main {
-		background: white;
+		background: rgb(var(--white));
 		background: linear-gradient(
 				to bottom,
 				rgba(255, 255, 255, 0),
@@ -561,13 +547,22 @@
 				rgba(255, 255, 255, 1)
 			),
 			url('/gw2/pattern3.jpg');
+		background-origin: content-box;
 		background-repeat: no-repeat;
 		background-size: 100% auto;
 		box-shadow: var(--elevation--2);
-		margin: 1rem auto;
-		max-width: 112rem;
+		box-sizing: content-box;
+		margin: 2rem auto;
+		max-width: 101rem;
+		/* padding: 2rem 0 0 0; */
 		position: relative;
-		width: calc(100vw - 2rem);
+	}
+
+	@media screen and (min-width: 101rem) {
+		.main {
+			margin: 2rem auto;
+			padding: 0;
+		}
 	}
 
 	/* If the background image fails to fill canvas,
