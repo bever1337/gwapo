@@ -9,19 +9,19 @@
 
 {#if goldOut > 0}
 	{intl.formatNumber(goldOut)}
-	<img class="img" alt="gold" src="/gw2/gold_coin.png" />
+	<img alt="gold" class="img" height="64" src="/gw2/gold_coin.png" width="64" />
 {/if}
 {#if silverOut > 0 || goldOut > 0}
 	{intl.formatNumber(silverOut)}
-	<img class="img" alt="silver" src="/gw2/silver_coin.png" />
+	<img alt="silver" class="img" height="64" src="/gw2/silver_coin.png" width="64" />
 {/if}
 {intl.formatNumber(copperOut)}
-<img class="img" alt="copper" src="/gw2/copper_coin.png" />
+<img alt="copper" class="img" height="64" src="/gw2/copper_coin.png" width="64" />
 
 <style>
 	.img {
 		height: 1.25em;
-		margin: 0 1ch 0 0.25ch;
+		margin: 0 1ch 0 0;
 		vertical-align: text-bottom;
 		width: 1.25em;
 	}

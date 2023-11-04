@@ -126,24 +126,39 @@
 					<img alt="filter" class="currencies__nav__reset__img" src="/ri/filter-off-fill.svg" />
 					<span>Reset</span>
 				</button>
-				<button class="currencies__nav__submit touch-area" class:hide={browser} type="submit">
+				<button
+					class="currencies__nav__submit touch-area"
+					class:hide--everywhere={browser}
+					type="submit"
+				>
 					<span>Search</span>
 				</button>
 			</div>
-			<label class="currencies__nav__expand-all">
+			<input
+				checked={expandAllSelected}
+				class="hide"
+				disabled={!browser}
+				id="expandAllCurrencies"
+				name="expandAllCurrencies"
+				on:change={onChangeExpandAllCurrencies}
+				type="checkbox"
+			/>
+			<label class="currencies__nav__expand-all" for="expandAllCurrencies">
 				<span class="hide">Expand all</span>
-				<input
-					checked={expandAllSelected}
-					class="hide"
-					disabled={!browser}
-					name="expandAllCurrencies"
-					on:change={onChangeExpandAllCurrencies}
-					type="checkbox"
-				/>
-				<svg class="checkbox-icon checkbox-icon--up" viewBox="0 0 24 24">
+				<svg
+					class="checkbox-icon checkbox-icon--closed"
+					height="2.75rem"
+					viewBox="0 0 24 24"
+					width="2.75rem"
+				>
 					<use href="/ri/arrow-right-s-line.svg#path" />
 				</svg>
-				<svg class="checkbox-icon checkbox-icon--down" viewBox="0 0 24 24">
+				<svg
+					class="checkbox-icon checkbox-icon--expanded"
+					height="2.75rem"
+					viewBox="0 0 24 24"
+					width="2.75rem"
+				>
 					<use href="/ri/arrow-down-s-line.svg#path" />
 				</svg>
 			</label>
@@ -158,10 +173,11 @@
 				{@const showConversionDialog = currencyIsCoin && currencyWasGem}
 				{#if showConversionDialog}
 					<li class="currencies__list__item currencies__list__item--conversion">
-						<div class="currency__picture" />
+						<div class="currency__picture currency__picture--conversion" />
 						<a class="currency__name currency__name--conversion" href="/vault/wallet/exchange">
 							View the Currency Exchange
 						</a>
+						<div class="currency__control touch-area" />
 						<a class="currency__wallet currency__wallet--conversion" href="/vault/wallet/exchange">
 							Trade {previousCurrency?.name}s and {currency?.name}s!
 						</a>
@@ -169,10 +185,15 @@
 				{/if}
 				<li class="currencies__list__item currencies__list__item--currency">
 					<div class="currency__picture">
-						<div class="currency__picture__border" />
-						<img alt={currency?.name} class="currency__picture__img" src={currency?.icon} />
+						<img
+							alt={currency?.name}
+							class="currency__picture__img"
+							height="64"
+							src={currency?.icon}
+							width="64"
+						/>
 					</div>
-					<label class="currency__name" for={`controlCurrency${currencyId}`}>
+					<label class="currency__name" for={`accordion-toggle-${currencyId}`}>
 						{currency?.name}
 					</label>
 					<input
@@ -184,10 +205,20 @@
 						value={currencyId}
 					/>
 					<label class="currency__control" for={`controlCurrency${currencyId}`}>
-						<svg class="checkbox-icon checkbox-icon--up" viewBox="0 0 24 24">
+						<svg
+							class="checkbox-icon checkbox-icon--closed"
+							height="2.75rem"
+							viewBox="0 0 24 24"
+							width="2.75rem"
+						>
 							<use href="/ri/arrow-right-s-line.svg#path" />
 						</svg>
-						<svg class="checkbox-icon checkbox-icon--down" viewBox="0 0 24 24">
+						<svg
+							class="checkbox-icon checkbox-icon--expanded"
+							height="2.75rem"
+							viewBox="0 0 24 24"
+							width="2.75rem"
+						>
 							<use href="/ri/arrow-down-s-line.svg#path" />
 						</svg>
 					</label>
@@ -197,24 +228,33 @@
 								{@const [gold, silver, copper] = separateCopperCoins(
 									wallet?.entities[currencyId]?.value ?? 0
 								)}
-								{intl.formatNumber(gold)}<img
+								{intl.formatNumber(gold)}
+								<img
 									alt="gold"
+									height="64"
 									class="currency__wallet__coin-img"
 									src="/gw2/gold_coin.png"
-								/>{`${silver}`}<img
+									width="64"
+								/>
+								{`${silver}`}
+								<img
 									alt="silver"
+									height="64"
 									class="currency__wallet__coin-img"
 									src="/gw2/silver_coin.png"
-								/>{`${copper}`}<img
+									width="64"
+								/>
+								{`${copper}`}
+								<img
 									alt="copper"
+									height="64"
 									class="currency__wallet__coin-img"
 									src="/gw2/copper_coin.png"
+									width="64"
 								/>
 							{:else}
 								{intl.formatNumber(wallet?.entities[currencyId]?.value ?? 0)}
 							{/if}
-							<!-- {:else if readWalletStatus === 'rejected'} -->
-							<!-- {'?'} -->
 						{:else}
 							{'\u00a0'}
 						{/if}
@@ -227,14 +267,6 @@
 		</ol>
 	</form>
 </main>
-<svg class="hide" xmlns="http://www.w3.org/2000/svg" version="1.1" height="0" width="0">
-	<defs>
-		<filter id="squiggle">
-			<feTurbulence type="fractalNoise" id="turbulence" baseFrequency=".07" numOctaves="4" />
-			<feDisplacementMap id="displacement" in="SourceGraphic" scale="4" />
-		</filter>
-	</defs>
-</svg>
 
 <style>
 	.banner__header {
@@ -243,12 +275,43 @@
 		padding: 1rem 1rem 0 1rem;
 	}
 
+	.checkbox-icon {
+		fill: rgb(var(--primary--600));
+		height: 2.75rem;
+		width: 2.75rem;
+	}
+
+	input[type='checkbox']:hover ~ label > .checkbox-icon {
+		fill: rgb(var(--primary--800));
+	}
+
+	input[type='checkbox']:active ~ label > .checkbox-icon,
+	input[type='checkbox']:focus ~ label > .checkbox-icon {
+		outline: medium auto currentColor;
+		outline: medium auto invert;
+		outline: 5px auto -webkit-focus-ring-color;
+	}
+
+	input[type='checkbox']:active ~ label > .checkbox-icon {
+		fill: rgb(var(--primary--900));
+	}
+
+	*:checked ~ label > .checkbox-icon--closed,
+	*:not(checked) ~ label > .checkbox-icon--expanded {
+		display: none;
+	}
+
+	*:checked ~ label > .checkbox-icon--expanded,
+	*:not(checked) ~ label > .checkbox-icon--closed {
+		display: block;
+	}
+
 	.currencies {
 		box-sizing: border-box;
 		column-gap: 1rem;
 		columns: 4 24rem;
 		list-style: none;
-		padding: 0 1rem 1rem 1rem;
+		padding: 0 1rem 2rem 1rem;
 	}
 
 	.currencies__list {
@@ -265,6 +328,7 @@
 			'img header control' auto
 			'img wallet wallet' auto
 			'description description description' auto / auto 1fr auto;
+		justify-items: flex-start;
 		list-style: none;
 		margin: 0 0 1rem 0;
 		padding: 0.5rem;
@@ -275,20 +339,19 @@
 	}
 
 	.currencies__list__item--conversion {
-		background: url('/gw2/Currency_Exchange_banner.jpg');
+		background: linear-gradient(to right, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)),
+			url('/gw2/Currency_Exchange_banner.jpg');
+		background-color: #061532;
 		background-repeat: no-repeat;
 		background-size: cover;
 		background-position: 0% 0%;
 		border-radius: 0;
-		grid-template:
-			'img header' auto
-			'img wallet' auto / auto 1fr;
 		margin: -1rem 0.5rem 0 0.5rem;
-		padding: 1.75rem 0.5rem;
+		padding: 1.5rem 0;
 	}
 
 	.currencies__nav {
-		background-color: rgb(var(--primary--200));
+		background-color: rgb(var(--primary--50));
 		border-radius: 0.25rem;
 		box-shadow: var(--elevation--1);
 		break-inside: avoid;
@@ -333,9 +396,10 @@
 
 	.currencies__nav__filter {
 		align-items: center;
-		background-color: rgb(var(--primary--50));
-		border: 1px solid rgb(var(--primary--900));
+		background-color: rgb(var(--primary--100));
+		border: 1px solid rgb(var(--primary--700));
 		border-radius: 0.25rem;
+		box-shadow: var(--elevation--1);
 		box-sizing: border-box;
 		display: flex;
 		flex-flow: row nowrap;
@@ -345,9 +409,21 @@
 		width: 100%;
 	}
 
+	.currencies__nav__filter:hover {
+		border-color: rgb(var(--primary--800));
+		cursor: text;
+	}
+
+	.currencies__nav__filter:active {
+		border-color: rgb(var(--primary--900));
+	}
+
 	.currencies__nav__filter:focus-within {
 		background-color: rgb(var(--white));
-		outline: auto;
+		border-color: rgb(var(--primary--900));
+		outline: medium auto currentColor;
+		outline: medium auto invert;
+		outline: 5px auto -webkit-focus-ring-color;
 	}
 
 	.currencies__nav__filter__icon {
@@ -368,12 +444,30 @@
 	}
 
 	.currencies__nav__reset {
+		background-color: rgb(var(--primary--100));
+		border: 1px solid rgb(var(--primary--700));
+		border-radius: 0.25em;
+		box-shadow: var(--elevation--1);
+		box-sizing: border-box;
+		font-size: 1.25rem;
 		justify-self: flex-start;
+		padding: 0.25em 0.5em;
+	}
+
+	.currencies__nav__reset:hover {
+		background-color: rgb(var(--primary--300));
+		border-color: rgb(var(--primary--800));
+	}
+
+	.currencies__nav__reset:active {
+		background-color: rgb(var(--primary--400));
+		border-color: rgb(var(--primary--900));
 	}
 
 	.currencies__nav__reset__img {
 		height: 1.75rem;
 		width: 1.75rem;
+		vertical-align: text-bottom;
 	}
 
 	.currencies__nav__select {
@@ -381,8 +475,10 @@
 	}
 
 	.currencies__nav__select__input {
-		border: 1px solid rgb(var(--primary--900));
+		background-color: rgb(var(--primary--100));
+		border: 1px solid rgb(var(--primary--700));
 		border-radius: 0.25em;
+		box-shadow: var(--elevation--1);
 		box-sizing: border-box;
 		font-size: 1.25rem;
 		grid-area: select;
@@ -390,16 +486,36 @@
 		padding: 0.125rem 1rem 0.125rem 0.5rem;
 	}
 
+	.currencies__nav__select__input:hover {
+		background-color: rgb(var(--primary--300));
+		border-color: rgb(var(--primary--800));
+	}
+
+	.currencies__nav__select__input:active {
+		background-color: rgb(var(--primary--400));
+		border-color: rgb(var(--primary--900));
+	}
+
 	.currencies__nav__submit {
 		animation: 4s linear 0s 1 fadeIn;
-		background-color: rgb(var(--primary--900));
-		border: 1px solid rgb(var(--primary--700));
+		background-color: rgb(var(--primary--700));
+		border: 1px solid rgb(var(--primary--800));
 		border-radius: 0.25em;
 		box-shadow: var(--elevation--1);
 		color: rgb(var(--primary--50));
 		font-size: 1.25rem;
 		opacity: 1;
 		padding: 0.25rem 1rem;
+	}
+
+	.currencies__nav__submit:hover {
+		background-color: rgb(var(--primary--800));
+		border-color: rgb(var(--primary--900));
+	}
+
+	.currencies__nav__submit:active {
+		background-color: rgb(var(--primary--900));
+		border-color: rgb(var(--black));
 	}
 
 	@keyframes fadeIn {
@@ -432,12 +548,20 @@
 		margin: 0.5em 0 0 0;
 	}
 
+	input[type='checkbox']:not(checked) ~ .currency__description {
+		display: none;
+	}
+
+	input[type='checkbox']:checked ~ .currency__description {
+		display: block;
+	}
+
 	.currency__name {
 		font-size: 1.17rem;
 		font-weight: normal;
 		grid-area: header;
-		margin: 0.5rem 0.5rem 0.25rem 1rem;
 		overflow-wrap: anywhere;
+		padding: 0.5rem 0.5rem 0.25rem 1rem;
 		word-break: normal;
 	}
 
@@ -454,29 +578,27 @@
 	}
 
 	.currency__picture {
+		background: rgb(var(--primary--900));
+		border: 0.25rem solid rgb(var(--primary--900));
+		box-shadow: 0px 0px 1px rgb(var(--primary--800));
+		box-sizing: content-box;
 		display: inline-block;
 		grid-area: img;
-		height: calc(4rem + 4px);
-		position: relative;
-		width: calc(4rem + 4px);
-	}
-
-	.currency__picture__border {
-		border: 3px solid rgba(0, 0, 0, 0.9);
-		background: rgba(0, 0, 0, 0.9);
-		display: inline-block;
-		filter: url(#squiggle);
 		height: 4rem;
-		position: absolute;
 		width: 4rem;
 	}
 
+	.currency__picture--conversion {
+		background: unset;
+		border-color: transparent;
+		box-shadow: unset;
+	}
+
 	.currency__picture__img {
-		filter: drop-shadow(4px 3px 10px rgba(255, 255, 255, 0.5));
+		color: rgb(var(--white));
+		clip-path: border-box;
+		filter: drop-shadow(0.125rem 0.125rem 0.5rem rgba(var(--primary--50) / 0.5));
 		height: 4rem;
-		left: 3px;
-		position: absolute;
-		top: 3px;
 		width: 4rem;
 	}
 
@@ -494,7 +616,7 @@
 
 	.currency__wallet__coin-img {
 		height: 1.5rem;
-		margin: 0 1ch 0 0.25ch;
+		margin: 0 1ch 0 0;
 		vertical-align: text-bottom;
 		width: 1.5rem;
 	}
@@ -510,30 +632,8 @@
 		overflow: hidden;
 	}
 
-	.touch-area {
-		min-height: 2.75rem;
-		min-width: 2.75rem;
-	}
-
-	.checkbox-icon {
-		height: 2.75rem;
-		width: 2.75rem;
-	}
-
-	*:checked ~ .checkbox-icon--up,
-	*:checked ~ .currency__control > .checkbox-icon--up,
-	*:not(checked) ~ .checkbox-icon--down,
-	*:not(checked) ~ .currency__control > .checkbox-icon--down,
-	*:not(checked) ~ .currency__description {
+	.hide--everywhere {
 		display: none;
-	}
-
-	*:checked ~ .checkbox-icon--down,
-	*:checked ~ .currency__control > .checkbox-icon--down,
-	*:not(checked) ~ .checkbox-icon--up,
-	*:not(checked) ~ .currency__control > .checkbox-icon--up,
-	*:checked ~ .currency__description {
-		display: block;
 	}
 
 	.main {
@@ -552,15 +652,13 @@
 		background-size: 100% auto;
 		box-shadow: var(--elevation--2);
 		box-sizing: content-box;
-		margin: 2rem auto;
+		margin: 2rem auto 4rem auto;
 		max-width: 101rem;
-		/* padding: 2rem 0 0 0; */
 		position: relative;
 	}
 
 	@media screen and (min-width: 101rem) {
 		.main {
-			margin: 2rem auto;
 			padding: 0;
 		}
 	}
@@ -579,5 +677,10 @@
 		top: 0;
 		width: 100%;
 		z-index: -1;
+	}
+
+	.touch-area {
+		min-height: 2.75rem;
+		min-width: 2.75rem;
 	}
 </style>

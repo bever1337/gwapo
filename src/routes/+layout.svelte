@@ -1,14 +1,17 @@
 <script lang="ts">
 	import { getSvelteStore, storeCtx } from '$lib/context';
+	import Footer from './footer.svelte';
 	import Navigation from './navigation.svelte';
 
 	const store = getSvelteStore();
 	storeCtx.set(store);
 </script>
 
-<Navigation />
-
-<slot />
+<div class="layout">
+	<Navigation />
+	<slot />
+	<Footer />
+</div>
 
 <style>
 	:global(:root) {
@@ -24,14 +27,14 @@
 		--primary--700: 94 94 91;
 		--primary--800: 63 63 60;
 		--primary--900: 30 30 28;
-		--elevation--1: 1px 1px 3px rgb(var(--black) / 0.3);
-		--elevation--2: 2px 1px 4px rgb(var(--black) / 0.3);
-		--elevation--3: 3px 2px 6px rgb(var(--black) / 0.4);
-		--elevation--4: 3px 2px 6px rgb(var(--black) / 0.4);
+		--elevation--1: 0px 1px 3px rgb(var(--black) / 0.3);
+		--elevation--2: 1px 1px 4px rgb(var(--black) / 0.3);
+		--elevation--3: 2px 1px 4px rgb(var(--black) / 0.4);
+		--elevation--4: 3px 2px 4px rgb(var(--black) / 0.4);
 		--elevation--4--height: 40;
-		--elevation--5: 4px 6px 0.5rem rgb(var(--black) / 0.5);
+		--elevation--5: 4px 3px 0.5rem rgb(var(--black) / 0.4);
 		--elevation--5--height: 50;
-		--elevation--6: 4px 6px 0.5rem rgb(var(--black) / 0.5);
+		--elevation--6: 5px 4px 0.5rem rgb(var(--black) / 0.4);
 		--elevation--6--height: 60;
 	}
 
@@ -39,5 +42,11 @@
 		background-color: rgb(var(--primary--800));
 		margin: 0;
 		overflow-y: scroll;
+	}
+
+	.layout {
+		display: flex;
+		flex-direction: column;
+		min-height: 100vh;
 	}
 </style>

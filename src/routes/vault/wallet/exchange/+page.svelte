@@ -187,14 +187,17 @@
 		box-shadow: var(--elevation--2);
 		box-sizing: border-box;
 		columns: 2 36rem;
-		padding: 1rem 1rem 0 1rem;
-		margin: 1rem auto 2rem auto;
+		padding: 1rem;
+		margin: 0 auto 2rem auto;
 		max-width: 75rem;
 	}
 
 	.nav {
-		margin: 1rem auto;
-		max-width: 75rem;
+		box-sizing: border-box;
+		margin: 0 auto;
+		max-width: 77rem;
+		padding: 1rem;
+		width: 100%;
 	}
 
 	.section {

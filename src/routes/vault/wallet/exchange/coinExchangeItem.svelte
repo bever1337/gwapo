@@ -31,7 +31,7 @@
 	<img class="img" alt={coins?.name} src={coins?.icon} />
 </td>
 <td class="td">
-	{data?.quantity ?? 0}
+	{intl.formatNumber(data?.quantity ?? 0)}
 	<img class="img" alt={gems?.name} src={gems?.icon} />
 </td>
 <td class="td">
@@ -41,6 +41,7 @@
 <style>
 	.img {
 		height: 1.25em;
+		vertical-align: text-bottom;
 		width: 1.25em;
 	}
 

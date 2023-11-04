@@ -39,6 +39,7 @@
 <style>
 	.img {
 		height: 1.25em;
+		vertical-align: text-bottom;
 		width: 1.25em;
 	}
 
