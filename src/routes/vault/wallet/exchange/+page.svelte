@@ -43,16 +43,16 @@
 		Back to your wallet
 	</a>
 </nav>
-<main class="main main-width">
-	<h2 class="header">Currency Exchange</h2>
+<main class="main">
+	<h1 class="header--1">Currency Exchange</h1>
 	<section class="section">
-		<h3 style="margin: 0;">Trade gems for gold</h3>
+		<h2 class="header--2">Trade gems for gold</h2>
 		<table class="table">
 			<thead>
 				<tr class="thead__tr">
-					<td class="thead__tr__td td">{gems?.name}</td>
-					<td class="thead__tr__td td">{coins?.name}</td>
-					<td class="thead__tr__td td">{coins?.name} per {gems?.name}</td>
+					<td class="thead__tr__td td" width="20%">{gems?.name}</td>
+					<td class="thead__tr__td td" width="45%">{coins?.name}</td>
+					<td class="thead__tr__td td" width="35%">{coins?.name} per {gems?.name}</td>
 				</tr>
 			</thead>
 			<tbody>
@@ -61,21 +61,19 @@
 				{/each}
 				<tr class="tr">
 					<td class="td">
-						<input
-							bind:value={inputGems}
-							max={9999}
-							min={1}
-							style="max-width: 4em;"
-							type="number"
-						/>
-						<img
-							class="img"
-							alt={gems?.name}
-							src={gems?.icon}
-							style="height: 1.25em; width:1.25em;"
-						/>
-						<br />
+						<input bind:value={inputGems} class="input" max={9999} min={1} type="number" />
+					</td>
+					<td class="td">
+						<Coins copper={$readCommerceExchangeGemsStore.data?.quantity ?? 0} />
+					</td>
+					<td class="td">
+						<Coins copper={$readCommerceExchangeGemsStore.data?.coins_per_gem ?? 0} />
+					</td>
+				</tr>
+				<tr class="tr">
+					<td class="td--max td--max--gems" colspan="3">
 						<button
+							class="button"
 							disabled={$readAccountWalletStore.status !== 'fulfilled'}
 							on:click={function onClick() {
 								inputGems = Math.max(
@@ -87,24 +85,18 @@
 							Set Max {gems?.name}s
 						</button>
 					</td>
-					<td class="td">
-						<Coins copper={$readCommerceExchangeGemsStore.data?.quantity ?? 0} />
-					</td>
-					<td class="td">
-						<Coins copper={$readCommerceExchangeGemsStore.data?.coins_per_gem ?? 0} />
-					</td>
 				</tr>
 			</tbody>
 		</table>
 	</section>
 	<section class="section">
-		<h3 style="margin: 0;">Trade gold for gems</h3>
+		<h2 class="header--2">Trade gold for gems</h2>
 		<table class="table">
 			<thead>
 				<tr class="thead__tr">
-					<td class="thead__tr__td td">Gold</td>
-					<td class="thead__tr__td td">{gems?.name}</td>
-					<td class="thead__tr__td td">{coins?.name} per {gems?.name}</td>
+					<td class="thead__tr__td td" width="20%">Gold</td>
+					<td class="thead__tr__td td" width="45%">{gems?.name}</td>
+					<td class="thead__tr__td td" width="35%">{coins?.name} per {gems?.name}</td>
 				</tr>
 			</thead>
 			<tbody>
@@ -113,28 +105,7 @@
 				{/each}
 				<tr class="tr">
 					<td class="td">
-						<input bind:value={inputGold} max={999} min={1} style="max-width: 4em;" type="number" />
-						<img
-							class="img"
-							alt={coins?.name}
-							src={coins?.icon}
-							style="height: 1.25em; width:1.25em;"
-						/>
-						<br />
-						<button
-							disabled={$readAccountWalletStore.status !== 'fulfilled'}
-							on:click={function onClick() {
-								inputGold = Math.max(
-									1,
-									Math.min(
-										Math.floor(($readAccountWalletStore.data?.entities?.[1]?.value ?? 0) / 10000),
-										999
-									)
-								);
-							}}
-						>
-							Set Max Gold
-						</button>
+						<input bind:value={inputGold} class="input" max={999} min={1} type="number" />
 					</td>
 					<td class="td">
 						{$readCommerceExchangeCoinsStore.data?.quantity ?? 0}
@@ -149,6 +120,25 @@
 						<Coins copper={$readCommerceExchangeCoinsStore.data?.coins_per_gem ?? 0} />
 					</td>
 				</tr>
+				<tr class="tr">
+					<td class="td--max td--max--gold" colspan="3">
+						<button
+							class="button"
+							disabled={$readAccountWalletStore.status !== 'fulfilled'}
+							on:click={function onClick() {
+								inputGold = Math.max(
+									1,
+									Math.min(
+										Math.floor(($readAccountWalletStore.data?.entities?.[1]?.value ?? 0) / 10000),
+										999
+									)
+								);
+							}}
+						>
+							Set Max Gold
+						</button>
+					</td>
+				</tr>
 			</tbody>
 		</table>
 	</section>
@@ -156,6 +146,7 @@
 
 <style>
 	.back-link {
+		font-family: PTSerif, serif;
 		color: rgb(var(--white));
 	}
 
@@ -166,53 +157,108 @@
 		width: 1.25em;
 	}
 
-	.header {
+	.button {
+		box-shadow: var(--elevation--1);
+		font-family: PTSerif, serif;
+		font-size: 1.125rem;
+		min-height: 2.75rem;
+		min-width: 2.75rem;
+	}
+
+	.header--1 {
+		color: rgb(var(--primary--200));
+		text-shadow: 2px 2px 4px rgb(var(--black));
 		column-span: all;
+		font-family: PTSerif, serif;
+		font-weight: normal;
 		margin: 0 0 1rem 0;
 	}
 
+	.header--2 {
+		color: rgb(var(--primary--200));
+		font-family: PTSerif, serif;
+		font-weight: normal;
+		text-shadow: 1px 1px 3px rgb(var(--black));
+		margin: 0;
+	}
+
+	.img {
+		height: 1.25rem;
+		vertical-align: text-bottom;
+		width: 1.25rem;
+	}
+
+	.input {
+		font-family: PTSans, sans-serif;
+		font-size: 1.125rem;
+		max-width: 7ch;
+		text-align: right;
+	}
+
 	.main {
-		background-color: rgb(var(--white));
-		background: linear-gradient(
-				to bottom,
-				rgba(255, 255, 255, 0),
-				rgba(255, 255, 255, 0) 4rem,
-				rgba(255, 255, 255, 0.4) 8rem,
-				rgba(255, 255, 255, 0.9) 28rem,
-				rgba(255, 255, 255, 1)
-			),
-			url('/gw2/pattern3.jpg');
+		background: radial-gradient(ellipse at 33% 10%, rgba(6, 20, 50, 0), rgb(3, 10, 25) 20rem),
+			url('/gw2/Currency_Exchange_banner.jpg');
+		background-color: rgb(3, 10, 25);
 		background-repeat: no-repeat;
-		background-size: 100% auto;
+		background-size: 60rem auto;
 		box-shadow: var(--elevation--2);
 		box-sizing: border-box;
 		columns: 2 36rem;
-		padding: 1rem;
-		margin: 0 auto 2rem auto;
-		max-width: 75rem;
+		column-gap: 2rem;
+		justify-self: start;
+		padding: 2rem;
+		margin: 0 auto 4rem auto;
+		max-width: 90rem;
 	}
 
 	.nav {
 		box-sizing: border-box;
 		margin: 0 auto;
 		max-width: 77rem;
-		padding: 1rem;
+		padding: 2rem 1rem 1rem 1rem;
 		width: 100%;
 	}
 
 	.section {
-		margin: 0 auto 1rem auto;
+		margin: 0 auto 2rem auto;
 		max-width: 36rem;
 	}
 
 	.table {
 		border-collapse: collapse;
+		box-shadow: var(--elevation--2);
 		table-layout: fixed;
 		width: 100%;
 	}
 
 	.td {
-		padding: 0.25em 0.5em;
+		font-family: PTSans, sans-serif;
+		font-size: 1.125rem;
+		padding: 0.25rem 1rem;
+		text-align: right;
+	}
+
+	.td--max {
+		padding: 1rem 0.5rem 0.5rem 0.5rem;
+		text-align: center;
+	}
+
+	.td--max--gems {
+		background: radial-gradient(
+			ellipse at bottom,
+			rgb(var(--white) / 0.2),
+			rgb(var(--black) / 0.3)
+		);
+		background-color: #549cfa;
+	}
+
+	.td--max--gold {
+		background: radial-gradient(
+			ellipse at bottom,
+			rgb(var(--white) / 0.2),
+			rgb(var(--black) / 0.3)
+		);
+		background-color: #f5ce55;
 	}
 
 	.thead__tr {
@@ -221,6 +267,8 @@
 
 	.thead__tr__td {
 		color: rgb(var(--primary--50));
+		font-family: PTSerif, serif;
+		font-size: 1.125rem;
 	}
 
 	.tr {

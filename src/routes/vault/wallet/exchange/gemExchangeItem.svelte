@@ -44,6 +44,9 @@
 	}
 
 	.td {
-		padding: 0.25em 0.5em;
+		font-family: PTSans, sans-serif;
+		font-size: 1.125rem;
+		padding: 0.25rem 1rem;
+		text-align: right;
 	}
 </style>

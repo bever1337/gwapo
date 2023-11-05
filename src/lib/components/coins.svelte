@@ -16,7 +16,7 @@
 	<img alt="silver" class="img" height="64" src="/gw2/silver_coin.png" width="64" />
 {/if}
 {intl.formatNumber(copperOut)}
-<img alt="copper" class="img" height="64" src="/gw2/copper_coin.png" width="64" />
+<img alt="copper" class="img img--last" height="64" src="/gw2/copper_coin.png" width="64" />
 
 <style>
 	.img {
@@ -24,5 +24,9 @@
 		margin: 0 1ch 0 0;
 		vertical-align: text-bottom;
 		width: 1.25em;
+	}
+
+	.img--last {
+		margin: 0;
 	}
 </style>

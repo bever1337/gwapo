@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { getSvelteStore, storeCtx } from '$lib/context';
+	import './fonts.css';
 	import Footer from './footer.svelte';
 	import Navigation from './navigation.svelte';
 

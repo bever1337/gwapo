@@ -211,6 +211,7 @@
 
 	.nav__heading > a {
 		color: rgb(var(--primary--900));
+		font-family: PTSerif, serif;
 	}
 
 	.nav__list {

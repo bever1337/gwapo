@@ -175,7 +175,7 @@
 					<li class="currencies__list__item currencies__list__item--conversion">
 						<div class="currency__picture currency__picture--conversion" />
 						<a class="currency__name currency__name--conversion" href="/vault/wallet/exchange">
-							View the Currency Exchange
+							View the Exchange
 						</a>
 						<div class="currency__control touch-area" />
 						<a class="currency__wallet currency__wallet--conversion" href="/vault/wallet/exchange">
@@ -193,7 +193,7 @@
 							width="64"
 						/>
 					</div>
-					<label class="currency__name" for={`accordion-toggle-${currencyId}`}>
+					<label class="currency__name" for={`controlCurrency${currencyId}`}>
 						{currency?.name}
 					</label>
 					<input
@@ -271,8 +271,9 @@
 <style>
 	.banner__header {
 		color: rgb(var(--primary--900));
+		font-family: PTSerif, serif;
 		margin: 0;
-		padding: 1rem 1rem 0 1rem;
+		padding: 1rem;
 	}
 
 	.checkbox-icon {
@@ -285,15 +286,15 @@
 		fill: rgb(var(--primary--800));
 	}
 
+	input[type='checkbox']:active ~ label > .checkbox-icon {
+		fill: rgb(var(--primary--900));
+	}
+
 	input[type='checkbox']:active ~ label > .checkbox-icon,
 	input[type='checkbox']:focus ~ label > .checkbox-icon {
 		outline: medium auto currentColor;
 		outline: medium auto invert;
 		outline: 5px auto -webkit-focus-ring-color;
-	}
-
-	input[type='checkbox']:active ~ label > .checkbox-icon {
-		fill: rgb(var(--primary--900));
 	}
 
 	*:checked ~ label > .checkbox-icon--closed,
@@ -308,7 +309,7 @@
 
 	.currencies {
 		box-sizing: border-box;
-		column-gap: 1rem;
+		column-gap: 2rem;
 		columns: 4 24rem;
 		list-style: none;
 		padding: 0 1rem 2rem 1rem;
@@ -398,7 +399,6 @@
 		align-items: center;
 		background-color: rgb(var(--primary--100));
 		border: 1px solid rgb(var(--primary--700));
-		border-radius: 0.25rem;
 		box-shadow: var(--elevation--1);
 		box-sizing: border-box;
 		display: flex;
@@ -434,9 +434,14 @@
 	.currencies__nav__filter__input {
 		background-color: transparent;
 		border: 0 solid transparent;
-		font-size: 1.25rem;
+		font-family: PTSans, sans;
+		font-size: 1.125rem;
 		padding: 0.25rem;
 		width: 100%;
+	}
+
+	.currencies__nav__filter__input::placeholder {
+		font-family: PTSerif, serif;
 	}
 
 	.currencies__nav__filter__input:focus {
@@ -446,10 +451,10 @@
 	.currencies__nav__reset {
 		background-color: rgb(var(--primary--100));
 		border: 1px solid rgb(var(--primary--700));
-		border-radius: 0.25em;
 		box-shadow: var(--elevation--1);
 		box-sizing: border-box;
-		font-size: 1.25rem;
+		font-family: PTSerif, serif;
+		font-size: 1.125rem;
 		justify-self: flex-start;
 		padding: 0.25em 0.5em;
 	}
@@ -477,10 +482,10 @@
 	.currencies__nav__select__input {
 		background-color: rgb(var(--primary--100));
 		border: 1px solid rgb(var(--primary--700));
-		border-radius: 0.25em;
 		box-shadow: var(--elevation--1);
 		box-sizing: border-box;
-		font-size: 1.25rem;
+		font-family: PTSerif, serif;
+		font-size: 1.125rem;
 		grid-area: select;
 		max-width: 16rem;
 		padding: 0.125rem 1rem 0.125rem 0.5rem;
@@ -500,10 +505,10 @@
 		animation: 4s linear 0s 1 fadeIn;
 		background-color: rgb(var(--primary--700));
 		border: 1px solid rgb(var(--primary--800));
-		border-radius: 0.25em;
 		box-shadow: var(--elevation--1);
 		color: rgb(var(--primary--50));
-		font-size: 1.25rem;
+		font-family: PTSerif, serif;
+		font-size: 1.125rem;
 		opacity: 1;
 		padding: 0.25rem 1rem;
 	}
@@ -543,9 +548,12 @@
 
 	.currency__description {
 		border-top: 1px solid rgba(0, 0, 0, 0.4);
+		box-sizing: border-box;
+		font-family: PTSans, sans-serif;
 		grid-area: description;
 		padding: 1rem 0.5rem 0.5rem 0.5rem;
 		margin: 0.5em 0 0 0;
+		width: 100%;
 	}
 
 	input[type='checkbox']:not(checked) ~ .currency__description {
@@ -557,7 +565,8 @@
 	}
 
 	.currency__name {
-		font-size: 1.17rem;
+		font-size: 1.125rem;
+		font-family: PTSerif, serif;
 		font-weight: normal;
 		grid-area: header;
 		overflow-wrap: anywhere;
@@ -604,13 +613,15 @@
 
 	.currency__wallet {
 		align-self: center;
-		font-size: 1.5rem;
+		font-family: PTSans, sans-serif;
+		font-size: 1.25rem;
 		grid-area: wallet;
 		margin: 0 0.5rem 0.25rem 1rem;
 	}
 
 	.currency__wallet--conversion {
 		color: rgb(var(--primary--50));
+		font-family: PTSerif, serif;
 		text-shadow: 1px 1px 3px rgb(var(--black));
 	}
 
@@ -651,13 +662,13 @@
 		background-repeat: no-repeat;
 		background-size: 100% auto;
 		box-shadow: var(--elevation--2);
-		box-sizing: content-box;
+		box-sizing: border-box;
 		margin: 2rem auto 4rem auto;
-		max-width: 101rem;
 		position: relative;
+		max-width: 104rem;
 	}
 
-	@media screen and (min-width: 101rem) {
+	@media screen and (min-width: 104rem) {
 		.main {
 			padding: 0;
 		}

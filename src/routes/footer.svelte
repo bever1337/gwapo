@@ -20,13 +20,13 @@
 	.footer__hr {
 		border-color: rgb(var(--primary--600));
 		margin: 1rem auto;
-		max-width: 90rem;
+		max-width: 104rem;
 	}
 
 	.footer__p {
 		color: rgb(var(--primary--50));
-		font-family: sans-serif;
+		font-family: PTSans, sans-serif;
 		margin: 0 auto;
-		max-width: 90rem;
+		max-width: 104rem;
 	}
 </style>
