@@ -37,6 +37,27 @@
 		--elevation--5--height: 50;
 		--elevation--6: 5px 4px 0.5rem rgb(var(--black) / 0.4);
 		--elevation--6--height: 60;
+		--gutter: 0.5rem;
+		--margin: 0.5rem;
+	}
+
+	@media screen and (min-width: 48rem) {
+		:global(:root) {
+			--margin: 1rem;
+		}
+	}
+
+	@media screen and (min-width: 64rem) {
+		:global(:root) {
+			--gutter: 1rem;
+		}
+	}
+
+	@media screen and (min-width: 80rem) {
+		:global(:root) {
+			--gutter: 1.5rem;
+			--margin: 2rem;
+		}
 	}
 
 	:global(body) {

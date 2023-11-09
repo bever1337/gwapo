@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { readTokenInfo } from '$lib/store/api/read-token-info';
 	import type { ClientState } from '$lib/store/initial-state';
-	import { selectClient } from '$lib/store/selectors';
 	import { logoutThunk } from '$lib/store/thunks/logout';
 	import { storeCtx } from '$lib/context.js';
 
@@ -62,6 +61,9 @@
 
 <header>
 	<nav class="nav">
+		<h1 class="nav__heading">
+			<a href="/">Gwapo</a>
+		</h1>
 		<button
 			class="nav__open-nav"
 			class:nav__open-nav--opened={navDialogIsOpen}
@@ -75,12 +77,10 @@
 				}
 			}}
 		>
-			<img alt="closed" class:hide={navDialogIsOpen} src="/ri/menu-fold-line.svg" />
-			<img alt="opened" class:hide={!navDialogIsOpen} src="/ri/menu-unfold-line.svg" />
+			<svg class="" height="2rem" viewBox="0 0 24 24" width="2rem">
+				<use href="/ri/menu-line.svg#path" />
+			</svg>
 		</button>
-		<h1 class="nav__heading">
-			<a href="/">Gwapo</a>
-		</h1>
 		<button
 			class="nav__open-settings"
 			on:click={function onClickOpenDialog() {
@@ -103,7 +103,7 @@
 >
 	<nav>
 		<ul class="nav__list">
-			<li class="nav__list__item">
+			<li>
 				<a
 					href="/"
 					on:click={function closeDialog() {
@@ -113,10 +113,10 @@
 					home
 				</a>
 			</li>
-			<li class="nav__list__item">
+			<li>
 				<p>vault</p>
 				<ul class="nav__list">
-					<li class="nav__list__item">
+					<li>
 						<a
 							href="/vault/wallet"
 							on:click={function closeDialog() {
@@ -170,7 +170,7 @@
 	.dialog--nav {
 		background-color: rgb(var(--primary--200));
 		border: 0px solid transparent;
-		box-shadow: inset 0 6px 4px -4px rgb(var(--black) / 0.4), var(--elevation--5);
+		box-shadow: inset 0 0.5rem 0.75rem -0.25rem rgb(var(--black) / 0.3), var(--elevation--5);
 		box-sizing: border-box;
 		min-height: calc(100vh - 3.25rem);
 		margin: 0;
@@ -200,9 +200,7 @@
 		background-color: rgb(var(--primary--50));
 		display: flex;
 		flex-flow: row nowrap;
-		justify-content: space-between;
-		position: relative;
-		z-index: var(--elevation--6--height);
+		padding: 0 var(--margin) 0 var(--margin);
 	}
 
 	.nav__heading {
@@ -212,14 +210,17 @@
 	.nav__heading > a {
 		color: rgb(var(--primary--900));
 		font-family: PTSerif, serif;
+		text-decoration: none;
+	}
+
+	.nav__heading > a:active,
+	.nav__heading > a:focus,
+	.nav__heading > a:hover {
+		text-decoration: underline;
 	}
 
 	.nav__list {
 		margin: 0;
-	}
-
-	.nav__list__item {
-		/* display: inline-block; */
 	}
 
 	.nav__open-nav {
@@ -227,10 +228,10 @@
 		background-color: transparent;
 		border: 0;
 		box-sizing: border-box;
-		min-height: 2.75rem;
 		outline-offset: -0.25rem;
-		width: 2.75rem;
 		padding: 0.25rem;
+		margin: 0 0 0 2ch;
+		min-width: 2.75rem;
 	}
 
 	.nav__open-nav--opened {
@@ -239,15 +240,33 @@
 
 	.nav__open-settings {
 		box-sizing: border-box;
-		margin: 0.25rem 0.5rem;
-		padding: 0.25rem;
 		height: 2.75rem;
-		width: 2.75rem;
+		padding: 0.25rem;
+		margin: 0.25rem 0 0.25rem auto;
+		min-width: 2.75rem;
 	}
 
-	.nav__open-nav > img,
+	.nav__open-nav > svg,
 	.nav__open-settings > img {
 		height: 2rem;
+		vertical-align: text-bottom;
 		width: 2rem;
+	}
+
+	.nav__open-nav > svg {
+		fill: rgb(var(--primary--800));
+	}
+
+	.nav__open-nav:focus > svg,
+	.nav__open-nav:hover > svg {
+		fill: rgb(var(--primary--900));
+	}
+
+	.nav__open-nav:focus-within,
+	.nav__open-nav:active {
+		fill: rgb(var(--black));
+		outline: medium auto currentColor;
+		outline: medium auto invert;
+		outline: 5px auto -webkit-focus-ring-color;
 	}
 </style>

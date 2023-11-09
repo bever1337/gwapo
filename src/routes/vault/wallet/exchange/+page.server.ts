@@ -4,7 +4,7 @@ import { readCommerceExchangeGems } from '$lib/store/api/read-commerce-exchange-
 import { readCurrencies } from '$lib/store/api/read-currencies';
 import { getStore } from '$lib/store';
 
-import { GEMS, GOLD } from './constants';
+import { GEMS, GEMS_INPUT, GOLD, GOLD_INPUT } from './constants';
 
 function noop() {}
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -14,10 +14,12 @@ export async function load() {
 	const { dispatch, getState } = getStore();
 	const tasks: Promise<unknown>[] = [
 		dispatch(readCurrencies.initiate({})).unwrap(),
-		...GEMS.map((gems) => dispatch(readCommerceExchangeGems.initiate({ gems }))).map(safelyUnwrap),
-		...GOLD.map((coins) =>
-			dispatch(readCommerceExchangeCoins.initiate({ coins: coins * 10000 }))
-		).map(safelyUnwrap)
+		...GEMS.concat([GEMS_INPUT])
+			.map((gems) => dispatch(readCommerceExchangeGems.initiate({ gems })))
+			.map(safelyUnwrap),
+		...GOLD.concat([GOLD_INPUT])
+			.map((coins) => dispatch(readCommerceExchangeCoins.initiate({ coins: coins * 10000 })))
+			.map(safelyUnwrap)
 	];
 	await Promise.all(tasks);
 	return getState().cache;

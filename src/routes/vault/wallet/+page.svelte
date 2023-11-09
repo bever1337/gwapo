@@ -54,7 +54,7 @@
 			: supportedCurrencies.filter((currencyId) => {
 					const entity = currencies?.entities[currencyId];
 					if (!entity) return false;
-					return entity.category === category;
+					return entity.categories.includes(category as CurrencyCategory);
 			  });
 
 	let needle = '';
@@ -99,10 +99,10 @@
 					<option value={-1} label="All Currencies" />
 					<option value={CurrencyCategory.General} label="General" />
 					<option value={CurrencyCategory.Competitive} label="Competitive" />
-					<option value={CurrencyCategory.Instanced} label="Instanced" />
+					<option value={CurrencyCategory.Map} label="Map" />
 					<option value={CurrencyCategory.Keys} label="Keys" />
-					<option value={CurrencyCategory.Maps} label="Maps" />
-					<option value={CurrencyCategory.Activity} label="Activity" />
+					<option value={CurrencyCategory.Dungeon} label="Dungeon" />
+					<option value={CurrencyCategory.BlackLion} label="Black Lion" />
 				</select>
 			</label>
 			<label class="currencies__nav__filter">
@@ -273,7 +273,6 @@
 		color: rgb(var(--primary--900));
 		font-family: PTSerif, serif;
 		margin: 0;
-		padding: 1rem;
 	}
 
 	.checkbox-icon {
@@ -309,10 +308,9 @@
 
 	.currencies {
 		box-sizing: border-box;
-		column-gap: 2rem;
+		column-gap: var(--gutter);
 		columns: 4 24rem;
 		list-style: none;
-		padding: 0 1rem 2rem 1rem;
 	}
 
 	.currencies__list {
@@ -340,14 +338,20 @@
 	}
 
 	.currencies__list__item--conversion {
-		background: linear-gradient(to right, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)),
+		background: linear-gradient(
+				to right,
+				rgba(0, 0, 0, 0.25),
+				rgba(0, 0, 0, 0.2) 6rem,
+				rgba(0, 0, 0, 0)
+			),
 			url('/gw2/Currency_Exchange_banner.jpg');
 		background-color: #061532;
 		background-repeat: no-repeat;
 		background-size: cover;
 		background-position: 0% 0%;
 		border-radius: 0;
-		margin: -1rem 0.5rem 0 0.5rem;
+		/* magic bottom margin, do not remove */
+		margin: -1rem 0.5rem -1px 0.5rem;
 		padding: 1.5rem 0;
 	}
 
@@ -365,7 +369,7 @@
 			'control null' auto / 1fr auto;
 		justify-content: flex-start;
 		padding: 0.5rem;
-		margin: 0 0 1rem 0;
+		margin: var(--gutter) 0 var(--margin) 0;
 	}
 
 	@media screen and (min-width: 42rem) {
@@ -398,7 +402,7 @@
 	.currencies__nav__filter {
 		align-items: center;
 		background-color: rgb(var(--primary--100));
-		border: 1px solid rgb(var(--primary--700));
+		border: 1px solid rgb(var(--primary--600));
 		box-shadow: var(--elevation--1);
 		box-sizing: border-box;
 		display: flex;
@@ -450,7 +454,7 @@
 
 	.currencies__nav__reset {
 		background-color: rgb(var(--primary--100));
-		border: 1px solid rgb(var(--primary--700));
+		border: 1px solid rgb(var(--primary--600));
 		box-shadow: var(--elevation--1);
 		box-sizing: border-box;
 		font-family: PTSerif, serif;
@@ -481,7 +485,7 @@
 
 	.currencies__nav__select__input {
 		background-color: rgb(var(--primary--100));
-		border: 1px solid rgb(var(--primary--700));
+		border: 1px solid rgb(var(--primary--600));
 		box-shadow: var(--elevation--1);
 		box-sizing: border-box;
 		font-family: PTSerif, serif;
@@ -547,7 +551,7 @@
 	}
 
 	.currency__description {
-		border-top: 1px solid rgba(0, 0, 0, 0.4);
+		border-top: 1px solid rgb(var(--primary--600));
 		box-sizing: border-box;
 		font-family: PTSans, sans-serif;
 		grid-area: description;
@@ -648,46 +652,25 @@
 	}
 
 	.main {
-		background: rgb(var(--white));
 		background: linear-gradient(
 				to bottom,
 				rgba(255, 255, 255, 0),
-				rgba(255, 255, 255, 0) 8rem,
-				rgba(255, 255, 255, 0.4) 16rem,
-				rgba(255, 255, 255, 0.9) 32rem,
+				rgba(255, 255, 255, 0.25) 4rem,
+				rgba(255, 255, 255, 0.5) 8rem,
+				rgba(255, 255, 255, 0.75) 32rem,
 				rgba(255, 255, 255, 1)
 			),
 			url('/gw2/pattern3.jpg');
-		background-origin: content-box;
+		background-color: rgb(var(--white));
+		background-position: 100% 0%;
 		background-repeat: no-repeat;
-		background-size: 100% auto;
+		background-size: 60rem auto;
 		box-shadow: var(--elevation--2);
 		box-sizing: border-box;
-		margin: 2rem auto 4rem auto;
-		position: relative;
-		max-width: 104rem;
-	}
-
-	@media screen and (min-width: 104rem) {
-		.main {
-			padding: 0;
-		}
-	}
-
-	/* If the background image fails to fill canvas,
-	  this pseudo element ensures a white background */
-	.main::before {
-		background: white;
-		bottom: 0;
-		content: '';
-		display: block;
-		height: 100%;
-		left: 0;
-		position: absolute;
-		right: 0;
-		top: 0;
+		padding: 1rem var(--margin) var(--margin) var(--margin);
+		margin: var(--margin) auto;
+		max-width: calc(104rem + calc(2 * var(--margin)));
 		width: 100%;
-		z-index: -1;
 	}
 
 	.touch-area {

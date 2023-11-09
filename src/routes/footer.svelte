@@ -11,10 +11,8 @@
 
 <style>
 	.footer {
-		background-color: rgb(var(--primary--900));
-		box-shadow: var(--elevation--1);
 		margin: auto 0 0 0;
-		padding: 4rem 1rem 6rem 1rem;
+		padding: 2rem var(--margin) 4rem var(--margin);
 	}
 
 	.footer__hr {

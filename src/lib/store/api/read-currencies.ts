@@ -8,14 +8,14 @@ import { getPouch } from '../../pouch';
 export enum CurrencyCategory {
 	General,
 	Competitive,
-	Instanced,
+	Map,
 	Keys,
-	Maps,
-	Activity
+	Dungeon,
+	BlackLion
 }
 
 export interface Currency {
-	category: CurrencyCategory;
+	categories: CurrencyCategory[];
 	id: number;
 	deprecated?: true;
 	description: string;

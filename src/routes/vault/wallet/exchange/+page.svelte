@@ -9,7 +9,7 @@
 	import { readCurrencies } from '$lib/store/api/read-currencies.js';
 
 	import CoinExchangeItem from './coinExchangeItem.svelte';
-	import { GEMS, GOLD } from './constants';
+	import { GEMS, GEMS_INPUT, GOLD, GOLD_INPUT } from './constants';
 	import GemExchangeItem from './gemExchangeItem.svelte';
 
 	export let data;
@@ -21,14 +21,15 @@
 	$: coins = currencies?.entities[1];
 	$: gems = currencies?.entities[4];
 	const readAccountWalletStore = useQuery(readAccountWallet)(store)({});
+	$: ({ data: wallet, status: readWalletStatus } = $readAccountWalletStore);
 
-	let inputGems: number = 25;
+	let inputGems: number = GEMS_INPUT;
 	const getReadCommerceExchangeGemsStore = useQuery(readCommerceExchangeGems)(store);
 	$: readCommerceExchangeGemsStore = getReadCommerceExchangeGemsStore({
 		gems: inputGems
 	});
 
-	let inputGold: number = 10;
+	let inputGold: number = GOLD_INPUT;
 	const getReadCommerceExchangeCoinsStore = useQuery(readCommerceExchangeCoins)(store);
 	$: readCommerceExchangeCoinsStore = getReadCommerceExchangeCoinsStore({
 		coins: inputGold * 10000
@@ -72,6 +73,12 @@
 				</tr>
 				<tr class="tr">
 					<td class="td--max td--max--gems" colspan="3">
+						<p class="wallet">
+							{#if readWalletStatus === 'fulfilled'}
+								{wallet?.entities?.[4]?.value ?? 0}
+							{/if}
+							<img class="img" alt={gems?.name} src={gems?.icon} />
+						</p>
 						<button
 							class="button"
 							disabled={$readAccountWalletStore.status !== 'fulfilled'}
@@ -122,6 +129,13 @@
 				</tr>
 				<tr class="tr">
 					<td class="td--max td--max--gold" colspan="3">
+						<p class="wallet">
+							{#if readWalletStatus === 'fulfilled'}
+								<Coins copper={wallet?.entities?.[1]?.value ?? 0} />
+							{:else}
+								<img class="img" alt={coins?.name} src={coins?.icon} />
+							{/if}
+						</p>
 						<button
 							class="button"
 							disabled={$readAccountWalletStore.status !== 'fulfilled'}
@@ -158,11 +172,25 @@
 	}
 
 	.button {
+		background-color: rgb(var(--primary--100));
+		border: 1px solid rgb(var(--primary--700));
 		box-shadow: var(--elevation--1);
+		box-sizing: border-box;
 		font-family: PTSerif, serif;
 		font-size: 1.125rem;
 		min-height: 2.75rem;
 		min-width: 2.75rem;
+		padding: 0.25em 0.5em;
+	}
+
+	.button:hover {
+		background-color: rgb(var(--primary--300));
+		border-color: rgb(var(--primary--800));
+	}
+
+	.button:active {
+		background-color: rgb(var(--primary--400));
+		border-color: rgb(var(--primary--900));
 	}
 
 	.header--1 {
@@ -183,9 +211,9 @@
 	}
 
 	.img {
-		height: 1.25rem;
+		height: 1.25em;
 		vertical-align: text-bottom;
-		width: 1.25rem;
+		width: 1.25em;
 	}
 
 	.input {
@@ -196,32 +224,39 @@
 	}
 
 	.main {
-		background: radial-gradient(ellipse at 33% 10%, rgba(6, 20, 50, 0), rgb(3, 10, 25) 20rem),
-			url('/gw2/Currency_Exchange_banner.jpg');
+		background: radial-gradient(
+				ellipse at 75% 0%,
+				rgba(6, 20, 50, 0.25),
+				rgba(6, 20, 50, 0.75),
+				rgb(3, 10, 25) 20rem
+			),
+			url('/gw2/Currency_Exchange_banner--flipped.jpg');
 		background-color: rgb(3, 10, 25);
+		background-position: 100% 0%;
 		background-repeat: no-repeat;
 		background-size: 60rem auto;
 		box-shadow: var(--elevation--2);
 		box-sizing: border-box;
 		columns: 2 36rem;
-		column-gap: 2rem;
+		column-gap: var(--gutter);
 		justify-self: start;
-		padding: 2rem;
-		margin: 0 auto 4rem auto;
-		max-width: 90rem;
+		padding: 1rem var(--margin) var(--margin) var(--margin);
+		margin: 0 auto var(--margin) auto;
+		max-width: calc(80rem + calc(2 * var(--margin)));
+		width: 100%;
 	}
 
 	.nav {
 		box-sizing: border-box;
 		margin: 0 auto;
-		max-width: 77rem;
-		padding: 2rem 1rem 1rem 1rem;
+		max-width: calc(80rem + calc(2 * var(--margin)));
+		padding: var(--margin);
 		width: 100%;
 	}
 
 	.section {
 		margin: 0 auto 2rem auto;
-		max-width: 36rem;
+		max-width: 40rem;
 	}
 
 	.table {
@@ -234,19 +269,19 @@
 	.td {
 		font-family: PTSans, sans-serif;
 		font-size: 1.125rem;
-		padding: 0.25rem 1rem;
+		padding: 0.5rem 1rem;
 		text-align: right;
 	}
 
 	.td--max {
-		padding: 1rem 0.5rem 0.5rem 0.5rem;
+		padding: 0.5rem;
 		text-align: center;
 	}
 
 	.td--max--gems {
 		background: radial-gradient(
 			ellipse at bottom,
-			rgb(var(--white) / 0.2),
+			rgb(var(--white) / 0.3),
 			rgb(var(--black) / 0.3)
 		);
 		background-color: #549cfa;
@@ -255,7 +290,7 @@
 	.td--max--gold {
 		background: radial-gradient(
 			ellipse at bottom,
-			rgb(var(--white) / 0.2),
+			rgb(var(--white) / 0.3),
 			rgb(var(--black) / 0.3)
 		);
 		background-color: #f5ce55;
@@ -281,5 +316,18 @@
 
 	.tr:nth-child(odd) {
 		background-color: rgb(var(--primary--200));
+	}
+
+	.wallet {
+		color: rgb(var(--primary--900));
+		font-family: PTSans, sans-serif;
+		font-size: 2rem;
+		margin: 0;
+		margin: 1rem;
+		text-align: center;
+	}
+
+	.wallet > :global(img) {
+		filter: drop-shadow(0.125rem 0.125rem 0.25rem rgba(var(--primary--900) / 0.5));
 	}
 </style>
