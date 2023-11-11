@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Coins from '$lib/components/coins.svelte';
 	import { storeCtx } from '$lib/context.js';
-	import { useQuery } from '$lib/rtk-svelte/hooks.js';
 	import { hydrate } from '$lib/store/actions.js';
 	import { readAccountWallet } from '$lib/store/api/read-account-wallet.js';
 	import { readCommerceExchangeCoins } from '$lib/store/api/read-commerce-exchange-coints';
@@ -16,22 +15,22 @@
 
 	const store = storeCtx.get();
 	store.dispatch(hydrate(data));
-	const readCurrenciesStore = useQuery(readCurrencies)(store)({});
+	const readCurrenciesStore = readCurrencies.query();
+	readCurrenciesStore.set({});
 	$: ({ data: currencies } = $readCurrenciesStore);
 	$: coins = currencies?.entities[1];
 	$: gems = currencies?.entities[4];
-	const readAccountWalletStore = useQuery(readAccountWallet)(store)({});
+	const readAccountWalletStore = readAccountWallet.query();
+	readAccountWalletStore.set({});
 	$: ({ data: wallet, status: readWalletStatus } = $readAccountWalletStore);
 
 	let inputGems: number = GEMS_INPUT;
-	const getReadCommerceExchangeGemsStore = useQuery(readCommerceExchangeGems)(store);
-	$: readCommerceExchangeGemsStore = getReadCommerceExchangeGemsStore({
-		gems: inputGems
-	});
+	const readCommerceExchangeGemsStore = readCommerceExchangeGems.query();
+	$: readCommerceExchangeGemsStore.set({ gems: inputGems });
 
 	let inputGold: number = GOLD_INPUT;
-	const getReadCommerceExchangeCoinsStore = useQuery(readCommerceExchangeCoins)(store);
-	$: readCommerceExchangeCoinsStore = getReadCommerceExchangeCoinsStore({
+	const readCommerceExchangeCoinsStore = readCommerceExchangeCoins.query();
+	$: readCommerceExchangeCoinsStore.set({
 		coins: inputGold * 10000
 	});
 </script>

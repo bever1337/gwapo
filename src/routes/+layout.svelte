@@ -1,10 +1,12 @@
 <script lang="ts">
-	import { getSvelteStore, storeCtx } from '$lib/context';
+	import { storeCtx } from '$lib/context';
+	import { toSvelteStore } from '$lib/rtk-svelte';
+	import { getStore } from '$lib/store';
 	import './fonts.css';
 	import Footer from './footer.svelte';
 	import Navigation from './navigation.svelte';
 
-	const store = getSvelteStore();
+	const store = toSvelteStore(getStore());
 	storeCtx.set(store);
 </script>
 

@@ -1,8 +1,6 @@
 <script lang="ts">
 	import Coins from '$lib/components/coins.svelte';
-	import { storeCtx } from '$lib/context.js';
 	import { intl } from '$lib/intl/index.js';
-	import { useQuery } from '$lib/rtk-svelte/hooks.js';
 	import { readCurrencies } from '$lib/store/api/read-currencies.js';
 	import { readCommerceExchangeCoins } from '$lib/store/api/read-commerce-exchange-coints.js';
 	import type { CoinsExchangeRate } from '$lib/store/api/read-commerce-exchange-coints.js';
@@ -14,16 +12,15 @@
 		quantity: 0
 	};
 
-	const store = storeCtx.get();
-	const readCurrenciesStore = useQuery(readCurrencies)(store)({});
-	const getExchangeCoinsStore = useQuery(readCommerceExchangeCoins)(store);
-
-	$: ({ data: currencies } = $readCurrenciesStore);
+	const readCurrencies$ = readCurrencies.query();
+	readCurrencies$.set({});
+	$: ({ data: currencies } = $readCurrencies$);
 	$: coins = currencies?.entities[1];
 	$: gems = currencies?.entities[4];
 
-	$: readCommerceExchangeCoinsStore = getExchangeCoinsStore({ coins: quantity * 10000 });
-	$: ({ data = initialState } = $readCommerceExchangeCoinsStore);
+	const readCommerceExchangeCoins$ = readCommerceExchangeCoins.query();
+	$: readCommerceExchangeCoins$.set({ coins: quantity * 10000 });
+	$: ({ data = initialState } = $readCommerceExchangeCoins$);
 </script>
 
 <td class="td">

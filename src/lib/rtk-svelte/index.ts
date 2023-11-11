@@ -2,6 +2,7 @@ import type { Store } from '@reduxjs/toolkit';
 import { getContext, setContext } from 'svelte';
 import type { Readable } from 'svelte/store';
 
+/** @internal */
 export const SvelteReduxContextKey = Symbol('SvelteReduxContext');
 
 export type SvelteStore<T extends Store> = Readable<ReturnType<T['getState']>> & {
@@ -9,12 +10,31 @@ export type SvelteStore<T extends Store> = Readable<ReturnType<T['getState']>> &
 	getState: T['getState'];
 };
 
-export const getSvelteReduxContext = <S extends Store>() => ({
+/**
+ * @example Retrieve the store from context
+ * ```ts
+ * getSvelteReduxContext().dispatch({ type: "example" });
+ * ```
+ *
+ * @example Save the store to context
+ * ```ts
+ * getSvelteReduxContext().set(store);
+ * ```
+ *
+ * @example **Warning: Advanced**
+ * ```ts
+ * const storeBContext = Symbol();
+ * getSvelteReduxContext().set(store); // the 'default' store
+ * getSvelteReduxContext(storeBContext).set(storeB); // an additonal store
+ * getSvelteReduxContext(storeBContext).dispatch({ type: "example" }); // dispatch to the additional store
+ * ```
+ */
+export const getSvelteReduxContext = <S extends Store>(context = SvelteReduxContextKey) => ({
 	get(): SvelteStore<S> {
-		return getContext(SvelteReduxContextKey);
+		return getContext(context);
 	},
 	set(store: SvelteStore<S>) {
-		return setContext(SvelteReduxContextKey, store);
+		return setContext(context, store);
 	}
 });
 

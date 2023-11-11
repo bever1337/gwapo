@@ -22,7 +22,6 @@
 	import { browser } from '$app/environment';
 	import { storeCtx } from '$lib/context.js';
 	import { intl } from '$lib/intl/index.js';
-	import { useQuery } from '$lib/rtk-svelte/hooks.js';
 	import { hydrate } from '$lib/store/actions.js';
 	import { readAccountWallet } from '$lib/store/api/read-account-wallet.js';
 	import { CurrencyCategory, readCurrencies } from '$lib/store/api/read-currencies.js';
@@ -32,10 +31,14 @@
 
 	const store = storeCtx.get();
 	store.dispatch(hydrate(data));
-	const readCurrenciesStore = useQuery(readCurrencies)(store)({});
-	$: ({ data: currencies } = $readCurrenciesStore);
-	const readAccountWalletStore = useQuery(readAccountWallet)(store)({});
-	$: ({ data: wallet, status: readWalletStatus } = $readAccountWalletStore);
+
+	const readCurrencies$ = readCurrencies.query();
+	readCurrencies$.set({});
+	$: ({ data: currencies } = $readCurrencies$);
+
+	const readAccountWallet$ = readAccountWallet.query();
+	readAccountWallet$.set({});
+	$: ({ data: wallet, status: readWalletStatus } = $readAccountWallet$);
 
 	$: supportedCurrencies =
 		currencies?.ids.filter((currencyId) => {

@@ -1,7 +1,9 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query';
+import { fetchBaseQuery } from '@reduxjs/toolkit/query';
 import type { FetchArgs } from '@reduxjs/toolkit/query';
 import type { BaseQueryApi } from '@reduxjs/toolkit/src/query/baseQueryTypes';
+
+import { createSvelteApi } from '$lib/rtk-svelte/query/api';
 
 import type { Scope } from '../../types/token';
 
@@ -58,7 +60,7 @@ function baseQuery(args: FetchArgs, queryApi: BaseQueryApi, extraOptions: BaseQu
 	return rawBaseQuery(nextArguments, queryApi, extraOptions);
 }
 
-export const api = createApi({
+export const api = createSvelteApi({
 	baseQuery,
 	endpoints: () => ({}),
 	extractRehydrationInfo(action) {

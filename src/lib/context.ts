@@ -1,8 +1,4 @@
-// import { bindReduxStore, typeContext } from './context';
-import { getSvelteReduxContext, toSvelteStore } from './rtk-svelte';
-import { getStore } from './store';
+import { getSvelteReduxContext } from './rtk-svelte';
 import type { Store } from './store';
-
-export const getSvelteStore = () => toSvelteStore(getStore());
 
 export const storeCtx = getSvelteReduxContext<Store>();
