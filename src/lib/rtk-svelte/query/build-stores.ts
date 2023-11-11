@@ -24,12 +24,24 @@ export interface MutationStore<Definition extends MutationDefinition<any, any, a
 export interface QueryStores<Definition extends QueryDefinition<any, any, any, any>> {
 	query(initialQueryArguments?: QueryArgFrom<Definition> | SkipToken): {
 		set: Writable<QueryArgFrom<Definition> | SkipToken>['set'];
-		subscribe: Readable<QueryResultSelectorResult<Definition>>['subscribe'];
+		subscribe: Readable<
+			Omit<QueryResultSelectorResult<Definition>, 'isLoading'> & {
+				currentData: any;
+				isFetching: boolean;
+				isLoading: boolean;
+			}
+		>['subscribe'];
 		update: Writable<QueryArgFrom<Definition> | SkipToken>['update'];
 	};
 	queryState(initialQueryArguments?: QueryArgFrom<Definition> | SkipToken): {
 		set: Writable<QueryArgFrom<Definition> | SkipToken>['set'];
-		subscribe: Readable<QueryResultSelectorResult<Definition>>['subscribe'];
+		subscribe: Readable<
+			Omit<QueryResultSelectorResult<Definition>, 'isLoading'> & {
+				currentData: any;
+				isFetching: boolean;
+				isLoading: boolean;
+			}
+		>['subscribe'];
 		update: Writable<QueryArgFrom<Definition> | SkipToken>['update'];
 	};
 	querySubscription(initialQueryArguments?: QueryArgFrom<Definition> | SkipToken): {
@@ -95,10 +107,38 @@ export function buildStores<Definitions extends EndpointDefinitions>({
 			const querySelector$ = derived(queryArguments$, function deriveSelector(queryArguments) {
 				return select(queryArguments);
 			});
-			const queryResult$ = derived(
+			const queryResult$: Readable<
+				Omit<QueryResultSelectorResult<any>, 'isLoading'> & {
+					currentData: any;
+					isFetching: boolean;
+					isLoading: boolean;
+				}
+			> = derived(
 				[localStore$, querySelector$],
-				function deriveResult([state, selector]) {
-					return selector(state as unknown as Parameters<typeof selector>[0]);
+				function deriveResult([state, selector], set, update) {
+					const currentState = selector(state as unknown as Parameters<typeof selector>[0]);
+					update((lastResult) => {
+						let data = currentState.isSuccess ? currentState.data : lastResult?.data;
+						if (data === undefined) data = currentState.data;
+
+						const hasData = data !== undefined;
+
+						// isFetching = true any time a request is in flight
+						const isFetching = currentState.isLoading;
+						// isLoading = true only when loading while no data is present yet (initial load with no data in the cache)
+						const isLoading = !hasData && isFetching;
+						// isSuccess = true when data is present
+						const isSuccess = currentState.isSuccess || (isFetching && hasData);
+
+						return {
+							...currentState,
+							data,
+							currentData: currentState.data,
+							isFetching,
+							isLoading,
+							isSuccess
+						};
+					});
 				}
 			);
 			return queryResult$;
@@ -110,18 +150,20 @@ export function buildStores<Definitions extends EndpointDefinitions>({
 				QueryDefinition<any, any, any, any, any>,
 				Definitions
 			>;
-
-			const initiator$ = derived(
+			const initiator$: Readable<{ refetch(): void }> = derived(
 				queryArguments$,
 				// leaky abstraction, callback must accept two parameters for return value to be treated as cleanup
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				function deriveInitiateSideEffect(queryArguments, set) {
 					if (queryArguments === skipToken) {
+						set({ refetch: noop });
 						return noop;
 					}
-					return (localStore$.dispatch as ThunkDispatch<any, any, UnknownAction>)(
+					const queryResult = (localStore$.dispatch as ThunkDispatch<any, any, UnknownAction>)(
 						initiate(queryArguments)
-					).unsubscribe;
+					);
+					set({ refetch: queryResult.refetch });
+					return queryResult.unsubscribe;
 				}
 			);
 
