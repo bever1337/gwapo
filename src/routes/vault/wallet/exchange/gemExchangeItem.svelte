@@ -12,12 +12,11 @@
 		quantity: 0
 	};
 
-	const readCurrencies$ = readCurrencies.query();
-	readCurrencies$.set({});
+	const readCurrencies$ = readCurrencies.query({});
 	$: ({ data: currencies } = $readCurrencies$);
 	$: gems = currencies?.entities[4];
 
-	const readCommerceExchangeGems$ = readCommerceExchangeGems.query();
+	const readCommerceExchangeGems$ = readCommerceExchangeGems.query({ gems: quantity });
 	$: readCommerceExchangeGems$.set({ gems: quantity });
 	$: ({ data = initialState } = $readCommerceExchangeGems$);
 </script>

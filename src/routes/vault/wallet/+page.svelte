@@ -32,12 +32,10 @@
 	const store = storeCtx.get();
 	store.dispatch(hydrate(data));
 
-	const readCurrencies$ = readCurrencies.query();
-	readCurrencies$.set({});
+	const readCurrencies$ = readCurrencies.query({});
 	$: ({ data: currencies } = $readCurrencies$);
 
-	const readAccountWallet$ = readAccountWallet.query();
-	readAccountWallet$.set({});
+	const readAccountWallet$ = readAccountWallet.query({});
 	$: ({ data: wallet, status: readWalletStatus } = $readAccountWallet$);
 
 	$: supportedCurrencies =

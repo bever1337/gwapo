@@ -15,21 +15,22 @@
 
 	const store = storeCtx.get();
 	store.dispatch(hydrate(data));
-	const readCurrenciesStore = readCurrencies.query();
-	readCurrenciesStore.set({});
-	$: ({ data: currencies } = $readCurrenciesStore);
+	const readCurrencies$ = readCurrencies.query({});
+	$: ({ data: currencies } = $readCurrencies$);
 	$: coins = currencies?.entities[1];
 	$: gems = currencies?.entities[4];
-	const readAccountWalletStore = readAccountWallet.query();
-	readAccountWalletStore.set({});
-	$: ({ data: wallet, status: readWalletStatus } = $readAccountWalletStore);
+
+	const readAccountWallet$ = readAccountWallet.query({});
+	$: ({ data: wallet, status: readWalletStatus } = $readAccountWallet$);
 
 	let inputGems: number = GEMS_INPUT;
-	const readCommerceExchangeGemsStore = readCommerceExchangeGems.query();
-	$: readCommerceExchangeGemsStore.set({ gems: inputGems });
+	const readCommerceExchangeGems$ = readCommerceExchangeGems.query({ gems: inputGems });
+	$: readCommerceExchangeGems$.set({ gems: inputGems });
 
 	let inputGold: number = GOLD_INPUT;
-	const readCommerceExchangeCoinsStore = readCommerceExchangeCoins.query();
+	const readCommerceExchangeCoinsStore = readCommerceExchangeCoins.query({
+		coins: inputGold * 10000
+	});
 	$: readCommerceExchangeCoinsStore.set({
 		coins: inputGold * 10000
 	});
@@ -64,10 +65,10 @@
 						<input bind:value={inputGems} class="input" max={9999} min={1} type="number" />
 					</td>
 					<td class="td">
-						<Coins copper={$readCommerceExchangeGemsStore.data?.quantity ?? 0} />
+						<Coins copper={$readCommerceExchangeGems$.data?.quantity ?? 0} />
 					</td>
 					<td class="td">
-						<Coins copper={$readCommerceExchangeGemsStore.data?.coins_per_gem ?? 0} />
+						<Coins copper={$readCommerceExchangeGems$.data?.coins_per_gem ?? 0} />
 					</td>
 				</tr>
 				<tr class="tr">
@@ -80,11 +81,11 @@
 						</p>
 						<button
 							class="button"
-							disabled={$readAccountWalletStore.status !== 'fulfilled'}
+							disabled={$readAccountWallet$.status !== 'fulfilled'}
 							on:click={function onClick() {
 								inputGems = Math.max(
 									1,
-									Math.min($readAccountWalletStore.data?.entities?.[4]?.value ?? 0, 9999)
+									Math.min($readAccountWallet$.data?.entities?.[4]?.value ?? 0, 9999)
 								);
 							}}
 						>
@@ -137,12 +138,12 @@
 						</p>
 						<button
 							class="button"
-							disabled={$readAccountWalletStore.status !== 'fulfilled'}
+							disabled={$readAccountWallet$.status !== 'fulfilled'}
 							on:click={function onClick() {
 								inputGold = Math.max(
 									1,
 									Math.min(
-										Math.floor(($readAccountWalletStore.data?.entities?.[1]?.value ?? 0) / 10000),
+										Math.floor(($readAccountWallet$.data?.entities?.[1]?.value ?? 0) / 10000),
 										999
 									)
 								);

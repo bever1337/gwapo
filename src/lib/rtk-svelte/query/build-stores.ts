@@ -22,17 +22,17 @@ import { getSvelteReduxContext } from '..';
 
 export interface MutationStore<Definition extends MutationDefinition<any, any, any, any>> {}
 export interface QueryStores<Definition extends QueryDefinition<any, any, any, any>> {
-	query(): {
+	query(initialQueryArguments?: QueryArgFrom<Definition> | SkipToken): {
 		set: Writable<QueryArgFrom<Definition> | SkipToken>['set'];
 		subscribe: Readable<QueryResultSelectorResult<Definition>>['subscribe'];
 		update: Writable<QueryArgFrom<Definition> | SkipToken>['update'];
 	};
-	queryState(): {
+	queryState(initialQueryArguments?: QueryArgFrom<Definition> | SkipToken): {
 		set: Writable<QueryArgFrom<Definition> | SkipToken>['set'];
 		subscribe: Readable<QueryResultSelectorResult<Definition>>['subscribe'];
 		update: Writable<QueryArgFrom<Definition> | SkipToken>['update'];
 	};
-	querySubscription(): {
+	querySubscription(initialQueryArguments?: QueryArgFrom<Definition> | SkipToken): {
 		set: Writable<QueryArgFrom<Definition> | SkipToken>['set'];
 		subscribe: Readable<unknown>['subscribe'];
 		update: Writable<QueryArgFrom<Definition> | SkipToken>['update'];
@@ -54,8 +54,8 @@ export function buildStores<Definitions extends EndpointDefinitions>({
 
 	function buildQueryStores(name: string): QueryStores<any> {
 		return {
-			query() {
-				const queryArguments$ = writable<SkipToken | QueryArgFrom<any>>(skipToken);
+			query(initialQueryArguments) {
+				const queryArguments$ = writable<SkipToken | QueryArgFrom<any>>(initialQueryArguments);
 				const queryState$ = buildQueryStateStore(queryArguments$);
 				const querySubscription$ = buildQuerySubscriptionStore(queryArguments$);
 				const composedQuery$ = derived([queryState$, querySubscription$], ([result]) => result);
@@ -65,8 +65,8 @@ export function buildStores<Definitions extends EndpointDefinitions>({
 					update: queryArguments$.update
 				};
 			},
-			queryState() {
-				const queryArguments$ = writable<SkipToken | QueryArgFrom<any>>(skipToken);
+			queryState(initialQueryArguments) {
+				const queryArguments$ = writable<SkipToken | QueryArgFrom<any>>(initialQueryArguments);
 				const queryState$ = buildQueryStateStore(queryArguments$);
 				return {
 					set: queryArguments$.set,
@@ -74,8 +74,8 @@ export function buildStores<Definitions extends EndpointDefinitions>({
 					update: queryArguments$.update
 				};
 			},
-			querySubscription() {
-				const queryArguments$ = writable<SkipToken | QueryArgFrom<any>>(skipToken);
+			querySubscription(initialQueryArguments) {
+				const queryArguments$ = writable<SkipToken | QueryArgFrom<any>>(initialQueryArguments);
 				const querySubscription$ = buildQuerySubscriptionStore(queryArguments$);
 				return {
 					set: queryArguments$.set,
