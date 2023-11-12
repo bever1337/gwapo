@@ -28,10 +28,10 @@
 	$: readCommerceExchangeGems$.set({ gems: inputGems });
 
 	let inputGold: number = GOLD_INPUT;
-	const readCommerceExchangeCoinsStore = readCommerceExchangeCoins.query({
+	const readCommerceExchangeCoins$ = readCommerceExchangeCoins.query({
 		coins: inputGold * 10000
 	});
-	$: readCommerceExchangeCoinsStore.set({
+	$: readCommerceExchangeCoins$.set({
 		coins: inputGold * 10000
 	});
 </script>
@@ -115,7 +115,7 @@
 						<input bind:value={inputGold} class="input" max={999} min={1} type="number" />
 					</td>
 					<td class="td">
-						{$readCommerceExchangeCoinsStore.data?.quantity ?? 0}
+						{$readCommerceExchangeCoins$.data?.quantity ?? 0}
 						<img
 							class="img"
 							alt={gems?.name}
@@ -124,7 +124,7 @@
 						/>
 					</td>
 					<td class="td">
-						<Coins copper={$readCommerceExchangeCoinsStore.data?.coins_per_gem ?? 0} />
+						<Coins copper={$readCommerceExchangeCoins$.data?.coins_per_gem ?? 0} />
 					</td>
 				</tr>
 				<tr class="tr">

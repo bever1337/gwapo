@@ -38,6 +38,7 @@ export const getSvelteReduxContext = <S extends Store>(context = SvelteReduxCont
 	}
 });
 
+/** The simplest agreement of the Svelte store contract and a Redux store */
 export const toSvelteStore = <T extends Store>(store: T): SvelteStore<T> => ({
 	subscribe(run) {
 		run(store.getState());

@@ -3,7 +3,6 @@
 import type {
 	Api,
 	BaseQueryFn,
-	EndpointDefinition,
 	EndpointDefinitions,
 	Module,
 	MutationDefinition,
@@ -13,7 +12,7 @@ import type {
 import type { QueryStores, MutationStore } from './build-stores';
 import { buildStores } from './build-stores';
 
-export const svelteStoresModuleName = /* @__PURE__ */ Symbol();
+export const svelteStoresModuleName = Symbol();
 export type SvelteStoresModule = typeof svelteStoresModuleName;
 
 declare module '@reduxjs/toolkit/dist/query/apiTypes' {
@@ -35,42 +34,25 @@ declare module '@reduxjs/toolkit/dist/query/apiTypes' {
 	}
 }
 
-enum DefinitionType {
-	query = 'query',
-	mutation = 'mutation'
-}
-
-export function isQueryDefinition(
-	e: EndpointDefinition<any, any, any, any>
-): e is QueryDefinition<any, any, any, any> {
-	return e.type === DefinitionType.query;
-}
-
-export function isMutationDefinition(
-	e: EndpointDefinition<any, any, any, any>
-): e is MutationDefinition<any, any, any, any> {
-	return e.type === DefinitionType.mutation;
-}
-
 export const buildSvelteModule = (): Module<SvelteStoresModule> => ({
 	name: svelteStoresModuleName,
 	init(api, { serializeQueryArgs }, context) {
 		const anyApi = api as any as Api<any, Record<string, any>, string, string, SvelteStoresModule>;
 
-		const { buildQueryStores, buildMutationStore } = buildStores({
+		const { buildQueryStores, buildMutationStore } = buildStores(
 			api,
-			serializeQueryArgs,
+			{ serializeQueryArgs },
 			context
-		});
+		);
 
 		return {
 			injectEndpoint(endpointName, definition) {
-				if (isQueryDefinition(definition)) {
+				if (definition.type === 'query') {
 					const queryStores = buildQueryStores(endpointName);
 					Object.assign(anyApi.endpoints[endpointName], queryStores);
-				} else if (isMutationDefinition(definition)) {
-					const mutationStore = buildMutationStore(endpointName);
-					Object.assign(anyApi.endpoints[endpointName], mutationStore);
+				} else if (definition.type === 'mutation') {
+					// const mutationStore = buildMutationStore(endpointName);
+					// Object.assign(anyApi.endpoints[endpointName], mutationStore);
 				}
 			}
 		};

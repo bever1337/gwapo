@@ -3,7 +3,7 @@ import { fetchBaseQuery } from '@reduxjs/toolkit/query';
 import type { FetchArgs } from '@reduxjs/toolkit/query';
 import type { BaseQueryApi } from '@reduxjs/toolkit/src/query/baseQueryTypes';
 
-import { createSvelteApi } from '$lib/rtk-svelte/query/api';
+import { createSvelteApi } from '$lib/rtk-svelte/query';
 
 import type { Scope } from '../../types/token';
 
