@@ -8,20 +8,39 @@ import type {
 	MutationDefinition,
 	QueryArgFrom,
 	QueryDefinition,
-	SerializeQueryArgs
+	SerializeQueryArgs,
+	SubscriptionOptions
 } from '@reduxjs/toolkit/query';
 import { derived, writable } from 'svelte/store';
 import type { Readable, Writable } from 'svelte/store';
 
+import { buildLazyQuerySubscriptionModule } from './stores/lazy-query-subscription';
+import type { LazyQuerySubscriptionTopic } from './stores/lazy-query-subscription';
 import { buildQueryStateModule } from './stores/query-state';
 import type { QueryStateOptions, QueryStateTopic } from './stores/query-state';
 import { buildQuerySubscriptionModule } from './stores/query-subscription';
 import type { QuerySubscriptionOptions, QuerySubscriptionTopic } from './stores/query-subscription';
 
+import { UNINITIALIZED_VALUE } from './constants';
+
 import type { SvelteReduxContextKey } from '..';
 
 export interface MutationStore<Definition extends MutationDefinition<any, any, any, any>> {}
 export interface QueryStores<Definition extends QueryDefinition<any, any, any, any>> {
+	lazyQuery(initialQueryOptions?: SubscriptionOptions): {
+		next(queryOptions?: SubscriptionOptions): void;
+		subscribe: Readable<
+			[
+				LazyQuerySubscriptionTopic<Definition>[0],
+				QueryStateTopic<Definition>,
+				{ lastArg: QueryArgFrom<Definition> }
+			]
+		>['subscribe'];
+	};
+	lazyQuerySubscription(initialQueryOptions?: SubscriptionOptions): {
+		next(queryOptions?: SubscriptionOptions): void;
+		subscribe: Readable<LazyQuerySubscriptionTopic<Definition>>['subscribe'];
+	};
 	query(
 		initialQueryArguments?: QueryArgFrom<Definition>,
 		initialQueryOptions?: QueryStateOptions<Definition> & QuerySubscriptionOptions<Definition>
@@ -66,26 +85,67 @@ export function buildStores<Definitions extends EndpointDefinitions>(
 	context: ApiContext<Definitions>,
 	contextKey: SvelteReduxContextKey
 ) {
-	const buildQueryStateStoreForEndpoint = buildQueryStateModule(
-		api,
-		{ serializeQueryArgs },
-		context,
-		contextKey
+	const builderParameters = [api, { serializeQueryArgs }, context, contextKey] as const;
+	const buildLazyQuerySubscriptionStoreForEndpoint = buildLazyQuerySubscriptionModule(
+		...builderParameters
 	);
-	const buildQuerySubscriptionStoreForEndpoint = buildQuerySubscriptionModule(
-		api,
-		{ serializeQueryArgs },
-		context,
-		contextKey
-	);
+	const buildQueryStateStoreForEndpoint = buildQueryStateModule(...builderParameters);
+	const buildQuerySubscriptionStoreForEndpoint = buildQuerySubscriptionModule(...builderParameters);
 
 	return { buildQueryStores, buildMutationStore };
 
 	function buildQueryStores(name: string): QueryStores<any> {
+		const buildLazyQuerySubscriptionStore = buildLazyQuerySubscriptionStoreForEndpoint(name);
 		const buildQueryStateStore = buildQueryStateStoreForEndpoint(name);
 		const buildQuerySubscriptionStore = buildQuerySubscriptionStoreForEndpoint(name);
 
 		return {
+			lazyQuery(initialQueryOptions) {
+				const queryOptions$: Writable<[undefined, SubscriptionOptions | undefined]> = writable([
+					undefined,
+					initialQueryOptions
+				]);
+				const lazyQuerySubscription$ = buildLazyQuerySubscriptionStore(queryOptions$);
+				const queryArguments$ = derived(
+					[queryOptions$, lazyQuerySubscription$],
+					([[, queryOptions = {}], [, lastQueryArguments]]): [
+						QueryArgFrom<any>,
+						QueryStateOptions<any> | undefined
+					] => [
+						lastQueryArguments,
+						{ ...queryOptions, skip: lastQueryArguments === UNINITIALIZED_VALUE }
+					]
+				);
+				const queryState$ = buildQueryStateStore(queryArguments$);
+				/** @todo this store may update twice when options change */
+				const composedLazyQuery$ = derived(
+					[lazyQuerySubscription$, queryState$],
+					([[trigger, lastQueryArguments], queryState]): [
+						LazyQuerySubscriptionTopic<any>[0],
+						QueryStateTopic<any>,
+						{ lastArg: QueryArgFrom<any> }
+					] => [trigger, queryState, { lastArg: lastQueryArguments }]
+				);
+				return {
+					next(queryOptions) {
+						queryOptions$.set([undefined, queryOptions]);
+					},
+					subscribe: composedLazyQuery$.subscribe
+				};
+			},
+			lazyQuerySubscription(initialQueryOptions) {
+				const queryArguments$: Writable<[undefined, SubscriptionOptions | undefined]> = writable([
+					undefined,
+					initialQueryOptions
+				]);
+				const lazyQuerySubscription$ = buildLazyQuerySubscriptionStore(queryArguments$);
+				return {
+					next(queryOptions) {
+						queryArguments$.set([undefined, queryOptions]);
+					},
+					subscribe: lazyQuerySubscription$.subscribe
+				};
+			},
 			query(initialQueryArguments, initialQueryOptions) {
 				const queryArguments$: Writable<
 					[QueryArgFrom<any>, (QueryStateOptions<any> & QuerySubscriptionOptions<any>) | undefined]

@@ -14,7 +14,7 @@ import type {
 } from '@reduxjs/toolkit/query';
 import type { ThunkDispatch, UnknownAction } from '@reduxjs/toolkit';
 import { derived } from 'svelte/store';
-import type { Readable, Writable } from 'svelte/store';
+import type { Readable } from 'svelte/store';
 
 import { createSvelteReduxContext } from '../..';
 import type { SvelteReduxContextKey } from '../..';
@@ -25,7 +25,7 @@ export interface QuerySubscriptionTopic<Definition extends QueryDefinition<any, 
 
 export interface QuerySubscriptionStore<Definition extends QueryDefinition<any, any, any, any>> {
 	(
-		queryArguments$: Writable<
+		queryArguments$: Readable<
 			[QueryArgFrom<Definition>, QuerySubscriptionOptions<Definition> | undefined]
 		>
 	): Readable<QuerySubscriptionTopic<Definition>>;
@@ -49,7 +49,7 @@ export function buildQuerySubscriptionModule<Definitions extends EndpointDefinit
 	context: ApiContext<Definitions>,
 	contextKey: SvelteReduxContextKey
 ) {
-	const SvelteReduxContext = createSvelteReduxContext();
+	const SvelteReduxContext = createSvelteReduxContext(contextKey);
 	return function buildQuerySubscriptionStoreForEndpoint(
 		name: string
 	): QuerySubscriptionStore<any> {

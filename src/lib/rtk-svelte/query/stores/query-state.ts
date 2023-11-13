@@ -14,7 +14,7 @@ import type {
 } from '@reduxjs/toolkit/query';
 import type { Selector } from '@reduxjs/toolkit';
 import { derived } from 'svelte/store';
-import type { Readable, Writable } from 'svelte/store';
+import type { Readable } from 'svelte/store';
 
 import { createSvelteReduxContext } from '../..';
 import type { SvelteReduxContextKey } from '../..';
@@ -30,7 +30,7 @@ export interface QueryStateTopic<Definition extends QueryDefinition<any, any, an
 
 export interface QueryStateStore<Definition extends QueryDefinition<any, any, any, any>> {
 	(
-		queryArguments$: Writable<[QueryArgFrom<Definition>, QueryStateOptions<Definition> | undefined]>
+		queryArguments$: Readable<[QueryArgFrom<Definition>, QueryStateOptions<Definition> | undefined]>
 	): Readable<QueryStateTopic<Definition>>;
 }
 
