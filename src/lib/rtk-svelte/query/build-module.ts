@@ -12,6 +12,9 @@ import type {
 import type { QueryStores, MutationStore } from './build-stores';
 import { buildStores } from './build-stores';
 
+import { svelteReduxContextKey } from '..';
+import type { SvelteReduxContextKey } from '..';
+
 export const svelteStoresModuleName = Symbol();
 export type SvelteStoresModule = typeof svelteStoresModuleName;
 
@@ -34,7 +37,9 @@ declare module '@reduxjs/toolkit/dist/query/apiTypes' {
 	}
 }
 
-export const buildSvelteModule = (): Module<SvelteStoresModule> => ({
+export const buildSvelteModule = (
+	contextKey = svelteReduxContextKey
+): Module<SvelteStoresModule> => ({
 	name: svelteStoresModuleName,
 	init(api, { serializeQueryArgs }, context) {
 		const anyApi = api as any as Api<any, Record<string, any>, string, string, SvelteStoresModule>;
@@ -42,7 +47,8 @@ export const buildSvelteModule = (): Module<SvelteStoresModule> => ({
 		const { buildQueryStores, buildMutationStore } = buildStores(
 			api,
 			{ serializeQueryArgs },
-			context
+			context,
+			contextKey
 		);
 
 		return {

@@ -18,6 +18,8 @@ import type { QueryStateOptions, QueryStateTopic } from './stores/query-state';
 import { buildQuerySubscriptionModule } from './stores/query-subscription';
 import type { QuerySubscriptionOptions, QuerySubscriptionTopic } from './stores/query-subscription';
 
+import type { SvelteReduxContextKey } from '..';
+
 export interface MutationStore<Definition extends MutationDefinition<any, any, any, any>> {}
 export interface QueryStores<Definition extends QueryDefinition<any, any, any, any>> {
 	query(
@@ -61,17 +63,20 @@ export function buildStores<Definitions extends EndpointDefinitions>(
 	}: {
 		serializeQueryArgs: SerializeQueryArgs<any>;
 	},
-	context: ApiContext<Definitions>
+	context: ApiContext<Definitions>,
+	contextKey: SvelteReduxContextKey
 ) {
 	const buildQueryStateStoreForEndpoint = buildQueryStateModule(
 		api,
 		{ serializeQueryArgs },
-		context
+		context,
+		contextKey
 	);
 	const buildQuerySubscriptionStoreForEndpoint = buildQuerySubscriptionModule(
 		api,
 		{ serializeQueryArgs },
-		context
+		context,
+		contextKey
 	);
 
 	return { buildQueryStores, buildMutationStore };

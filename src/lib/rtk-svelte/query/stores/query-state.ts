@@ -16,7 +16,8 @@ import type { Selector } from '@reduxjs/toolkit';
 import { derived } from 'svelte/store';
 import type { Readable, Writable } from 'svelte/store';
 
-import { getSvelteReduxContext } from '../..';
+import { createSvelteReduxContext } from '../..';
+import type { SvelteReduxContextKey } from '../..';
 
 function noop() {}
 
@@ -57,8 +58,10 @@ export function buildQueryStateModule<Definitions extends EndpointDefinitions>(
 	util: {
 		serializeQueryArgs: SerializeQueryArgs<any>;
 	},
-	context: ApiContext<Definitions>
+	context: ApiContext<Definitions>,
+	contextKey: SvelteReduxContextKey
 ) {
+	const SvelteReduxContext = createSvelteReduxContext(contextKey);
 	return function buildQueryStateStoreForEndpoint(name: string): QueryStateStore<any> {
 		return function buildQueryStateStore(queryArguments$) {
 			const { select } = api.endpoints[name] as ApiEndpointQuery<
@@ -83,7 +86,7 @@ export function buildQueryStateModule<Definitions extends EndpointDefinitions>(
 				}
 			);
 
-			const localStore$ = getSvelteReduxContext().get();
+			const localStore$ = SvelteReduxContext.get();
 			const queryState$: Readable<[QueryStateTopic<any>, DerivedQueryStateOptions<any>]> = derived(
 				[localStore$, querySelector$],
 				function deriveResult([state, [, queryOptions]], set, update) {
