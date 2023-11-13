@@ -10,10 +10,10 @@ import type {
 	QueryArgFrom,
 	QueryDefinition,
 	SerializeQueryArgs,
-	SkipToken
+	SubscriptionOptions
 } from '@reduxjs/toolkit/query';
 import type { ThunkDispatch, UnknownAction } from '@reduxjs/toolkit';
-import { derived } from 'svelte/store';
+import { derived, readable } from 'svelte/store';
 import type { Readable, Writable } from 'svelte/store';
 
 import { getSvelteReduxContext } from '../..';
@@ -23,18 +23,26 @@ export interface QuerySubscriptionTopic<Definition extends QueryDefinition<any, 
 }
 
 export interface QuerySubscriptionStore<Definition extends QueryDefinition<any, any, any, any>> {
-	(queryArguments$: Writable<SkipToken | QueryArgFrom<any>>): Readable<
-		QuerySubscriptionTopic<Definition>
-	>;
+	(
+		queryArguments$: Writable<
+			[QueryArgFrom<Definition>, QuerySubscriptionOptions<Definition> | undefined]
+		>
+	): Readable<QuerySubscriptionTopic<Definition>>;
+}
+
+export interface QuerySubscriptionOptions<Definition extends QueryDefinition<any, any, any, any>>
+	extends SubscriptionOptions {
+	skip?: boolean;
+	refetchOnMountOrArgChange?: boolean | number;
 }
 
 function noop() {}
+const defaultQuerySubscriptionOptions: QuerySubscriptionOptions<any> = {};
+const initialQuerySubscriptionTopic = { refetch: noop };
 
 export function buildQuerySubscriptionModule<Definitions extends EndpointDefinitions>(
 	api: Api<any, Definitions, any, any, CoreModule>,
-	{
-		serializeQueryArgs
-	}: {
+	util: {
 		serializeQueryArgs: SerializeQueryArgs<any>;
 	},
 	context: ApiContext<Definitions>
@@ -42,28 +50,42 @@ export function buildQuerySubscriptionModule<Definitions extends EndpointDefinit
 	return function buildQuerySubscriptionStoreForEndpoint(
 		name: string
 	): QuerySubscriptionStore<any> {
-		return function buildQuerySubscriptionStore(
-			queryArguments$: Writable<SkipToken | QueryArgFrom<any>>
-		) {
-			const localStore$ = getSvelteReduxContext().get();
+		return function buildQuerySubscriptionStore(queryArguments$) {
 			const { initiate } = api.endpoints[name] as ApiEndpointQuery<
 				QueryDefinition<any, any, any, any, any>,
 				Definitions
 			>;
+			const localStore$ = getSvelteReduxContext().get();
+			const dispatch = localStore$.dispatch as ThunkDispatch<any, any, UnknownAction>;
 			const querySubscription$: Readable<QuerySubscriptionTopic<any>> = derived(
 				queryArguments$,
-				// leaky abstraction, callback must accept two parameters for return value to be treated as cleanup
-				function deriveInitiateSideEffect(queryArguments, set) {
-					if (queryArguments === skipToken) {
-						set({ refetch: noop });
-						return noop;
-					}
-					const queryResult = (localStore$.dispatch as ThunkDispatch<any, any, UnknownAction>)(
-						initiate(queryArguments)
+				function initiateSideEffect(
+					[
+						queryArguments,
+						{
+							pollingInterval = 0,
+							refetchOnFocus,
+							refetchOnMountOrArgChange,
+							refetchOnReconnect,
+							skip = false
+						} = defaultQuerySubscriptionOptions
+					],
+					set
+				) {
+					const queryResult = dispatch(
+						initiate(skip ? skipToken : queryArguments, {
+							forceRefetch: refetchOnMountOrArgChange,
+							subscriptionOptions: {
+								pollingInterval,
+								refetchOnFocus,
+								refetchOnReconnect
+							}
+						})
 					);
 					set({ refetch: queryResult.refetch });
 					return queryResult.unsubscribe;
-				}
+				},
+				initialQuerySubscriptionTopic
 			);
 
 			return querySubscription$;

@@ -51,8 +51,8 @@ export const buildSvelteModule = (): Module<SvelteStoresModule> => ({
 					const queryStores = buildQueryStores(endpointName);
 					Object.assign(anyApi.endpoints[endpointName], queryStores);
 				} else if (definition.type === 'mutation') {
-					// const mutationStore = buildMutationStore(endpointName);
-					// Object.assign(anyApi.endpoints[endpointName], mutationStore);
+					const mutationStore = buildMutationStore(endpointName);
+					Object.assign(anyApi.endpoints[endpointName], mutationStore);
 				}
 			}
 		};

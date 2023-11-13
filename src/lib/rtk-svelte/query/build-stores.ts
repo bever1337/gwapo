@@ -8,35 +8,49 @@ import type {
 	MutationDefinition,
 	QueryArgFrom,
 	QueryDefinition,
-	SerializeQueryArgs,
-	SkipToken
+	SerializeQueryArgs
 } from '@reduxjs/toolkit/query';
 import { derived, writable } from 'svelte/store';
 import type { Readable, Writable } from 'svelte/store';
 
 import { buildQueryStateModule } from './stores/query-state';
-import type { QueryStateTopic } from './stores/query-state';
+import type { QueryStateOptions, QueryStateTopic } from './stores/query-state';
 import { buildQuerySubscriptionModule } from './stores/query-subscription';
-import type { QuerySubscriptionTopic } from './stores/query-subscription';
+import type { QuerySubscriptionOptions, QuerySubscriptionTopic } from './stores/query-subscription';
 
 export interface MutationStore<Definition extends MutationDefinition<any, any, any, any>> {}
 export interface QueryStores<Definition extends QueryDefinition<any, any, any, any>> {
-	query(initialQueryArguments?: QueryArgFrom<Definition> | SkipToken): {
-		set: Writable<QueryArgFrom<Definition> | SkipToken>['set'];
+	query(
+		initialQueryArguments?: QueryArgFrom<Definition>,
+		initialQueryOptions?: QueryStateOptions<Definition> & QuerySubscriptionOptions<Definition>
+	): {
+		set(
+			queryArguments?: QueryArgFrom<Definition>,
+			queryOptions?: QueryStateOptions<Definition> & QuerySubscriptionOptions<Definition>
+		): void;
 		subscribe: Readable<
 			QueryStateTopic<Definition> & QuerySubscriptionTopic<Definition>
 		>['subscribe'];
-		update: Writable<QueryArgFrom<Definition> | SkipToken>['update'];
 	};
-	queryState(initialQueryArguments?: QueryArgFrom<Definition> | SkipToken): {
-		set: Writable<QueryArgFrom<Definition> | SkipToken>['set'];
+	queryState(
+		initialQueryArguments?: QueryArgFrom<Definition>,
+		initialQueryOptions?: QueryStateOptions<Definition>
+	): {
+		set(
+			queryArguments?: QueryArgFrom<Definition>,
+			queryOptions?: QueryStateOptions<Definition>
+		): void;
 		subscribe: Readable<QueryStateTopic<Definition>>['subscribe'];
-		update: Writable<QueryArgFrom<Definition> | SkipToken>['update'];
 	};
-	querySubscription(initialQueryArguments?: QueryArgFrom<Definition> | SkipToken): {
-		set: Writable<QueryArgFrom<Definition> | SkipToken>['set'];
+	querySubscription(
+		initialQueryArguments?: QueryArgFrom<Definition>,
+		initialQueryOptions?: QuerySubscriptionOptions<Definition>
+	): {
+		set(
+			queryArguments?: QueryArgFrom<Definition>,
+			queryOptions?: QuerySubscriptionOptions<Definition>
+		): void;
 		subscribe: Readable<QuerySubscriptionTopic<Definition>>['subscribe'];
-		update: Writable<QueryArgFrom<Definition> | SkipToken>['update'];
 	};
 }
 
@@ -67,8 +81,10 @@ export function buildStores<Definitions extends EndpointDefinitions>(
 		const buildQuerySubscriptionStore = buildQuerySubscriptionStoreForEndpoint(name);
 
 		return {
-			query(initialQueryArguments) {
-				const queryArguments$ = writable(initialQueryArguments);
+			query(initialQueryArguments, initialQueryOptions) {
+				const queryArguments$: Writable<
+					[QueryArgFrom<any>, (QueryStateOptions<any> & QuerySubscriptionOptions<any>) | undefined]
+				> = writable([initialQueryArguments, initialQueryOptions]);
 				const queryState$ = buildQueryStateStore(queryArguments$);
 				const querySubscription$ = buildQuerySubscriptionStore(queryArguments$);
 				const composedQuery$ = derived(
@@ -79,27 +95,33 @@ export function buildStores<Definitions extends EndpointDefinitions>(
 					})
 				);
 				return {
-					set: queryArguments$.set,
-					subscribe: composedQuery$.subscribe,
-					update: queryArguments$.update
+					set(queryArguments, queryOptions) {
+						queryArguments$.set([queryArguments, queryOptions]);
+					},
+					subscribe: composedQuery$.subscribe
 				};
 			},
-			queryState(initialQueryArguments) {
-				const queryArguments$ = writable(initialQueryArguments);
+			queryState(initialQueryArguments, initialQueryOptions) {
+				const queryArguments$: Writable<[QueryArgFrom<any>, QueryStateOptions<any> | undefined]> =
+					writable([initialQueryArguments, initialQueryOptions]);
 				const queryState$ = buildQueryStateStore(queryArguments$);
 				return {
-					set: queryArguments$.set,
-					subscribe: queryState$.subscribe,
-					update: queryArguments$.update
+					set(queryArguments, queryOptions) {
+						queryArguments$.set([queryArguments, queryOptions]);
+					},
+					subscribe: queryState$.subscribe
 				};
 			},
-			querySubscription(initialQueryArguments) {
-				const queryArguments$ = writable(initialQueryArguments);
+			querySubscription(initialQueryArguments, initialQueryOptions) {
+				const queryArguments$: Writable<
+					[QueryArgFrom<any>, QuerySubscriptionOptions<any> | undefined]
+				> = writable([initialQueryArguments, initialQueryOptions]);
 				const querySubscription$ = buildQuerySubscriptionStore(queryArguments$);
 				return {
-					set: queryArguments$.set,
-					subscribe: querySubscription$.subscribe,
-					update: queryArguments$.update
+					set(queryArguments, queryOptions) {
+						queryArguments$.set([queryArguments, queryOptions]);
+					},
+					subscribe: querySubscription$.subscribe
 				};
 			}
 		};

@@ -10,13 +10,15 @@ import type {
 	QueryArgFrom,
 	QueryDefinition,
 	QueryResultSelectorResult,
-	SerializeQueryArgs,
-	SkipToken
+	SerializeQueryArgs
 } from '@reduxjs/toolkit/query';
+import type { Selector } from '@reduxjs/toolkit';
 import { derived } from 'svelte/store';
 import type { Readable, Writable } from 'svelte/store';
 
 import { getSvelteReduxContext } from '../..';
+
+function noop() {}
 
 export interface QueryStateTopic<Definition extends QueryDefinition<any, any, any, any>>
 	extends Omit<QueryResultSelectorResult<Definition>, 'isLoading'> {
@@ -26,14 +28,33 @@ export interface QueryStateTopic<Definition extends QueryDefinition<any, any, an
 }
 
 export interface QueryStateStore<Definition extends QueryDefinition<any, any, any, any>> {
-	(queryArguments$: Writable<QueryArgFrom<Definition>>): Readable<QueryStateTopic<Definition>>;
+	(
+		queryArguments$: Writable<[QueryArgFrom<Definition>, QueryStateOptions<Definition> | undefined]>
+	): Readable<QueryStateTopic<Definition>>;
 }
+
+export type QueryStateSelector<
+	R extends Record<string, any>,
+	D extends QueryDefinition<any, any, any, any>
+> = (state: QueryStateTopic<D>) => R;
+
+export interface QueryStateOptions<Definition extends QueryDefinition<any, any, any, any>> {
+	skip?: boolean;
+	selectFromResult?: QueryStateSelector<any, Definition>;
+}
+
+/** @internal */
+export interface DerivedQueryStateOptions<Definition extends QueryDefinition<any, any, any, any>>
+	extends QueryStateOptions<Definition> {
+	selectDefaultResult: Selector<any, QueryStateTopic<Definition>>;
+}
+
+const defaultQueryStateOptions: QueryStateOptions<any> = {};
+const initialQueryState = [{}, {}] as [QueryStateTopic<any>, DerivedQueryStateOptions<any>];
 
 export function buildQueryStateModule<Definitions extends EndpointDefinitions>(
 	api: Api<any, Definitions, any, any, CoreModule>,
-	{
-		serializeQueryArgs
-	}: {
+	util: {
 		serializeQueryArgs: SerializeQueryArgs<any>;
 	},
 	context: ApiContext<Definitions>
@@ -44,15 +65,31 @@ export function buildQueryStateModule<Definitions extends EndpointDefinitions>(
 				QueryDefinition<any, any, any, any, any>,
 				Definitions
 			>;
+
+			const querySelector$ = derived(
+				queryArguments$,
+				function deriveSelector([queryArguments, queryOptions = defaultQueryStateOptions]) {
+					const { skip } = queryOptions;
+					const selectorArguments = (skip ? skipToken : queryArguments) as Parameters<
+						ReturnType<typeof select>
+					>[0];
+					return [
+						queryArguments,
+						{
+							...queryOptions,
+							selectDefaultResult: select(selectorArguments)
+						}
+					] as [QueryArgFrom<any>, DerivedQueryStateOptions<any>];
+				}
+			);
+
 			const localStore$ = getSvelteReduxContext().get();
-			const querySelector$ = derived(queryArguments$, function deriveSelector(queryArguments) {
-				return select(queryArguments as Parameters<ReturnType<typeof select>>[0]);
-			});
-			const queryState$: Readable<QueryStateTopic<any>> = derived(
+			const queryState$: Readable<[QueryStateTopic<any>, DerivedQueryStateOptions<any>]> = derived(
 				[localStore$, querySelector$],
-				function deriveResult([state, selector], set, update) {
-					const currentState = selector(state);
-					update(function updateResult(lastResult) {
+				function deriveResult([state, [, queryOptions]], set, update) {
+					const { selectDefaultResult } = queryOptions;
+					const currentState = selectDefaultResult(state);
+					update(function updateResult([lastResult]) {
 						let data = currentState.isSuccess ? currentState.data : lastResult?.data;
 						if (data === undefined) data = currentState.data;
 
@@ -65,18 +102,28 @@ export function buildQueryStateModule<Definitions extends EndpointDefinitions>(
 						// isSuccess = true when data is present
 						const isSuccess = currentState.isSuccess || (isFetching && hasData);
 
-						return {
-							...currentState,
-							data,
-							currentData: currentState.data,
-							isFetching,
-							isLoading,
-							isSuccess
-						};
+						return [
+							{
+								...currentState,
+								data,
+								currentData: currentState.data,
+								isFetching,
+								isLoading,
+								isSuccess
+							},
+							queryOptions
+						];
 					});
-				}
+				},
+				initialQueryState
 			);
-			return queryState$;
+
+			return derived(queryState$, function ([queryResult, { selectFromResult }]) {
+				if (selectFromResult) {
+					return selectFromResult(queryResult);
+				}
+				return queryResult;
+			});
 		};
 	};
 }
