@@ -19,8 +19,6 @@ import type { Readable } from 'svelte/store';
 import { createSvelteReduxContext } from '../..';
 import type { SvelteReduxContextKey } from '../..';
 
-function noop() {}
-
 export interface QueryStateTopic<Definition extends QueryDefinition<any, any, any, any>>
 	extends Omit<QueryResultSelectorResult<Definition>, 'isLoading'> {
 	currentData: any;

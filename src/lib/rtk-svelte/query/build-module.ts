@@ -6,7 +6,7 @@ import type {
 	EndpointDefinitions,
 	Module,
 	MutationDefinition,
-	QueryDefinition
+	QueryDefinition,
 } from '@reduxjs/toolkit/query';
 
 import type { QueryStores, MutationStore } from './build-stores';
@@ -44,7 +44,7 @@ export const buildSvelteModule = (
 	init(api, { serializeQueryArgs }, context) {
 		const anyApi = api as any as Api<any, Record<string, any>, string, string, SvelteStoresModule>;
 
-		const { buildQueryStores, buildMutationStore } = buildStores(
+		const { buildQueryStores, buildMutationStores } = buildStores(
 			api,
 			{ serializeQueryArgs },
 			context,
@@ -57,10 +57,10 @@ export const buildSvelteModule = (
 					const queryStores = buildQueryStores(endpointName);
 					Object.assign(anyApi.endpoints[endpointName], queryStores);
 				} else if (definition.type === 'mutation') {
-					const mutationStore = buildMutationStore(endpointName);
+					const mutationStore = buildMutationStores(endpointName);
 					Object.assign(anyApi.endpoints[endpointName], mutationStore);
 				}
-			}
+			},
 		};
-	}
+	},
 });
