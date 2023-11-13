@@ -1,6 +1,7 @@
-import type { Store } from '@reduxjs/toolkit';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { Selector, Store } from '@reduxjs/toolkit';
 import { getContext, setContext } from 'svelte';
-import type { Readable } from 'svelte/store';
+import { derived, writable, type Readable } from 'svelte/store';
 
 /** @internal */
 export const SvelteReduxContextKey = Symbol('SvelteReduxContext');
@@ -50,3 +51,22 @@ export const toSvelteStore = <T extends Store>(store: T): SvelteStore<T> => ({
 	dispatch: store.dispatch,
 	getState: store.getState
 });
+
+export const getDispatch = (context = SvelteReduxContextKey) =>
+	getSvelteReduxContext(context).get().dispatch;
+
+export const getSelector = <State, Result, Parameters extends readonly any[] = any[]>(
+	selector: Selector<State, Result, Parameters>,
+	parameters?: Parameters,
+	context = SvelteReduxContextKey
+) => {
+	const store$ = getSvelteReduxContext(context).get();
+	const parameters$ = writable(parameters);
+	const selector$ = derived([store$, parameters$], function callSelector([state, parameters]) {
+		return selector(state, ...parameters);
+	});
+	return {
+		reselect: parameters$.set,
+		subscribe: selector$.subscribe
+	};
+};
