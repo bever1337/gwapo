@@ -25,13 +25,13 @@
 
 	let inputGems: number = GEMS_INPUT;
 	const readCommerceExchangeGems$ = readCommerceExchangeGems.query({ gems: inputGems });
-	$: readCommerceExchangeGems$.set({ gems: inputGems });
+	$: readCommerceExchangeGems$.next({ gems: inputGems });
 
 	let inputGold: number = GOLD_INPUT;
 	const readCommerceExchangeCoins$ = readCommerceExchangeCoins.query({
 		coins: inputGold * 10000
 	});
-	$: readCommerceExchangeCoins$.set({
+	$: readCommerceExchangeCoins$.next({
 		coins: inputGold * 10000
 	});
 </script>

@@ -18,7 +18,7 @@
 	$: gems = currencies?.entities[4];
 
 	const readCommerceExchangeCoins$ = readCommerceExchangeCoins.query({ coins: quantity * 10000 });
-	$: readCommerceExchangeCoins$.set({ coins: quantity * 10000 });
+	$: readCommerceExchangeCoins$.next({ coins: quantity * 10000 });
 	$: ({ data = initialState } = $readCommerceExchangeCoins$);
 </script>
 

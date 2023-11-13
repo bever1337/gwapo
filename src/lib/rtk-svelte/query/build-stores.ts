@@ -24,7 +24,7 @@ export interface QueryStores<Definition extends QueryDefinition<any, any, any, a
 		initialQueryArguments?: QueryArgFrom<Definition>,
 		initialQueryOptions?: QueryStateOptions<Definition> & QuerySubscriptionOptions<Definition>
 	): {
-		set(
+		next(
 			queryArguments?: QueryArgFrom<Definition>,
 			queryOptions?: QueryStateOptions<Definition> & QuerySubscriptionOptions<Definition>
 		): void;
@@ -36,7 +36,7 @@ export interface QueryStores<Definition extends QueryDefinition<any, any, any, a
 		initialQueryArguments?: QueryArgFrom<Definition>,
 		initialQueryOptions?: QueryStateOptions<Definition>
 	): {
-		set(
+		next(
 			queryArguments?: QueryArgFrom<Definition>,
 			queryOptions?: QueryStateOptions<Definition>
 		): void;
@@ -46,7 +46,7 @@ export interface QueryStores<Definition extends QueryDefinition<any, any, any, a
 		initialQueryArguments?: QueryArgFrom<Definition>,
 		initialQueryOptions?: QuerySubscriptionOptions<Definition>
 	): {
-		set(
+		next(
 			queryArguments?: QueryArgFrom<Definition>,
 			queryOptions?: QuerySubscriptionOptions<Definition>
 		): void;
@@ -95,7 +95,7 @@ export function buildStores<Definitions extends EndpointDefinitions>(
 					})
 				);
 				return {
-					set(queryArguments, queryOptions) {
+					next(queryArguments, queryOptions) {
 						queryArguments$.set([queryArguments, queryOptions]);
 					},
 					subscribe: composedQuery$.subscribe
@@ -106,7 +106,7 @@ export function buildStores<Definitions extends EndpointDefinitions>(
 					writable([initialQueryArguments, initialQueryOptions]);
 				const queryState$ = buildQueryStateStore(queryArguments$);
 				return {
-					set(queryArguments, queryOptions) {
+					next(queryArguments, queryOptions) {
 						queryArguments$.set([queryArguments, queryOptions]);
 					},
 					subscribe: queryState$.subscribe
@@ -118,7 +118,7 @@ export function buildStores<Definitions extends EndpointDefinitions>(
 				> = writable([initialQueryArguments, initialQueryOptions]);
 				const querySubscription$ = buildQuerySubscriptionStore(queryArguments$);
 				return {
-					set(queryArguments, queryOptions) {
+					next(queryArguments, queryOptions) {
 						queryArguments$.set([queryArguments, queryOptions]);
 					},
 					subscribe: querySubscription$.subscribe
