@@ -51,12 +51,14 @@ export interface MutationOptions<Definition extends MutationDefinition<any, any,
 }
 
 /** @internal */
-export interface DerivedMutationOptions<Definition extends MutationDefinition<any, any, any, any>>
-	extends MutationOptions<Definition> {
-	reset(): void;
-	selectResult: Selector<any, MutationResultSelectorResult<Definition>>;
-	trigger(): MutationActionCreatorResult<Definition>;
-}
+export type IntermediateMutationTopic<Definition extends MutationDefinition<any, any, any, any>> = [
+	trigger: MutationTopic<Definition>[0],
+	currentState: {
+		originalArgs?: MutationTopic<Definition>[1]['originalArgs'];
+		reset: MutationTopic<Definition>[1]['reset'];
+		selectResult: Selector<any, MutationResultSelectorResult<Definition>>;
+	}
+];
 
 const defaultMutationOptions: MutationOptions<any> = {};
 
@@ -71,51 +73,47 @@ export function buildMutationeModule<Definitions extends EndpointDefinitions>(
 	const SvelteReduxContext = createSvelteReduxContext(contextKey);
 	return function buildMutationStoreForEndpoint(name: string): MutationStore<any> {
 		return function buildMutationStore(mutationArguments$) {
-			const localStore$ = SvelteReduxContext.get();
-			const dispatch = localStore$.dispatch as ThunkDispatch<any, any, UnknownAction>;
 			const { initiate, select } = api.endpoints[name] as ApiEndpointMutation<
 				MutationDefinition<any, any, any, any, any>,
 				Definitions
 			>;
 
+			const reduxStore$ = SvelteReduxContext.get();
+			const dispatch = reduxStore$.dispatch as ThunkDispatch<any, any, UnknownAction>;
+
 			const mutationResult$: Writable<MutationActionCreatorResult<any> | undefined> = writable();
 
-			const mutationSelector$ = derived(
+			const intermediateMutationTopic$: Readable<IntermediateMutationTopic<any>> = derived(
 				[mutationArguments$, mutationResult$],
-				function deriveSelector([[, mutationOptions = defaultMutationOptions], mutationResult]): [
-					MutationActionCreatorResult<any> | undefined,
-					DerivedMutationOptions<any>
-				] {
-					const { fixedCacheKey, selectFromResult } = mutationOptions;
-					const reset = function resetMutation() {
-						if (mutationResult) {
-							mutationResult$.set(undefined);
-						}
-						if (fixedCacheKey) {
-							dispatch(
-								api.internalActions.removeMutationResult({
-									requestId: mutationResult?.requestId,
-									fixedCacheKey,
-								})
-							);
-						}
-					};
-					const trigger = function triggerMutation(
-						mutationArguments?: Parameters<typeof initiate>[0]
-					) {
-						const mutationResult = dispatch(initiate(mutationArguments, { fixedCacheKey }));
-						mutationResult$.set(mutationResult);
-						return mutationResult;
-					};
+				function deriveIntermediateResult([
+					[, { fixedCacheKey, selectFromResult } = defaultMutationOptions],
+					mutationResult,
+				]): IntermediateMutationTopic<any> {
 					const selectDefaultResult = select({
 						fixedCacheKey,
 						requestId: mutationResult?.requestId,
 					});
 					return [
-						mutationResult,
+						function trigger(mutationArguments?: Parameters<typeof initiate>[0]) {
+							const mutationResult = dispatch(initiate(mutationArguments, { fixedCacheKey }));
+							mutationResult$.set(mutationResult);
+							return mutationResult;
+						},
 						{
-							...mutationOptions,
-							reset,
+							reset() {
+								if (mutationResult) {
+									mutationResult$.set(undefined);
+								}
+								if (fixedCacheKey) {
+									dispatch(
+										api.internalActions.removeMutationResult({
+											requestId: mutationResult?.requestId,
+											fixedCacheKey,
+										})
+									);
+								}
+							},
+							originalArgs: fixedCacheKey ? undefined : mutationResult?.arg.originalArgs,
 							selectResult(state: Parameters<typeof selectDefaultResult>[0]) {
 								const selected = selectDefaultResult(state);
 								if (selectFromResult) {
@@ -123,24 +121,19 @@ export function buildMutationeModule<Definitions extends EndpointDefinitions>(
 								}
 								return selected;
 							},
-							trigger,
 						},
 					];
 				}
 			);
 
-			const mutationState$: Readable<MutationTopic<any, any>> = derived(
-				[localStore$, mutationSelector$],
-				function deriveResult(
-					[state, [mutationResult, { fixedCacheKey, reset, selectResult, trigger }]],
-					set
-				) {
+			const mutationTopic$: Readable<MutationTopic<any, any>> = derived(
+				[reduxStore$, intermediateMutationTopic$],
+				function deriveResult([state, [trigger, { originalArgs, reset, selectResult }]], set) {
 					const currentResult = selectResult(state);
 					const safeToSpreadResult =
 						currentResult !== null && typeof currentResult === 'object'
 							? currentResult
 							: defaultResult;
-					const originalArgs = fixedCacheKey ? undefined : mutationResult?.arg.originalArgs;
 					set([
 						trigger,
 						{
@@ -152,7 +145,7 @@ export function buildMutationeModule<Definitions extends EndpointDefinitions>(
 				}
 			);
 
-			return mutationState$;
+			return mutationTopic$;
 		};
 	};
 }

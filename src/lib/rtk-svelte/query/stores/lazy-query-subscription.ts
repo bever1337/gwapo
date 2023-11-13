@@ -9,7 +9,7 @@ import type {
 	QueryArgFrom,
 	QueryDefinition,
 	SerializeQueryArgs,
-	SubscriptionOptions
+	SubscriptionOptions,
 } from '@reduxjs/toolkit/query';
 import type { ThunkDispatch, UnknownAction } from '@reduxjs/toolkit';
 import { derived } from 'svelte/store';
@@ -35,7 +35,7 @@ export interface LazyQuerySubscriptionStore<
 const defaultLazyQuerySubscriptionOptions: SubscriptionOptions = {};
 const initialLazyQuerySubscriptionTopic: LazyQuerySubscriptionTopic<any> = [
 	function noop() {},
-	UNINITIALIZED_VALUE
+	UNINITIALIZED_VALUE,
 ];
 
 export function buildLazyQuerySubscriptionModule<Definitions extends EndpointDefinitions>(
@@ -55,10 +55,13 @@ export function buildLazyQuerySubscriptionModule<Definitions extends EndpointDef
 				QueryDefinition<any, any, any, any, any>,
 				Definitions
 			>;
-			const localStore$ = SvelteReduxContext.get();
-			const dispatch = localStore$.dispatch as ThunkDispatch<any, any, UnknownAction>;
+
+			const reduxStore$ = SvelteReduxContext.get();
+			const dispatch = reduxStore$.dispatch as ThunkDispatch<any, any, UnknownAction>;
+
 			let unsubscribe: () => void;
-			const lazyQuerySubscription$ = derived(
+
+			const lazyQuerySubscriptionTopic$ = derived(
 				queryArguments$,
 				function initiateSideEffect(
 					[
@@ -66,8 +69,8 @@ export function buildLazyQuerySubscriptionModule<Definitions extends EndpointDef
 						{
 							pollingInterval = 0,
 							refetchOnFocus,
-							refetchOnReconnect
-						} = defaultLazyQuerySubscriptionOptions
+							refetchOnReconnect,
+						} = defaultLazyQuerySubscriptionOptions,
 					],
 					set
 				) {
@@ -79,23 +82,23 @@ export function buildLazyQuerySubscriptionModule<Definitions extends EndpointDef
 								subscriptionOptions: {
 									pollingInterval,
 									refetchOnFocus,
-									refetchOnReconnect
-								}
+									refetchOnReconnect,
+								},
 							})
 						);
 						unsubscribe = queryResult.unsubscribe;
 						set([trigger, queryArguments]);
 					};
 					set([trigger, UNINITIALIZED_VALUE]);
+					// do not directly return unsubscribe, its reference may change
 					return function cleanup() {
-						// do not directly return unsubscribe, its reference may change
 						unsubscribe?.();
 					};
 				},
 				initialLazyQuerySubscriptionTopic
 			);
 
-			return lazyQuerySubscription$;
+			return lazyQuerySubscriptionTopic$;
 		};
 	};
 }

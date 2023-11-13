@@ -10,7 +10,7 @@ import type {
 	QueryArgFrom,
 	QueryDefinition,
 	QueryResultSelectorResult,
-	SerializeQueryArgs
+	SerializeQueryArgs,
 } from '@reduxjs/toolkit/query';
 import type { Selector } from '@reduxjs/toolkit';
 import { derived } from 'svelte/store';
@@ -42,14 +42,15 @@ export interface QueryStateOptions<Definition extends QueryDefinition<any, any, 
 	selectFromResult?: QueryStateSelector<any, Definition>;
 }
 
-/** @internal */
-export interface DerivedQueryStateOptions<Definition extends QueryDefinition<any, any, any, any>>
-	extends QueryStateOptions<Definition> {
-	selectDefaultResult: Selector<any, QueryStateTopic<Definition>>;
-}
+type IntermediateQueryStateTopic<Definition extends QueryDefinition<any, any, any, any>> = [
+	intermediateTopic: QueryStateTopic<Definition>,
+	intermediateOptions: QueryStateOptions<Definition> & {
+		selectDefaultResult: Selector<any, QueryResultSelectorResult<Definition>>;
+	}
+];
 
 const defaultQueryStateOptions: QueryStateOptions<any> = {};
-const initialQueryState = [{}, {}] as [QueryStateTopic<any>, DerivedQueryStateOptions<any>];
+const initialQueryState = [{}, {}] as IntermediateQueryStateTopic<any>;
 
 export function buildQueryStateModule<Definitions extends EndpointDefinitions>(
 	api: Api<any, Definitions, any, any, CoreModule>,
@@ -67,26 +68,31 @@ export function buildQueryStateModule<Definitions extends EndpointDefinitions>(
 				Definitions
 			>;
 
-			const querySelector$ = derived(
-				queryArguments$,
-				function deriveSelector([queryArguments, queryOptions = defaultQueryStateOptions]) {
-					const { skip } = queryOptions;
-					const selectorArguments = (skip ? skipToken : queryArguments) as Parameters<
-						ReturnType<typeof select>
-					>[0];
-					return [
-						queryArguments,
-						{
-							...queryOptions,
-							selectDefaultResult: select(selectorArguments)
-						}
-					] as [QueryArgFrom<any>, DerivedQueryStateOptions<any>];
-				}
-			);
+			const querySelector$: Readable<[QueryArgFrom<any>, IntermediateQueryStateTopic<any>[1]]> =
+				derived(
+					queryArguments$,
+					function deriveSelector([queryArguments, queryOptions = defaultQueryStateOptions]): [
+						QueryArgFrom<any>,
+						IntermediateQueryStateTopic<any>[1]
+					] {
+						const { skip } = queryOptions;
+						const selectorArguments = (skip ? skipToken : queryArguments) as Parameters<
+							ReturnType<typeof select>
+						>[0];
+						return [
+							queryArguments,
+							{
+								...queryOptions,
+								selectDefaultResult: select(selectorArguments),
+							},
+						];
+					}
+				);
 
-			const localStore$ = SvelteReduxContext.get();
-			const queryState$: Readable<[QueryStateTopic<any>, DerivedQueryStateOptions<any>]> = derived(
-				[localStore$, querySelector$],
+			const reduxStore$ = SvelteReduxContext.get();
+
+			const intermediateQueryStateTopic$: Readable<IntermediateQueryStateTopic<any>> = derived(
+				[reduxStore$, querySelector$],
 				function deriveResult([state, [, queryOptions]], set, update) {
 					const { selectDefaultResult } = queryOptions;
 					const currentState = selectDefaultResult(state);
@@ -110,21 +116,23 @@ export function buildQueryStateModule<Definitions extends EndpointDefinitions>(
 								currentData: currentState.data,
 								isFetching,
 								isLoading,
-								isSuccess
+								isSuccess,
 							},
-							queryOptions
+							queryOptions,
 						];
 					});
 				},
 				initialQueryState
 			);
 
-			return derived(queryState$, function ([queryResult, { selectFromResult }]) {
-				if (selectFromResult) {
-					return selectFromResult(queryResult);
+			const queryStateTopic$ = derived(
+				intermediateQueryStateTopic$,
+				function selectFinalState([queryResult, { selectFromResult }]) {
+					return selectFromResult ? selectFromResult(queryResult) : queryResult;
 				}
-				return queryResult;
-			});
+			);
+
+			return queryStateTopic$;
 		};
 	};
 }

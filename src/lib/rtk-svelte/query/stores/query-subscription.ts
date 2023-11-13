@@ -10,7 +10,7 @@ import type {
 	QueryArgFrom,
 	QueryDefinition,
 	SerializeQueryArgs,
-	SubscriptionOptions
+	SubscriptionOptions,
 } from '@reduxjs/toolkit/query';
 import type { ThunkDispatch, UnknownAction } from '@reduxjs/toolkit';
 import { derived } from 'svelte/store';
@@ -58,9 +58,11 @@ export function buildQuerySubscriptionModule<Definitions extends EndpointDefinit
 				QueryDefinition<any, any, any, any, any>,
 				Definitions
 			>;
-			const localStore$ = SvelteReduxContext.get();
-			const dispatch = localStore$.dispatch as ThunkDispatch<any, any, UnknownAction>;
-			const querySubscription$: Readable<QuerySubscriptionTopic<any>> = derived(
+
+			const reduxStore$ = SvelteReduxContext.get();
+			const dispatch = reduxStore$.dispatch as ThunkDispatch<any, any, UnknownAction>;
+
+			const querySubscriptionTopic$: Readable<QuerySubscriptionTopic<any>> = derived(
 				queryArguments$,
 				function initiateSideEffect(
 					[
@@ -70,8 +72,8 @@ export function buildQuerySubscriptionModule<Definitions extends EndpointDefinit
 							refetchOnFocus,
 							refetchOnMountOrArgChange,
 							refetchOnReconnect,
-							skip = false
-						} = defaultQuerySubscriptionOptions
+							skip = false,
+						} = defaultQuerySubscriptionOptions,
 					],
 					set
 				) {
@@ -81,8 +83,8 @@ export function buildQuerySubscriptionModule<Definitions extends EndpointDefinit
 							subscriptionOptions: {
 								pollingInterval,
 								refetchOnFocus,
-								refetchOnReconnect
-							}
+								refetchOnReconnect,
+							},
 						})
 					);
 					set({ refetch: queryResult.refetch });
@@ -91,7 +93,7 @@ export function buildQuerySubscriptionModule<Definitions extends EndpointDefinit
 				initialQuerySubscriptionTopic
 			);
 
-			return querySubscription$;
+			return querySubscriptionTopic$;
 		};
 	};
 }
