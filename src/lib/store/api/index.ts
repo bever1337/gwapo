@@ -3,7 +3,7 @@ import { fetchBaseQuery } from '@reduxjs/toolkit/query';
 import type { FetchArgs } from '@reduxjs/toolkit/query';
 import type { BaseQueryApi } from '@reduxjs/toolkit/src/query/baseQueryTypes';
 
-import { createSvelteApi } from '$lib/rtk-svelte/query';
+import { createSvelteApi } from '$lib/svelte-redux/query';
 
 import type { Scope } from '../../types/token';
 
@@ -50,8 +50,8 @@ function baseQuery(args: FetchArgs, queryApi: BaseQueryApi, extraOptions: BaseQu
 				// schema matches GW2 401 responses
 				error: {
 					status: 401,
-					data: { text: 'Internal - Invalid access token' }
-				}
+					data: { text: 'Internal - Invalid access token' },
+				},
 			};
 		}
 		nextArguments.params ??= {};
@@ -75,6 +75,6 @@ export const api = createSvelteApi({
 		'internal/pouches',
 		// Gw2
 		'access_token',
-		'characters'
-	]
+		'characters',
+	],
 });

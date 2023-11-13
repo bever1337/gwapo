@@ -25,7 +25,7 @@ import type { QuerySubscriptionOptions, QuerySubscriptionTopic } from './stores/
 
 import { UNINITIALIZED_VALUE } from './constants';
 
-import type { SvelteReduxContextKey } from '..';
+import type { SvelteReduxContextKey } from '../context';
 
 export interface MutationStore<Definition extends MutationDefinition<any, any, any, any>> {
 	mutation(initialMutationOptions?: MutationOptions<Definition>): {
@@ -92,13 +92,30 @@ export function buildStores<Definitions extends EndpointDefinitions>(
 	context: ApiContext<Definitions>,
 	contextKey: SvelteReduxContextKey
 ) {
-	const builderParameters = [api, { serializeQueryArgs }, context, contextKey] as const;
 	const buildLazyQuerySubscriptionStoreForEndpoint = buildLazyQuerySubscriptionModule(
-		...builderParameters
+		api,
+		{ serializeQueryArgs },
+		context,
+		contextKey
 	);
-	const buildMutationStoreForEndpoint = buildMutationeModule(...builderParameters);
-	const buildQueryStateStoreForEndpoint = buildQueryStateModule(...builderParameters);
-	const buildQuerySubscriptionStoreForEndpoint = buildQuerySubscriptionModule(...builderParameters);
+	const buildMutationStoreForEndpoint = buildMutationeModule(
+		api,
+		{ serializeQueryArgs },
+		context,
+		contextKey
+	);
+	const buildQueryStateStoreForEndpoint = buildQueryStateModule(
+		api,
+		{ serializeQueryArgs },
+		context,
+		contextKey
+	);
+	const buildQuerySubscriptionStoreForEndpoint = buildQuerySubscriptionModule(
+		api,
+		{ serializeQueryArgs },
+		context,
+		contextKey
+	);
 
 	return { buildQueryStores, buildMutationStores };
 

@@ -2,15 +2,17 @@
 	import { readTokenInfo } from '$lib/store/api/read-token-info';
 	import type { ClientState } from '$lib/store/initial-state';
 	import { logoutThunk } from '$lib/store/thunks/logout';
-	import { storeCtx } from '$lib/context.js';
+	import { storeCtx } from '$lib/context';
+	import { getAppDispatch } from '$lib/context';
 
 	const store = storeCtx.get();
+	const dispatch = getAppDispatch();
 
 	enum AuthenticatorState {
 		Unauthenticated,
 		Loading,
 		Error,
-		Authenticated
+		Authenticated,
 	}
 
 	function deriveAuthenticatorState(
@@ -44,7 +46,7 @@
 		}
 	) {
 		const formData = new FormData(event.currentTarget);
-		const result = store.dispatch(
+		const result = dispatch(
 			readTokenInfo.initiate({ access_token: formData.get('access_token') as string })
 		);
 		requestId = result.requestId;
@@ -55,7 +57,7 @@
 			currentTarget: EventTarget & HTMLFormElement;
 		}
 	) {
-		store.dispatch(logoutThunk);
+		dispatch(logoutThunk);
 	}
 </script>
 

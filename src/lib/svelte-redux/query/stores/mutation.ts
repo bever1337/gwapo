@@ -16,8 +16,8 @@ import type { Selector, ThunkDispatch, UnknownAction } from '@reduxjs/toolkit';
 import { derived, writable } from 'svelte/store';
 import type { Readable, Writable } from 'svelte/store';
 
-import { createSvelteReduxContext } from '../..';
-import type { SvelteReduxContextKey } from '../..';
+import { createSvelteReduxContext } from '../../context';
+import type { SvelteReduxContextKey } from '../../context';
 
 const defaultResult = {};
 

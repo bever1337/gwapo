@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { storeCtx } from '$lib/context';
-	import { toSvelteStore } from '$lib/rtk-svelte';
+	import { toSvelteStore } from '$lib/svelte-redux';
 	import { getStore } from '$lib/store';
 	import './fonts.css';
 	import Footer from './footer.svelte';

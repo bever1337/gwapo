@@ -16,8 +16,8 @@ import { derived } from 'svelte/store';
 import type { Readable } from 'svelte/store';
 
 import { UNINITIALIZED_VALUE } from '../constants';
-import { createSvelteReduxContext } from '../..';
-import type { SvelteReduxContextKey } from '../..';
+import { createSvelteReduxContext } from '../../context';
+import type { SvelteReduxContextKey } from '../../context';
 
 export type LazyQuerySubscriptionTopic<Definition extends QueryDefinition<any, any, any, any>> = [
 	trigger: (queryArguments: QueryArgFrom<Definition>, preferCacheValue?: boolean) => void,

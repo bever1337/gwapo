@@ -16,8 +16,8 @@ import type { ThunkDispatch, UnknownAction } from '@reduxjs/toolkit';
 import { derived } from 'svelte/store';
 import type { Readable } from 'svelte/store';
 
-import { createSvelteReduxContext } from '../..';
-import type { SvelteReduxContextKey } from '../..';
+import { createSvelteReduxContext } from '../../context';
+import type { SvelteReduxContextKey } from '../../context';
 
 export interface QuerySubscriptionTopic<Definition extends QueryDefinition<any, any, any, any>> {
 	refetch(): void;
