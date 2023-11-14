@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { Action, Store } from '@reduxjs/toolkit';
+import type { Action } from '@reduxjs/toolkit';
 import { getContext, setContext } from 'svelte';
 
-import type { SvelteStore } from './to-svelte-store';
+import type { SvelteStore } from './store';
 
 export type SvelteReduxContextKey = symbol;
 /** @internal */
@@ -10,8 +10,8 @@ export const svelteReduxContextKey: SvelteReduxContextKey = Symbol('SvelteReduxC
 
 export interface SvelteReduxContext<AppState = unknown, AppAction extends Action = Action> {
 	/** Prefer `getContext` and `getSelector` */
-	get(): SvelteStore<Store<AppState, AppAction>>;
-	set(store: SvelteStore<Store<AppState, AppAction>>): SvelteStore<Store<AppState, AppAction>>;
+	get(): SvelteStore<AppState, AppAction>;
+	set(store: SvelteStore<AppState, AppAction>): SvelteStore<AppState, AppAction>;
 }
 
 /**
