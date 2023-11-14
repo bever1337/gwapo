@@ -1,59 +1,59 @@
 /* PTSans */
 
 @font-face {
-	font-family: 'PTSans';
-	font-style: normal;
-	font-weight: bold;
-	src: url('/fonts/PT_Sans/PTSans-Bold.ttf') format('truetype');
+  font-family: "PTSans";
+  font-style: normal;
+  font-weight: bold;
+  src: url("/fonts/PT_Sans/PTSans-Bold.ttf") format("truetype");
 }
 
 @font-face {
-	font-family: 'PTSans';
-	font-style: italic;
-	font-weight: bold;
-	src: url('/fonts/PT_Sans/PTSans-BoldItalic.ttf') format('truetype');
+  font-family: "PTSans";
+  font-style: italic;
+  font-weight: bold;
+  src: url("/fonts/PT_Sans/PTSans-BoldItalic.ttf") format("truetype");
 }
 
 @font-face {
-	font-family: 'PTSans';
-	font-style: italic;
-	font-weight: normal;
-	src: url('/fonts/PT_Sans/PTSans-Italic.ttf') format('truetype');
+  font-family: "PTSans";
+  font-style: italic;
+  font-weight: normal;
+  src: url("/fonts/PT_Sans/PTSans-Italic.ttf") format("truetype");
 }
 
 @font-face {
-	font-family: 'PTSans';
-	font-style: normal;
-	font-weight: normal;
-	src: url('/fonts/PT_Sans/PTSans-Regular.ttf') format('truetype');
+  font-family: "PTSans";
+  font-style: normal;
+  font-weight: normal;
+  src: url("/fonts/PT_Sans/PTSans-Regular.ttf") format("truetype");
 }
 
 /* PTSerif */
 
 @font-face {
-	font-family: 'PTSerif';
-	font-style: normal;
-	font-weight: bold;
-	src: url('/fonts/PT_Serif/PTSerif-Bold.ttf') format('truetype');
+  font-family: "PTSerif";
+  font-style: normal;
+  font-weight: bold;
+  src: url("/fonts/PT_Serif/PTSerif-Bold.ttf") format("truetype");
 }
 
 @font-face {
-	font-family: 'PTSerif';
-	font-style: italic;
-	font-weight: bold;
-	src: url('/fonts/PT_Serif/PTSerif-BoldItalic.ttf') format('truetype');
+  font-family: "PTSerif";
+  font-style: italic;
+  font-weight: bold;
+  src: url("/fonts/PT_Serif/PTSerif-BoldItalic.ttf") format("truetype");
 }
 
 @font-face {
-	font-family: 'PTSerif';
-	font-style: italic;
-	font-weight: normal;
-	src: url('/fonts/PT_Serif/PTSerif-Italic.ttf') format('truetype');
+  font-family: "PTSerif";
+  font-style: italic;
+  font-weight: normal;
+  src: url("/fonts/PT_Serif/PTSerif-Italic.ttf") format("truetype");
 }
 
 @font-face {
-	font-family: 'PTSerif';
-	font-style: normal;
-	font-weight: normal;
-	src: url('/fonts/PT_Serif/PTSerif-Regular.ttf') format('truetype');
+  font-family: "PTSerif";
+  font-style: normal;
+  font-weight: normal;
+  src: url("/fonts/PT_Serif/PTSerif-Regular.ttf") format("truetype");
 }

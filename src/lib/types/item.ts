@@ -30,15 +30,7 @@ export interface Item {
     | "UpgradeComponent"
     | "Weapon";
   /** The item rarity. */
-  rarity:
-    | "Junk"
-    | "Basic"
-    | "Fine"
-    | "Masterwork"
-    | "Rare"
-    | "Exotic"
-    | "Ascended"
-    | "Legendary";
+  rarity: "Junk" | "Basic" | "Fine" | "Masterwork" | "Rare" | "Exotic" | "Ascended" | "Legendary";
   /** The required level. */
   level: number;
   /**

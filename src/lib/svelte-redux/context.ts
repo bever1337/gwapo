@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { Action } from '@reduxjs/toolkit';
-import { getContext, setContext } from 'svelte';
+import type { Action } from "@reduxjs/toolkit";
+import { getContext, setContext } from "svelte";
 
-import type { SvelteStore } from './store';
+import type { SvelteStore } from "./store";
 
 export type SvelteReduxContextKey = symbol;
 /** @internal */
-export const svelteReduxContextKey: SvelteReduxContextKey = Symbol('SvelteReduxContext');
+export const svelteReduxContextKey: SvelteReduxContextKey = Symbol("SvelteReduxContext");
 
 export interface SvelteReduxContext<AppState = unknown, AppAction extends Action = Action> {
-	/** Prefer `getContext` and `getSelector` */
-	get(): SvelteStore<AppState, AppAction>;
-	set(store: SvelteStore<AppState, AppAction>): SvelteStore<AppState, AppAction>;
+  /** Prefer `getContext` and `getSelector` */
+  get(): SvelteStore<AppState, AppAction>;
+  set(store: SvelteStore<AppState, AppAction>): SvelteStore<AppState, AppAction>;
 }
 
 /**
@@ -30,14 +30,14 @@ export interface SvelteReduxContext<AppState = unknown, AppAction extends Action
  * ```
  */
 export function createSvelteReduxContext<AppState = unknown, AppAction extends Action = Action>(
-	context = svelteReduxContextKey
+  context = svelteReduxContextKey
 ): SvelteReduxContext<AppState, AppAction> {
-	return {
-		get() {
-			return getContext(context);
-		},
-		set(store) {
-			return setContext(context, store);
-		},
-	};
+  return {
+    get() {
+      return getContext(context);
+    },
+    set(store) {
+      return setContext(context, store);
+    },
+  };
 }

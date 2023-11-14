@@ -12,10 +12,7 @@ export const injectedApi = api.injectEndpoints({
   endpoints(build) {
     return {
       updateGwapoDatabaseDump: build.query<null, Record<string, never>>({
-        queryFn(
-          queryArguments: UpdateGwapoDatabaseDumpArguments,
-          queryApi: BaseQueryApi
-        ) {
+        queryFn(queryArguments: UpdateGwapoDatabaseDumpArguments, queryApi: BaseQueryApi) {
           const localDB = getPouch();
 
           return new Promise<void>((resolve, reject) => {
@@ -63,5 +60,4 @@ export const injectedApi = api.injectEndpoints({
   },
 });
 
-export const updateGwapoDatabaseDump =
-  injectedApi.endpoints.updateGwapoDatabaseDump;
+export const updateGwapoDatabaseDump = injectedApi.endpoints.updateGwapoDatabaseDump;
