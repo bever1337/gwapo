@@ -1,5 +1,5 @@
 import { readCurrencies } from "$lib/store/api/read-currencies";
-import { getStore } from "$lib/store";
+import { getStore } from "$lib/store/getStore";
 
 export async function load() {
   const { dispatch, getState } = getStore();

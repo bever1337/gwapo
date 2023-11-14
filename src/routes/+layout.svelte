@@ -1,6 +1,6 @@
 <script lang="ts">
+  import { getStore } from "$lib/store/getStore";
   import { toSvelteStore } from "$lib/svelte-redux";
-  import { getStore } from "$lib/store";
 
   import { storeCtx } from "./context";
   import "./fonts.css";

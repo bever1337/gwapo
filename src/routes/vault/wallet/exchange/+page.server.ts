@@ -2,7 +2,7 @@ import type { QueryActionCreatorResult } from "@reduxjs/toolkit/dist/query";
 import { readCommerceExchangeCoins } from "$lib/store/api/read-commerce-exchange-coints";
 import { readCommerceExchangeGems } from "$lib/store/api/read-commerce-exchange-gems";
 import { readCurrencies } from "$lib/store/api/read-currencies";
-import { getStore } from "$lib/store";
+import { getStore } from "$lib/store/getStore";
 
 import { GEMS, GEMS_INPUT, GOLD, GOLD_INPUT } from "./constants";
 
