@@ -18,11 +18,6 @@ export const selectInScope = (state: RootState | undefined, scopes: Scope[]) => 
     return false;
   }
 
-  const noAuthorization = (clientState.access?.permissions.length ?? 0) === 0;
-  if (noAuthorization) {
-    return false;
-  }
-
   const isAuthorized = scopes.every(
     (scope) => clientState.access?.permissions.includes(scope) ?? false
   );
