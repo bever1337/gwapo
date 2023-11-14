@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { storeCtx } from '$lib/context';
 	import { toSvelteStore } from '$lib/svelte-redux';
 	import { getStore } from '$lib/store';
+
+	import { storeCtx } from './context';
 	import './fonts.css';
 	import Footer from './footer.svelte';
 	import Navigation from './navigation.svelte';
 
-	const store = toSvelteStore(getStore());
-	storeCtx.set(store);
+	storeCtx.set(toSvelteStore(getStore()));
 </script>
 
 <div class="layout">

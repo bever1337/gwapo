@@ -9,9 +9,9 @@ import { svelteReduxContextKey } from './default-context';
 export interface GetSelector<AppState> {
 	<Result, Parameters extends readonly any[] = any[]>(
 		selector: Selector<AppState, Result, Parameters>,
-		parameters?: Parameters
+		...parameters: Parameters
 	): {
-		reselect(parameters: Parameters): void;
+		reselect(...parameters: Parameters): void;
 		subscribe: Readable<Result>['subscribe'];
 	};
 }
@@ -20,17 +20,16 @@ export function createGetSelector<AppState>(
 	context = svelteReduxContextKey
 ): GetSelector<AppState> {
 	const storeContext = createSvelteReduxContext<AppState>(context);
-	return function getSelector<Result, Parameters extends readonly any[] = any[]>(
-		selector: Selector<AppState, Result, Parameters>,
-		parameters?: Parameters
-	) {
+	return function getSelector(selector, ...parameters) {
 		const store$ = storeContext.get();
 		const parameters$ = writable(parameters);
 		const selector$ = derived([store$, parameters$], function callSelector([state, parameters]) {
 			return selector(state, ...parameters);
 		});
 		return {
-			reselect: parameters$.set,
+			reselect(...parameters) {
+				parameters$.set(parameters);
+			},
 			subscribe: selector$.subscribe,
 		};
 	};

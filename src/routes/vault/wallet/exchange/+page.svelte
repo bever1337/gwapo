@@ -1,11 +1,11 @@
 <script lang="ts">
 	import Coins from '$lib/components/coins.svelte';
-	import { storeCtx } from '$lib/context.js';
-	import { hydrate } from '$lib/store/actions.js';
-	import { readAccountWallet } from '$lib/store/api/read-account-wallet.js';
+	import { getAppDispatch } from '$lib/store';
+	import { hydrate } from '$lib/store/actions';
+	import { readAccountWallet } from '$lib/store/api/read-account-wallet';
 	import { readCommerceExchangeCoins } from '$lib/store/api/read-commerce-exchange-coints';
 	import { readCommerceExchangeGems } from '$lib/store/api/read-commerce-exchange-gems';
-	import { readCurrencies } from '$lib/store/api/read-currencies.js';
+	import { readCurrencies } from '$lib/store/api/read-currencies';
 
 	import CoinExchangeItem from './coinExchangeItem.svelte';
 	import { GEMS, GEMS_INPUT, GOLD, GOLD_INPUT } from './constants';
@@ -13,8 +13,8 @@
 
 	export let data;
 
-	const store = storeCtx.get();
-	store.dispatch(hydrate(data));
+	const dispatch = getAppDispatch();
+	dispatch(hydrate(data));
 	const readCurrencies$ = readCurrencies.query({});
 	$: ({ data: currencies } = $readCurrencies$);
 	$: coins = currencies?.entities[1];
@@ -29,10 +29,10 @@
 
 	let inputGold: number = GOLD_INPUT;
 	const readCommerceExchangeCoins$ = readCommerceExchangeCoins.query({
-		coins: inputGold * 10000
+		coins: inputGold * 10000,
 	});
 	$: readCommerceExchangeCoins$.next({
-		coins: inputGold * 10000
+		coins: inputGold * 10000,
 	});
 </script>
 

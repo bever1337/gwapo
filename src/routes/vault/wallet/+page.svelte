@@ -20,17 +20,17 @@
 
 <script lang="ts">
 	import { browser } from '$app/environment';
-	import { storeCtx } from '$lib/context.js';
-	import { intl } from '$lib/intl/index.js';
-	import { hydrate } from '$lib/store/actions.js';
-	import { readAccountWallet } from '$lib/store/api/read-account-wallet.js';
-	import { CurrencyCategory, readCurrencies } from '$lib/store/api/read-currencies.js';
-	import { separateCopperCoins } from '$lib/types/currency.js';
+	import { intl } from '$lib/intl';
+	import { getAppDispatch } from '$lib/store';
+	import { hydrate } from '$lib/store/actions';
+	import { readAccountWallet } from '$lib/store/api/read-account-wallet';
+	import { CurrencyCategory, readCurrencies } from '$lib/store/api/read-currencies';
+	import { separateCopperCoins } from '$lib/types/currency';
 
 	export let data;
 
-	const store = storeCtx.get();
-	store.dispatch(hydrate(data));
+	const dispatch = getAppDispatch();
+	dispatch(hydrate(data));
 
 	const readCurrencies$ = readCurrencies.query({});
 	$: ({ data: currencies } = $readCurrencies$);
@@ -61,7 +61,7 @@
 	let needle = '';
 	$: filteredCurrencies = filterCurrencies(needle, {
 		ids: currenciesInCategory,
-		entities: currencies?.entities ?? {}
+		entities: currencies?.entities ?? {},
 	});
 
 	let selected: number[] = [];

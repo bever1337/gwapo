@@ -1,11 +1,9 @@
 <script lang="ts">
 	import { readTokenInfo } from '$lib/store/api/read-token-info';
+	import { getAppDispatch, getAppSelector } from '$lib/store';
 	import type { ClientState } from '$lib/store/initial-state';
 	import { logoutThunk } from '$lib/store/thunks/logout';
-	import { storeCtx } from '$lib/context';
-	import { getAppDispatch } from '$lib/context';
 
-	const store = storeCtx.get();
 	const dispatch = getAppDispatch();
 
 	enum AuthenticatorState {
@@ -32,13 +30,12 @@
 
 	let navDialog: HTMLDialogElement;
 	$: navDialogIsOpen = false;
-
 	let settingsDialog: HTMLDialogElement;
 
-	let requestId: string;
-	$: selector = readTokenInfo.select(requestId!);
-	$: mutationResult = selector($store);
-	$: authenticatorState = deriveAuthenticatorState($store.client.access, mutationResult);
+	const clientAccess$ = getAppSelector((state) => state.client.access);
+	const readTokenInfo$ = readTokenInfo.mutation();
+	$: [trigger, mutationResult] = $readTokenInfo$;
+	$: authenticatorState = deriveAuthenticatorState($clientAccess$, mutationResult);
 
 	function onSubmitLogin(
 		event: SubmitEvent & {
@@ -46,10 +43,7 @@
 		}
 	) {
 		const formData = new FormData(event.currentTarget);
-		const result = dispatch(
-			readTokenInfo.initiate({ access_token: formData.get('access_token') as string })
-		);
-		requestId = result.requestId;
+		trigger({ access_token: formData.get('access_token') as string });
 	}
 
 	function onResetLogin(
