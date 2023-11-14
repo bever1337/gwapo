@@ -9,30 +9,17 @@ export interface SelectorStore<Result = unknown, Parameters extends readonly any
   subscribe: Readable<Result>["subscribe"];
 }
 
-export interface GetSelector {
-  <AppState = unknown, Result = unknown, Parameters extends readonly any[] = any[]>(
+export interface GetSelector<AppState = unknown> {
+  <Result = unknown, Parameters extends readonly any[] = any[]>(
     selector: (state: AppState, ...parameters: Parameters) => Result,
     ...parameters: Parameters
   ): SelectorStore<Result, Parameters>;
 }
 
-export interface TypedGetSelector<AppState> {
-  <Result, Parameters extends readonly any[] = any[]>(
-    selector: (state: AppState) => Result,
-    ...parameters: Parameters
-  ): SelectorStore<Result, Parameters>;
-  <Result = unknown, Parameters extends readonly any[] = any[]>(
-    selector: (state: AppState) => Result,
-    ...parameters: Parameters
-  ): SelectorStore<Result, Parameters>;
-}
-
-export function createGetSelector(context = svelteReduxContextKey): GetSelector {
-  return function getSelector<
-    AppState = unknown,
-    Result = unknown,
-    Parameters extends readonly any[] = any[]
-  >(
+export function createGetSelector<AppState = unknown>(
+  context = svelteReduxContextKey
+): GetSelector {
+  return function getSelector<Result = unknown, Parameters extends readonly any[] = any[]>(
     selector: (state: AppState, ...parameters: Parameters) => Result,
     ...parameters: Parameters
   ): SelectorStore<Result, Parameters> {

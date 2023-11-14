@@ -2,7 +2,7 @@ import { createSvelteReduxContext } from "./context";
 export type { SvelteReduxContext, SvelteReduxContextKey } from "./context";
 import { createGetDispatch } from "./dispatch";
 import { createGetSelector } from "./selector";
-export type { TypedGetSelector } from "./selector";
+export type { GetSelector } from "./selector";
 export { toSvelteStore } from "./store";
 export type { SvelteStore } from "./store";
 

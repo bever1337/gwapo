@@ -1,4 +1,4 @@
-import { createSelector, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 import type { RootState } from "../";
 
@@ -24,8 +24,8 @@ export const uiSlice = createSlice({
   },
 });
 
+export const selectUiSubstate = (state: RootState) =>
+  state[uiSlice.name] ?? uiSlice.getInitialState();
+
 export const characterName = uiSlice.actions.characterName;
-export const selectCharacterName = createSelector(
-  (state: RootState) => state[uiSlice.name] ?? uiSlice.getInitialState(),
-  (uiState) => uiState.characterName
-);
+export const selectCharacterName = (state: RootState) => selectUiSubstate(state).characterName;

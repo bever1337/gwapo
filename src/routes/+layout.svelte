@@ -1,5 +1,11 @@
 <script lang="ts">
+  import { addListener } from "@reduxjs/toolkit";
+  import { onMount } from "svelte";
+
+  import { readTokenInfo } from "$lib/store/api/read-token-info";
+  import { logout } from "$lib/store/slice";
   import { getStore } from "$lib/store/getStore";
+  import type { ClientState } from "$lib/store/initial-state";
   import { toSvelteStore } from "$lib/svelte-redux";
 
   import { storeCtx } from "./context";
@@ -7,7 +13,57 @@
   import Footer from "./footer.svelte";
   import Navigation from "./navigation.svelte";
 
-  storeCtx.set(toSvelteStore(getStore()));
+  const appStore = toSvelteStore(getStore());
+  storeCtx.set(appStore);
+
+  onMount(() => {
+    if (typeof localStorage === "undefined") {
+      return;
+    }
+
+    try {
+      const storedAccess = localStorage.getItem("access");
+      if (storedAccess) {
+        const parsedAccess: ClientState["access"] = JSON.parse(storedAccess);
+        if (typeof parsedAccess?.access_token === "string") {
+          appStore.dispatch(readTokenInfo.initiate({ access_token: parsedAccess?.access_token }));
+        }
+      }
+    } catch (jsonParsingError) {
+      //
+    }
+
+    const unsubscribeLocalStorageSetter = appStore.dispatch(
+      addListener({
+        matcher: readTokenInfo.matchFulfilled,
+        effect(action) {
+          localStorage.setItem(
+            "access",
+            JSON.stringify({
+              ...action.payload,
+              access_token: action.meta.arg.originalArgs.access_token,
+            })
+          );
+        },
+      })
+    );
+
+    const unsubscribeLocalStorageRemover = appStore.dispatch(
+      addListener({
+        predicate(action) {
+          return readTokenInfo.matchRejected(action) || logout.match(action);
+        },
+        effect() {
+          localStorage.removeItem("access");
+        },
+      })
+    );
+
+    return function cleanup() {
+      unsubscribeLocalStorageSetter({ cancelActive: true });
+      unsubscribeLocalStorageRemover({ cancelActive: true });
+    };
+  });
 </script>
 
 <div class="layout">
