@@ -12,7 +12,7 @@ import type {
 import type { QueryStores, MutationStore } from './build-stores';
 import { buildStores } from './build-stores';
 
-import { svelteReduxContextKey } from '../default-context';
+import { svelteReduxContextKey } from '../context';
 
 export const svelteStoresModuleName = Symbol();
 export type SvelteStoresModule = typeof svelteStoresModuleName;

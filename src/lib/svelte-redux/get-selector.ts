@@ -3,8 +3,7 @@ import type { Selector } from '@reduxjs/toolkit';
 import { derived, writable } from 'svelte/store';
 import type { Readable } from 'svelte/store';
 
-import { createSvelteReduxContext } from './context';
-import { svelteReduxContextKey } from './default-context';
+import { createSvelteReduxContext, svelteReduxContextKey } from './context';
 
 export interface GetSelector<AppState> {
 	<Result, Parameters extends readonly any[] = any[]>(

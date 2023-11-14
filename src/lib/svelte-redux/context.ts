@@ -2,10 +2,11 @@
 import type { Action, Store } from '@reduxjs/toolkit';
 import { getContext, setContext } from 'svelte';
 
-import { svelteReduxContextKey } from './default-context';
 import type { SvelteStore } from './to-svelte-store';
 
 export type SvelteReduxContextKey = symbol;
+/** @internal */
+export const svelteReduxContextKey: SvelteReduxContextKey = Symbol('SvelteReduxContext');
 
 export interface SvelteReduxContext<AppState = unknown, AppAction extends Action = Action> {
 	/** Prefer `getContext` and `getSelector` */

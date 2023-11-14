@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Action } from '@reduxjs/toolkit';
 
-import { createSvelteReduxContext } from './context';
-import { svelteReduxContextKey } from './default-context';
+import { createSvelteReduxContext, svelteReduxContextKey } from './context';
 
 export function createGetDispatch<AppState = unknown, AppAction extends Action = Action>(
 	context = svelteReduxContextKey
