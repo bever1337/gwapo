@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { skipToken } from "@reduxjs/toolkit/query";
 import type {
   Api,
@@ -16,8 +15,7 @@ import type { Selector } from "@reduxjs/toolkit";
 import { derived } from "svelte/store";
 import type { Readable } from "svelte/store";
 
-import { createSvelteReduxContext } from "../../context";
-import type { SvelteReduxContextKey } from "../../context";
+import type { SvelteReduxContext } from "../../context";
 
 export interface QueryStateTopic<Definition extends QueryDefinition<any, any, any, any>>
   extends Omit<QueryResultSelectorResult<Definition>, "isLoading"> {
@@ -58,9 +56,8 @@ export function buildQueryStateModule<Definitions extends EndpointDefinitions>(
     serializeQueryArgs: SerializeQueryArgs<any>;
   },
   context: ApiContext<Definitions>,
-  contextKey: SvelteReduxContextKey
+  componentContext: SvelteReduxContext
 ) {
-  const SvelteReduxContext = createSvelteReduxContext(contextKey);
   return function buildQueryStateStoreForEndpoint(name: string): QueryStateStore<any> {
     return function buildQueryStateStore(queryArguments$) {
       const { select } = api.endpoints[name] as ApiEndpointQuery<
@@ -89,7 +86,7 @@ export function buildQueryStateModule<Definitions extends EndpointDefinitions>(
           }
         );
 
-      const reduxStore$ = SvelteReduxContext.get();
+      const reduxStore$ = componentContext.get();
 
       const intermediateQueryStateTopic$: Readable<IntermediateQueryStateTopic<any>> = derived(
         [reduxStore$, querySelector$],

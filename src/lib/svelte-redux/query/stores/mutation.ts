@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import type {
   Api,
   ApiContext,
@@ -16,8 +15,7 @@ import type { Selector, ThunkDispatch, UnknownAction } from "@reduxjs/toolkit";
 import { derived, writable } from "svelte/store";
 import type { Readable, Writable } from "svelte/store";
 
-import { createSvelteReduxContext } from "../../context";
-import type { SvelteReduxContextKey } from "../../context";
+import type { SvelteReduxContext } from "../../context";
 
 const defaultResult = {};
 
@@ -68,9 +66,8 @@ export function buildMutationeModule<Definitions extends EndpointDefinitions>(
     serializeQueryArgs: SerializeQueryArgs<any>;
   },
   context: ApiContext<Definitions>,
-  contextKey: SvelteReduxContextKey
+  componentContext: SvelteReduxContext
 ) {
-  const SvelteReduxContext = createSvelteReduxContext(contextKey);
   return function buildMutationStoreForEndpoint(name: string): MutationStore<any> {
     return function buildMutationStore(mutationArguments$) {
       const { initiate, select } = api.endpoints[name] as ApiEndpointMutation<
@@ -78,7 +75,7 @@ export function buildMutationeModule<Definitions extends EndpointDefinitions>(
         Definitions
       >;
 
-      const reduxStore$ = SvelteReduxContext.get();
+      const reduxStore$ = componentContext.get();
       const dispatch = reduxStore$.dispatch as ThunkDispatch<any, any, UnknownAction>;
 
       const mutationResult$: Writable<MutationActionCreatorResult<any> | undefined> = writable();

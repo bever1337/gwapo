@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Action, Store } from "@reduxjs/toolkit";
 import { getContext, setContext } from "svelte";
 

@@ -16,8 +16,7 @@ import type { ThunkDispatch, UnknownAction } from "@reduxjs/toolkit";
 import { derived } from "svelte/store";
 import type { Readable } from "svelte/store";
 
-import { createSvelteReduxContext } from "../../context";
-import type { SvelteReduxContextKey } from "../../context";
+import type { SvelteReduxContext } from "../../context";
 
 export interface QuerySubscriptionTopic<Definition extends QueryDefinition<any, any, any, any>> {
   refetch(): void;
@@ -47,9 +46,8 @@ export function buildQuerySubscriptionModule<Definitions extends EndpointDefinit
     serializeQueryArgs: SerializeQueryArgs<any>;
   },
   context: ApiContext<Definitions>,
-  contextKey: SvelteReduxContextKey
+  componentContext: SvelteReduxContext
 ) {
-  const SvelteReduxContext = createSvelteReduxContext(contextKey);
   return function buildQuerySubscriptionStoreForEndpoint(
     name: string
   ): QuerySubscriptionStore<any> {
@@ -59,7 +57,7 @@ export function buildQuerySubscriptionModule<Definitions extends EndpointDefinit
         Definitions
       >;
 
-      const reduxStore$ = SvelteReduxContext.get();
+      const reduxStore$ = componentContext.get();
       const dispatch = reduxStore$.dispatch as ThunkDispatch<any, any, UnknownAction>;
 
       const querySubscriptionTopic$: Readable<QuerySubscriptionTopic<any>> = derived(

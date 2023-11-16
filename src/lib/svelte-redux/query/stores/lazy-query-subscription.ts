@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import type {
   Api,
   ApiContext,
@@ -16,8 +15,7 @@ import { derived } from "svelte/store";
 import type { Readable } from "svelte/store";
 
 import { UNINITIALIZED_VALUE } from "../constants";
-import { createSvelteReduxContext } from "../../context";
-import type { SvelteReduxContextKey } from "../../context";
+import type { SvelteReduxContext } from "../../context";
 
 export type LazyQuerySubscriptionTopic<Definition extends QueryDefinition<any, any, any, any>> = [
   trigger: (queryArguments: QueryArgFrom<Definition>, preferCacheValue?: boolean) => void,
@@ -44,9 +42,8 @@ export function buildLazyQuerySubscriptionModule<Definitions extends EndpointDef
     serializeQueryArgs: SerializeQueryArgs<any>;
   },
   context: ApiContext<Definitions>,
-  contextKey: SvelteReduxContextKey
+  componentContext: SvelteReduxContext
 ) {
-  const SvelteReduxContext = createSvelteReduxContext(contextKey);
   return function buildLazyQuerySubscriptionStoreForEndpoint(
     name: string
   ): LazyQuerySubscriptionStore<any> {
@@ -56,7 +53,7 @@ export function buildLazyQuerySubscriptionModule<Definitions extends EndpointDef
         Definitions
       >;
 
-      const reduxStore$ = SvelteReduxContext.get();
+      const reduxStore$ = componentContext.get();
       const dispatch = reduxStore$.dispatch as ThunkDispatch<any, any, UnknownAction>;
 
       let unsubscribe: () => void;

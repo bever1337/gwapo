@@ -12,7 +12,7 @@ import type {
 import type { QueryStores, MutationStore } from "./build-stores";
 import { buildStores } from "./build-stores";
 
-import { svelteReduxContextKey } from "../context";
+import { createSvelteReduxContext, svelteReduxContextKey } from "../context";
 
 export const svelteStoresModuleName = Symbol();
 export type SvelteStoresModule = typeof svelteStoresModuleName;
@@ -42,12 +42,12 @@ export const buildSvelteModule = (
   name: svelteStoresModuleName,
   init(api, { serializeQueryArgs }, context) {
     const anyApi = api as any as Api<any, Record<string, any>, string, string, SvelteStoresModule>;
-
+    const componentContext = createSvelteReduxContext(contextKey);
     const { buildQueryStores, buildMutationStores } = buildStores(
       api,
       { serializeQueryArgs },
       context,
-      contextKey
+      componentContext
     );
 
     return {
