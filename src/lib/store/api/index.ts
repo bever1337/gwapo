@@ -1,77 +1,83 @@
 import { fetchBaseQuery } from "@reduxjs/toolkit/query";
-import type { FetchArgs } from "@reduxjs/toolkit/query";
-import type { BaseQueryApi } from "@reduxjs/toolkit/src/query/baseQueryTypes";
+import type {
+  BaseQueryFn,
+  FetchArgs,
+  FetchBaseQueryError,
+  FetchBaseQueryMeta,
+} from "@reduxjs/toolkit/query";
 
 import { createSvelteApi } from "$lib/svelte-redux/query";
 
 import type { ReadTokenInfoArguments, ReadTokenInfoResult } from "./read-token-info";
+import { hydrate } from "./slice";
+
+import type { RootState } from "../reducer";
+
 import type { Scope } from "../../types/token";
-
-import type { RootState } from "../";
-import { hydrate } from "../actions";
-
-/**
- * It's kind of tedious to re-type a reusable queryfn
- * gw2 api logic should be a separate base query fn that uses fetchbasequery fn internally
- * TODO messy
- */
 
 interface BaseQueryExtraOptions {
   baseUrl?: `https://${string}`;
   scope?: Scope[];
 }
 
-const rawBaseQuery = fetchBaseQuery();
+const rawBaseQuery = fetchBaseQuery({});
 
-export const getIsAuthorized = (permissions: Scope[], scopes: Scope[]) => {
-  const isPublicApi = scopes.length === 0;
-  if (isPublicApi) {
-    return true;
+const baseQuery: BaseQueryFn<
+  FetchArgs,
+  unknown,
+  FetchBaseQueryError,
+  BaseQueryExtraOptions,
+  { access_token: null | string } & FetchBaseQueryMeta
+> = async function baseQuery(args, queryApi, extraOptions) {
+  const nextArguments = { ...args };
+  const meta: { access_token: null | string } = { access_token: null };
+  if (extraOptions.baseUrl) {
+    nextArguments.url = `${extraOptions.baseUrl}${args.url}`;
   }
 
-  const isAuthorized =
-    permissions.length >= 1 && scopes.every((scope) => permissions.includes(scope));
-  return isAuthorized;
-};
+  if (Array.isArray(extraOptions.scope) && extraOptions.scope.length > 0) {
+    // request is Gw2 authenticated api
+    const { access_token } = (queryApi.getState() as RootState).client;
+    if (!access_token) {
+      return {
+        data: undefined,
+        // schema matches GW2 401 responses
+        error: {
+          status: 401,
+          data: { text: "Internal - Invalid access token" },
+        },
+      };
+    }
+    meta.access_token = access_token;
+    nextArguments.params ??= {};
+    nextArguments.params["access_token"] = access_token;
+  }
 
-const noTokenResult = {
-  data: undefined,
-  // schema matches GW2 401 responses
-  error: {
-    status: 401,
-    data: { text: "Internal - Invalid access token" },
-  },
+  const baseResult = await rawBaseQuery(nextArguments, queryApi, extraOptions);
+
+  return {
+    ...baseResult,
+    meta: baseResult.meta && {
+      ...baseResult.meta,
+      ...meta,
+    },
+  };
 };
 
 export const api = createSvelteApi({
-  async baseQuery(args: FetchArgs, queryApi: BaseQueryApi, extraOptions: BaseQueryExtraOptions) {
-    const nextArguments = { ...args };
-    if (extraOptions.baseUrl) {
-      nextArguments.url = `${extraOptions.baseUrl}${args.url}`;
-    }
-    if (Array.isArray(extraOptions.scope) && extraOptions.scope.length > 0) {
-      // request is Gw2 authenticated api
-      const { access_token } = (queryApi.getState() as RootState).client;
-      if (!access_token) {
-        return noTokenResult;
-      }
-      const { permissions } = await queryApi
-        .dispatch(api.endpoints.readTokenInfo.initiate({ access_token }))
-        .unwrap();
-      const queryIsInScope = getIsAuthorized(permissions, extraOptions.scope);
-      if (!queryIsInScope) {
-        return noTokenResult;
-      }
-      nextArguments.params ??= {};
-      nextArguments.params["access_token"] = access_token;
-    }
-    return rawBaseQuery(nextArguments, queryApi, extraOptions);
-  },
+  baseQuery,
   endpoints(build) {
     return {
       readTokenInfo: build.query<ReadTokenInfoResult, ReadTokenInfoArguments>({
         extraOptions: {
           baseUrl: "https://api.guildwars2.com",
+        },
+        providesTags(result, error, queryArguments, meta) {
+          const tags = [{ type: "access_token" as const, id: "LIST" }];
+          if (meta?.access_token) {
+            tags.push({ type: "access_token", id: meta.access_token });
+          }
+          return tags;
         },
         query({ access_token }) {
           return {

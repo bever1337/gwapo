@@ -2,8 +2,10 @@
   import { addListener, isAnyOf, isFulfilled, isRejected } from "@reduxjs/toolkit";
   import { onMount } from "svelte";
 
+  import { hydrateThunk } from "$lib/store/actions/hydrate";
+  import { loginThunk, logoutThunk } from "$lib/store/actions/session";
+  import { api } from "$lib/store/api";
   import { logout } from "$lib/store/api/slice";
-  import { loginThunk, logoutThunk } from "$lib/store/thunks/logout";
   import { getStore } from "$lib/store/getStore";
   import { toSvelteStore } from "$lib/svelte-redux";
 
@@ -12,7 +14,15 @@
   import Footer from "./footer.svelte";
   import Navigation from "./navigation.svelte";
 
-  const appStore = toSvelteStore(getStore());
+  export let data;
+
+  const appStore = toSvelteStore(
+    getStore({
+      ...data,
+      [api.reducerPath]: api.reducer(undefined, { type: "" }),
+    })
+  );
+  appStore.dispatch(hydrateThunk(data[api.reducerPath]));
   storeCtx.set(appStore);
 
   onMount(() => {

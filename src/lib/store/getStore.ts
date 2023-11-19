@@ -1,19 +1,16 @@
-import { combineReducers, configureStore, createListenerMiddleware } from "@reduxjs/toolkit";
+import { configureStore, createListenerMiddleware } from "@reduxjs/toolkit";
 
 import { api } from "./api";
-import { slice } from "./api/slice";
-import { uiSlice } from "./ui/slice";
+import { reducer } from "./reducer";
+import type { RootState } from "./reducer";
 
-export const getStore = () =>
+export const getStore = (preloadedState?: RootState) =>
   configureStore({
     middleware(getDefaultMiddleware) {
       return getDefaultMiddleware()
         .prepend(createListenerMiddleware().middleware)
         .concat(api.middleware);
     },
-    reducer: combineReducers({
-      [api.reducerPath]: api.reducer,
-      [slice.name]: slice.reducer,
-      [uiSlice.name]: uiSlice.reducer,
-    }),
+    preloadedState,
+    reducer,
   });

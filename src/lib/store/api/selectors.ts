@@ -1,31 +1,36 @@
 import { createSelector } from "@reduxjs/toolkit";
-import { api, getIsAuthorized } from ".";
+import { skipToken } from "@reduxjs/toolkit/query";
+
+import { api } from ".";
 import { slice } from "./slice";
 
-import type { RootState } from "..";
-import type { AccessToken, Scope } from "../../types/token";
+import type { RootState } from "../reducer";
+import type { Scope } from "../../types/token";
 
 export const selectClient = (state: RootState | undefined) =>
   state?.[slice.name] ?? slice.getInitialState();
 
-const emptyReadTokenInfo: { data: Pick<AccessToken, "permissions"> } = {
-  data: { permissions: [] },
-};
-const selectEmptyReadTokenInfo = () => emptyReadTokenInfo;
-const makeSelectReadTokenInfo = createSelector(selectClient, ({ access_token }) =>
-  access_token ? api.endpoints.readTokenInfo.select({ access_token }) : selectEmptyReadTokenInfo
+export const makeSelectReadTokenInfo = createSelector(selectClient, ({ access_token }) =>
+  api.endpoints.readTokenInfo.select(access_token ? { access_token: access_token } : skipToken)
 );
 
-const selectInScope = (state: RootState, scopes: Scope[]) => {
+export const selectReadTokenInfo = (state: RootState) => makeSelectReadTokenInfo(state)(state);
+
+const selectInScope = (state: RootState, scopes?: Scope[]) => {
+  const isPublicApi = (scopes?.length ?? 0) === 0;
+  if (isPublicApi) {
+    return true;
+  }
+
   const clientState = selectClient(state);
   const isUnauthenticated = clientState.access_token === null;
   if (isUnauthenticated) {
     return false;
   }
 
-  const selectReadTokenInfo = makeSelectReadTokenInfo(state);
   const permissions = selectReadTokenInfo(state).data?.permissions ?? [];
-  const isAuthorized = getIsAuthorized(permissions, scopes);
+  const isAuthorized =
+    permissions.length >= 1 && scopes!.every((scope) => permissions.includes(scope));
   return isAuthorized;
 };
 

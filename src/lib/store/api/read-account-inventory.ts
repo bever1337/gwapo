@@ -25,12 +25,6 @@ export interface SharedInventorySlot {
 type ReadAccountInventoryResult = SharedInventorySlot[];
 
 const scopes = [Scope.Account, Scope.Inventories];
-const scopeTags = [{ type: "access_token" as const, id: "LIST" }].concat(
-  scopes.map((scope) => ({
-    type: "access_token" as const,
-    id: scope,
-  }))
-);
 
 export const injectedApi = api.injectEndpoints({
   endpoints(build) {
@@ -48,8 +42,12 @@ export const injectedApi = api.injectEndpoints({
             },
           };
         },
-        providesTags() {
-          return scopeTags;
+        providesTags(result, error, queryArguments, meta) {
+          const tags = [{ type: "access_token" as const, id: "LIST" }];
+          if (meta?.access_token) {
+            tags.push({ type: "access_token", id: meta.access_token });
+          }
+          return tags;
         },
       }),
     };

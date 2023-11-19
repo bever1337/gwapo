@@ -31,12 +31,6 @@ export interface ReadCharacterCoreResult {
 }
 
 const scopes = [Scope.Account, Scope.Characters];
-const scopeTags = [{ type: "access_token" as const, id: "LIST" }].concat(
-  scopes.map((scope) => ({
-    type: "access_token" as const,
-    id: scope,
-  }))
-);
 
 export const injectedApi = api.injectEndpoints({
   endpoints(build) {
@@ -46,12 +40,18 @@ export const injectedApi = api.injectEndpoints({
           baseUrl: "https://api.guildwars2.com",
           scope: scopes,
         },
-        providesTags(result, error) {
-          const defaultTags = [{ id: "LIST", type: "characters" as const }, ...scopeTags];
-          if (result && !error) {
-            defaultTags.push({ id: result.name, type: "characters" });
+        providesTags(result, error, queryArguments, meta) {
+          const tags = [
+            { type: "access_token" as const, id: "LIST" },
+            { type: "characters" as const, id: "LIST" },
+          ];
+          if (meta?.access_token) {
+            tags.push({ type: "access_token", id: meta.access_token });
           }
-          return defaultTags;
+          if (result && !error) {
+            tags.push({ type: "characters", id: result.name });
+          }
+          return tags;
         },
         query(queryArguments) {
           return {

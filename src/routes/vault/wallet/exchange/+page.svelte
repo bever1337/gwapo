@@ -1,7 +1,7 @@
 <script lang="ts">
   import Coins from "$lib/components/coins.svelte";
   import { getAppDispatch } from "$lib/store";
-  import { hydrate } from "$lib/store/actions";
+  import { hydrateThunk } from "$lib/store/actions/hydrate";
   import { readAccountWallet } from "$lib/store/api/read-account-wallet";
   import { readCommerceExchangeCoins } from "$lib/store/api/read-commerce-exchange-coints";
   import { readCommerceExchangeGems } from "$lib/store/api/read-commerce-exchange-gems";
@@ -14,7 +14,7 @@
   export let data;
 
   const dispatch = getAppDispatch();
-  dispatch(hydrate(data));
+  dispatch(hydrateThunk(data.cache));
   const readCurrencies$ = readCurrencies.query({});
   $: ({ data: currencies } = $readCurrencies$);
   $: coins = currencies?.entities[1];

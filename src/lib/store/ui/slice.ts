@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import type { RootState } from "../";
+import type { RootState } from "../reducer";
 
 import { readCharacters } from "../api/read-characters";
 
@@ -28,4 +28,5 @@ export const selectUiSubstate = (state: RootState) =>
   state[uiSlice.name] ?? uiSlice.getInitialState();
 
 export const characterName = uiSlice.actions.characterName;
+
 export const selectCharacterName = (state: RootState) => selectUiSubstate(state).characterName;

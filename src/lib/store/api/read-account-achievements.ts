@@ -31,12 +31,6 @@ export interface AccountAchievement {
 type ReadAccountAchievementsResult = EntityState<AccountAchievement, number>;
 
 const scopes = [Scope.Account, Scope.Progression];
-const scopeTags = [{ type: "access_token" as const, id: "LIST" }].concat(
-  scopes.map((scope) => ({
-    type: "access_token" as const,
-    id: scope,
-  }))
-);
 
 const accountAchievementsEntityAdapter = createEntityAdapter<AccountAchievement>();
 
@@ -51,11 +45,16 @@ export const injectedApi = api.injectEndpoints({
           baseUrl: "https://api.guildwars2.com",
           scope: scopes,
         },
-        providesTags() {
-          return scopeTags;
+        providesTags(result, error, queryArguments, meta) {
+          const tags = [{ type: "access_token" as const, id: "LIST" }];
+          if (meta?.access_token) {
+            tags.push({ type: "access_token", id: meta.access_token });
+          }
+          return tags;
         },
         query() {
           return {
+            meta: { answer: 42 },
             url: "/v2/account/achievements",
             validateStatus(response, body) {
               return response.status === 200 && Array.isArray(body);

@@ -1,14 +1,13 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { api } from "../api";
+import { readTokenInfo } from "../api/read-token-info";
 import { login, logout } from "../api/slice";
 
 export const loginThunk = createAsyncThunk(
   "loginThunk",
   ({ access_token }: { access_token: string }, { dispatch }) => {
-    const readTokenInfoResultSubscription = dispatch(
-      api.endpoints.readTokenInfo.initiate({ access_token })
-    );
+    const readTokenInfoResultSubscription = dispatch(readTokenInfo.initiate({ access_token }));
     return readTokenInfoResultSubscription
       .unwrap()
       .then((readTokenInfoResult) => {
@@ -16,11 +15,11 @@ export const loginThunk = createAsyncThunk(
         return readTokenInfoResult;
       })
       .catch(() => {
-        dispatch(logout());
+        dispatch(logoutThunk({}));
         return null;
       })
       .then((authResult) => {
-        dispatch(api.util.invalidateTags([{ type: "access_token" as const, id: "LIST" }]));
+        dispatch(api.util.invalidateTags([{ type: "access_token", id: access_token }]));
         return authResult;
       })
       .finally(() => {
@@ -35,7 +34,7 @@ export const logoutThunk = createAsyncThunk(
     // clear state BEFORE invalidating tags
     // if these actions are reversed, then the invalidated queries still have access to the expiring token
     const logoutResult = dispatch(logout());
-    dispatch(api.util.invalidateTags([{ type: "access_token" as const, id: "LIST" }]));
+    dispatch(api.util.invalidateTags([{ type: "access_token", id: "LIST" }]));
     return logoutResult;
   }
 );

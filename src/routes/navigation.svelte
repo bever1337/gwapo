@@ -1,10 +1,10 @@
 <script lang="ts">
   import { skipToken } from "@reduxjs/toolkit/query";
-  import { readTokenInfo } from "$lib/store/api/read-token-info";
   import { getAppDispatch, getAppSelector } from "$lib/store";
+  import { loginThunk, logoutThunk } from "$lib/store/actions/session";
+  import { readTokenInfo } from "$lib/store/api/read-token-info";
   import { selectClient } from "$lib/store/api/selectors";
   import type { ClientState } from "$lib/store/api/initial-state";
-  import { loginThunk, logoutThunk } from "$lib/store/thunks/logout";
 
   const dispatch = getAppDispatch();
 

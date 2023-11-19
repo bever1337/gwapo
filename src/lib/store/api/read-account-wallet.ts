@@ -15,12 +15,6 @@ export interface AccountCurrency {
 type ReadAccountWalletResult = EntityState<AccountCurrency, number>;
 
 const scopes = [Scope.Account, Scope.Wallet];
-const scopeTags = [{ type: "access_token" as const, id: "LIST" }].concat(
-  scopes.map((scope) => ({
-    type: "access_token" as const,
-    id: scope,
-  }))
-);
 
 const accountCurrenciesEntityAdapter = createEntityAdapter<AccountCurrency>();
 export const initialState = accountCurrenciesEntityAdapter.getInitialState();
@@ -41,8 +35,12 @@ export const injectedApi = api.injectEndpoints({
             },
           };
         },
-        providesTags() {
-          return scopeTags;
+        providesTags(result, error, queryArguments, meta) {
+          const tags = [{ type: "access_token" as const, id: "LIST" }];
+          if (meta?.access_token) {
+            tags.push({ type: "access_token", id: meta.access_token });
+          }
+          return tags;
         },
         transformResponse(response: AccountCurrency[]) {
           return accountCurrenciesEntityAdapter.setAll(initialState, response);

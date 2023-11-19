@@ -23,7 +23,7 @@
   import AuthenticatorToast from "$lib/components/authenticatorToast.svelte";
   import { intl } from "$lib/intl";
   import { getAppDispatch } from "$lib/store";
-  import { hydrate } from "$lib/store/actions";
+  import { hydrateThunk } from "$lib/store/actions/hydrate";
   import { readAccountWallet } from "$lib/store/api/read-account-wallet";
   import { CurrencyCategory, readCurrencies } from "$lib/store/api/read-currencies";
   import { separateCopperCoins } from "$lib/types/currency";
@@ -31,7 +31,7 @@
   export let data;
 
   const dispatch = getAppDispatch();
-  dispatch(hydrate(data));
+  dispatch(hydrateThunk(data.cache));
 
   const readCurrencies$ = readCurrencies.query({});
   $: ({ data: currencies } = $readCurrencies$);
