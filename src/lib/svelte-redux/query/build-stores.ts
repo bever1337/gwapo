@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import type {
   Api,
   ApiContext,
@@ -9,11 +8,13 @@ import type {
   QueryArgFrom,
   QueryDefinition,
   SerializeQueryArgs,
+  SkipToken,
   SubscriptionOptions,
 } from "@reduxjs/toolkit/query";
-import { derived, writable } from "svelte/store";
-import type { Readable, Writable } from "svelte/store";
+import { derived } from "svelte/store";
+import type { Readable } from "svelte/store";
 
+import { UNINITIALIZED_VALUE } from "./constants";
 import { buildLazyQuerySubscriptionModule } from "./stores/lazy-query-subscription";
 import type { LazyQuerySubscriptionTopic } from "./stores/lazy-query-subscription";
 import { buildMutationeModule } from "./stores/mutation";
@@ -22,10 +23,11 @@ import { buildQueryStateModule } from "./stores/query-state";
 import type { QueryStateOptions, QueryStateTopic } from "./stores/query-state";
 import { buildQuerySubscriptionModule } from "./stores/query-subscription";
 import type { QuerySubscriptionOptions, QuerySubscriptionTopic } from "./stores/query-subscription";
-
-import { UNINITIALIZED_VALUE } from "./constants";
+import { tuple } from "./stores/tuple";
+import { writable } from "./stores/writable";
 
 import type { SvelteReduxContext } from "../context";
+import { shallowNotEqual } from "../equality";
 
 export interface MutationStore<Definition extends MutationDefinition<any, any, any, any>> {
   mutation(initialMutationOptions?: MutationOptions<Definition>): {
@@ -50,11 +52,11 @@ export interface QueryStores<Definition extends QueryDefinition<any, any, any, a
     subscribe: Readable<LazyQuerySubscriptionTopic<Definition>>["subscribe"];
   };
   query(
-    initialQueryArguments?: QueryArgFrom<Definition>,
+    initialQueryArguments?: QueryArgFrom<Definition> | SkipToken,
     initialQueryOptions?: QueryStateOptions<Definition> & QuerySubscriptionOptions<Definition>
   ): {
     next(
-      queryArguments?: QueryArgFrom<Definition>,
+      queryArguments?: QueryArgFrom<Definition> | SkipToken,
       queryOptions?: QueryStateOptions<Definition> & QuerySubscriptionOptions<Definition>
     ): void;
     subscribe: Readable<
@@ -62,21 +64,21 @@ export interface QueryStores<Definition extends QueryDefinition<any, any, any, a
     >["subscribe"];
   };
   queryState(
-    initialQueryArguments?: QueryArgFrom<Definition>,
+    initialQueryArguments?: QueryArgFrom<Definition> | SkipToken,
     initialQueryOptions?: QueryStateOptions<Definition>
   ): {
     next(
-      queryArguments?: QueryArgFrom<Definition>,
+      queryArguments?: QueryArgFrom<Definition> | SkipToken,
       queryOptions?: QueryStateOptions<Definition>
     ): void;
     subscribe: Readable<QueryStateTopic<Definition>>["subscribe"];
   };
   querySubscription(
-    initialQueryArguments?: QueryArgFrom<Definition>,
+    initialQueryArguments?: QueryArgFrom<Definition> | SkipToken,
     initialQueryOptions?: QuerySubscriptionOptions<Definition>
   ): {
     next(
-      queryArguments?: QueryArgFrom<Definition>,
+      queryArguments?: QueryArgFrom<Definition> | SkipToken,
       queryOptions?: QuerySubscriptionOptions<Definition>
     ): void;
     subscribe: Readable<QuerySubscriptionTopic<Definition>>["subscribe"];
@@ -124,14 +126,11 @@ export function buildStores<Definitions extends EndpointDefinitions>(
 
       return {
         lazyQuery(initialQueryOptions) {
-          const queryOptions$: Writable<[undefined, SubscriptionOptions | undefined]> = writable([
-            undefined,
-            initialQueryOptions,
-          ]);
+          const queryOptions$ = writable(initialQueryOptions, undefined, shallowNotEqual);
           const lazyQuerySubscription$ = buildLazyQuerySubscriptionStore(queryOptions$);
           const lazyQueryArguments$ = derived(
             [queryOptions$, lazyQuerySubscription$],
-            ([[, queryOptions = {}], [, lastQueryArguments]]): [
+            ([queryOptions = {}, [, lastQueryArguments]]): [
               QueryArgFrom<any>,
               QueryStateOptions<any> | undefined
             ] => [
@@ -140,7 +139,7 @@ export function buildStores<Definitions extends EndpointDefinitions>(
             ]
           );
           const queryState$ = buildQueryStateStore(lazyQueryArguments$);
-          /** @todo this store may update twice when options change */
+          /** @todo this store suffers extraneous updates */
           const composedLazyQuery$ = derived(
             [lazyQuerySubscription$, queryState$],
             ([[trigger, lastQueryArguments], queryState]): [
@@ -150,39 +149,31 @@ export function buildStores<Definitions extends EndpointDefinitions>(
             ] => [trigger, queryState, { lastArg: lastQueryArguments }]
           );
           return {
-            next(queryOptions) {
-              queryOptions$.set([undefined, queryOptions]);
-            },
+            next: queryOptions$.set,
             subscribe: composedLazyQuery$.subscribe,
           };
         },
         lazyQuerySubscription(initialQueryOptions) {
-          const queryArguments$: Writable<[undefined, SubscriptionOptions | undefined]> = writable([
-            undefined,
-            initialQueryOptions,
-          ]);
-          const lazyQuerySubscription$ = buildLazyQuerySubscriptionStore(queryArguments$);
+          const queryOptions$ = writable(initialQueryOptions, undefined, shallowNotEqual);
+          const lazyQuerySubscription$ = buildLazyQuerySubscriptionStore(queryOptions$);
           return {
-            next(queryOptions) {
-              queryArguments$.set([undefined, queryOptions]);
-            },
+            next: queryOptions$.set,
             subscribe: lazyQuerySubscription$.subscribe,
           };
         },
         query(initialQueryArguments, initialQueryOptions) {
-          const queryArguments$: Writable<
-            [
-              QueryArgFrom<any>,
-              (QueryStateOptions<any> & QuerySubscriptionOptions<any>) | undefined
-            ]
-          > = writable([initialQueryArguments, initialQueryOptions]);
+          const queryArguments$ = tuple(
+            [initialQueryArguments, initialQueryOptions],
+            undefined,
+            shallowNotEqual
+          );
           const queryState$ = buildQueryStateStore(queryArguments$);
           const querySubscription$ = buildQuerySubscriptionStore(queryArguments$);
           const composedQuery$ = derived(
             [queryState$, querySubscription$],
             ([queryState, querySubscription]) => ({
               ...queryState,
-              refetch: querySubscription.refetch,
+              ...querySubscription,
             })
           );
           return {
@@ -193,8 +184,11 @@ export function buildStores<Definitions extends EndpointDefinitions>(
           };
         },
         queryState(initialQueryArguments, initialQueryOptions) {
-          const queryArguments$: Writable<[QueryArgFrom<any>, QueryStateOptions<any> | undefined]> =
-            writable([initialQueryArguments, initialQueryOptions]);
+          const queryArguments$ = tuple(
+            [initialQueryArguments, initialQueryOptions],
+            undefined,
+            shallowNotEqual
+          );
           const queryState$ = buildQueryStateStore(queryArguments$);
           return {
             next(queryArguments, queryOptions) {
@@ -204,9 +198,11 @@ export function buildStores<Definitions extends EndpointDefinitions>(
           };
         },
         querySubscription(initialQueryArguments, initialQueryOptions) {
-          const queryArguments$: Writable<
-            [QueryArgFrom<any>, QuerySubscriptionOptions<any> | undefined]
-          > = writable([initialQueryArguments, initialQueryOptions]);
+          const queryArguments$ = tuple(
+            [initialQueryArguments, initialQueryOptions],
+            undefined,
+            shallowNotEqual
+          );
           const querySubscription$ = buildQuerySubscriptionStore(queryArguments$);
           return {
             next(queryArguments, queryOptions) {
@@ -221,13 +217,10 @@ export function buildStores<Definitions extends EndpointDefinitions>(
       const buildMutationStore = buildMutationStoreForEndpoint(name);
       return {
         mutation(initialMutationOptions) {
-          const mutationArguments$: Writable<[undefined, MutationOptions<any> | undefined]> =
-            writable([undefined, initialMutationOptions]);
-          const mutation$ = buildMutationStore(mutationArguments$);
+          const mutationOptions$ = writable(initialMutationOptions, undefined, shallowNotEqual);
+          const mutation$ = buildMutationStore(mutationOptions$);
           return {
-            next(mutationOptions) {
-              mutationArguments$.set([undefined, mutationOptions]);
-            },
+            next: mutationOptions$.set,
             subscribe: mutation$.subscribe,
           };
         },

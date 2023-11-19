@@ -12,12 +12,12 @@ import type {
   SerializeQueryArgs,
 } from "@reduxjs/toolkit/query";
 import type { Selector, ThunkDispatch, UnknownAction } from "@reduxjs/toolkit";
-import { derived, writable } from "svelte/store";
+import { derived } from "svelte/store";
 import type { Readable, Writable } from "svelte/store";
 
+import { writable } from "./writable";
 import type { SvelteReduxContext } from "../../context";
-
-const defaultResult = {};
+import { shallowNotEqual } from "../../equality";
 
 export type MutationTopic<
   Definition extends MutationDefinition<any, any, any, any>,
@@ -34,7 +34,7 @@ export type MutationTopic<
 
 export interface MutationStore<Definition extends MutationDefinition<any, any, any, any>> {
   <ResultType extends Record<string, any> = MutationResultSelectorResult<Definition>>(
-    mutationArguments$: Readable<[undefined, MutationOptions<Definition> | undefined]>
+    mutationArguments$: Readable<MutationOptions<Definition> | undefined>
   ): Readable<MutationTopic<Definition, ResultType>>;
 }
 
@@ -59,6 +59,7 @@ export type IntermediateMutationTopic<Definition extends MutationDefinition<any,
 ];
 
 const defaultMutationOptions: MutationOptions<any> = {};
+const defaultResult = {};
 
 export function buildMutationeModule<Definitions extends EndpointDefinitions>(
   api: Api<any, Definitions, any, any, CoreModule>,
@@ -78,12 +79,16 @@ export function buildMutationeModule<Definitions extends EndpointDefinitions>(
       const reduxStore$ = componentContext.get();
       const dispatch = reduxStore$.dispatch as ThunkDispatch<any, any, UnknownAction>;
 
-      const mutationResult$: Writable<MutationActionCreatorResult<any> | undefined> = writable();
+      const mutationResult$: Writable<MutationActionCreatorResult<any> | undefined> = writable(
+        undefined,
+        undefined,
+        shallowNotEqual
+      );
 
       const intermediateMutationTopic$: Readable<IntermediateMutationTopic<any>> = derived(
         [mutationArguments$, mutationResult$],
         function deriveIntermediateResult([
-          [, { fixedCacheKey, selectFromResult } = defaultMutationOptions],
+          { fixedCacheKey, selectFromResult } = defaultMutationOptions,
           mutationResult,
         ]): IntermediateMutationTopic<any> {
           const selectDefaultResult = select({

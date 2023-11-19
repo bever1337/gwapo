@@ -75,8 +75,12 @@ export function buildQuerySubscriptionModule<Definitions extends EndpointDefinit
           ],
           set
         ) {
+          if (queryArguments === skipToken || skip === true) {
+            set(initialQuerySubscriptionTopic);
+            return noop;
+          }
           const queryResult = dispatch(
-            initiate(skip ? skipToken : queryArguments, {
+            initiate(queryArguments, {
               forceRefetch: refetchOnMountOrArgChange,
               subscriptionOptions: {
                 pollingInterval,

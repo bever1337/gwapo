@@ -38,7 +38,7 @@
   "dependencies": {
     "@formatjs/intl": "^2.9.3",
     "@leeoniya/ufuzzy": "^1.0.10",
-    "@reduxjs/toolkit": "^2.0.0-beta.2",
+    "@reduxjs/toolkit": "^2.0.0-beta.4",
     "events": "^3.3.0",
     "pouchdb": "^8.0.1",
     "pouchdb-adapter-indexeddb": "^8.0.1"

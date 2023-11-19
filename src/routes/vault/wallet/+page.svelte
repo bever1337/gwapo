@@ -20,6 +20,7 @@
 
 <script lang="ts">
   import { browser } from "$app/environment";
+  import AuthenticatorToast from "$lib/components/authenticatorToast.svelte";
   import { intl } from "$lib/intl";
   import { getAppDispatch } from "$lib/store";
   import { hydrate } from "$lib/store/actions";
@@ -87,6 +88,7 @@
   }
 </script>
 
+<AuthenticatorToast />
 <main class="main">
   <h1 class="banner__header">Wallet</h1>
   <form class="currencies" action="/vault/wallet" on:reset={onReset}>
@@ -668,6 +670,7 @@
     background-size: 60rem auto;
     box-shadow: var(--elevation--2);
     box-sizing: border-box;
+    flex: 1 1 auto;
     padding: 1rem var(--margin) var(--margin) var(--margin);
     margin: var(--margin) auto;
     max-width: calc(104rem + calc(2 * var(--margin)));

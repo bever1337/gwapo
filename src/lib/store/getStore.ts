@@ -1,7 +1,7 @@
 import { combineReducers, configureStore, createListenerMiddleware } from "@reduxjs/toolkit";
 
 import { api } from "./api";
-import { slice } from "./slice";
+import { slice } from "./api/slice";
 import { uiSlice } from "./ui/slice";
 
 export const getStore = () =>

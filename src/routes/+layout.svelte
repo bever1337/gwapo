@@ -1,11 +1,10 @@
 <script lang="ts">
-  import { addListener } from "@reduxjs/toolkit";
+  import { addListener, isAnyOf, isFulfilled, isRejected } from "@reduxjs/toolkit";
   import { onMount } from "svelte";
 
-  import { readTokenInfo } from "$lib/store/api/read-token-info";
-  import { logout } from "$lib/store/slice";
+  import { logout } from "$lib/store/api/slice";
+  import { loginThunk, logoutThunk } from "$lib/store/thunks/logout";
   import { getStore } from "$lib/store/getStore";
-  import type { ClientState } from "$lib/store/initial-state";
   import { toSvelteStore } from "$lib/svelte-redux";
 
   import { storeCtx } from "./context";
@@ -23,11 +22,10 @@
 
     try {
       const storedAccess = localStorage.getItem("access");
-      if (storedAccess) {
-        const parsedAccess: ClientState["access"] = JSON.parse(storedAccess);
-        if (typeof parsedAccess?.access_token === "string") {
-          appStore.dispatch(readTokenInfo.initiate({ access_token: parsedAccess?.access_token }));
-        }
+      if (typeof storedAccess === "string") {
+        appStore.dispatch(loginThunk({ access_token: storedAccess }));
+      } else {
+        localStorage.removeItem("access");
       }
     } catch (jsonParsingError) {
       //
@@ -35,24 +33,20 @@
 
     const unsubscribeLocalStorageSetter = appStore.dispatch(
       addListener({
-        matcher: readTokenInfo.matchFulfilled,
+        matcher: isFulfilled(loginThunk),
         effect(action) {
-          localStorage.setItem(
-            "access",
-            JSON.stringify({
-              ...action.payload,
-              access_token: action.meta.arg.originalArgs.access_token,
-            })
-          );
+          // re-assert for type guarding
+          if (!isFulfilled(loginThunk)(action)) {
+            return;
+          }
+          localStorage.setItem("access", action.meta.arg.access_token);
         },
       })
     );
 
     const unsubscribeLocalStorageRemover = appStore.dispatch(
       addListener({
-        predicate(action) {
-          return readTokenInfo.matchRejected(action) || logout.match(action);
-        },
+        matcher: isAnyOf(logout.match, isFulfilled(logoutThunk), isRejected(logoutThunk)),
         effect() {
           localStorage.removeItem("access");
         },

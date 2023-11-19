@@ -25,7 +25,7 @@ export type LazyQuerySubscriptionTopic<Definition extends QueryDefinition<any, a
 export interface LazyQuerySubscriptionStore<
   Definition extends QueryDefinition<any, any, any, any>
 > {
-  (queryArguments$: Readable<[undefined, SubscriptionOptions | undefined]>): Readable<
+  (queryOptions$: Readable<SubscriptionOptions | undefined>): Readable<
     LazyQuerySubscriptionTopic<Definition>
   >;
 }
@@ -47,7 +47,7 @@ export function buildLazyQuerySubscriptionModule<Definitions extends EndpointDef
   return function buildLazyQuerySubscriptionStoreForEndpoint(
     name: string
   ): LazyQuerySubscriptionStore<any> {
-    return function buildLazyQuerySubscriptionStore(queryArguments$) {
+    return function buildLazyQuerySubscriptionStore(queryOptions$) {
       const { initiate } = api.endpoints[name] as ApiEndpointQuery<
         QueryDefinition<any, any, any, any, any>,
         Definitions
@@ -57,12 +57,10 @@ export function buildLazyQuerySubscriptionModule<Definitions extends EndpointDef
       const dispatch = reduxStore$.dispatch as ThunkDispatch<any, any, UnknownAction>;
 
       let unsubscribe: () => void;
-
       const lazyQuerySubscriptionTopic$ = derived(
-        queryArguments$,
+        [queryOptions$],
         function initiateSideEffect(
           [
-            ,
             {
               pollingInterval = 0,
               refetchOnFocus,

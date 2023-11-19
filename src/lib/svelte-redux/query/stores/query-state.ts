@@ -65,6 +65,8 @@ export function buildQueryStateModule<Definitions extends EndpointDefinitions>(
         Definitions
       >;
 
+      const reduxStore$ = componentContext.get();
+
       const querySelector$: Readable<[QueryArgFrom<any>, IntermediateQueryStateTopic<any>[1]]> =
         derived(
           queryArguments$,
@@ -85,8 +87,6 @@ export function buildQueryStateModule<Definitions extends EndpointDefinitions>(
             ];
           }
         );
-
-      const reduxStore$ = componentContext.get();
 
       const intermediateQueryStateTopic$: Readable<IntermediateQueryStateTopic<any>> = derived(
         [reduxStore$, querySelector$],

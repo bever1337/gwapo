@@ -1,7 +1,7 @@
 import { createSelector } from "@reduxjs/toolkit";
 
 import { api } from ".";
-import { makeSelectIsInScope } from "../selectors";
+import { makeSelectIsInScope } from "./selectors";
 
 import { Scope } from "../../types/token";
 

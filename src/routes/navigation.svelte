@@ -1,8 +1,10 @@
 <script lang="ts">
+  import { skipToken } from "@reduxjs/toolkit/query";
   import { readTokenInfo } from "$lib/store/api/read-token-info";
   import { getAppDispatch, getAppSelector } from "$lib/store";
-  import type { ClientState } from "$lib/store/initial-state";
-  import { logoutThunk } from "$lib/store/thunks/logout";
+  import { selectClient } from "$lib/store/api/selectors";
+  import type { ClientState } from "$lib/store/api/initial-state";
+  import { loginThunk, logoutThunk } from "$lib/store/thunks/logout";
 
   const dispatch = getAppDispatch();
 
@@ -14,10 +16,10 @@
   }
 
   function deriveAuthenticatorState(
-    client: ClientState["access"],
+    client: ClientState,
     mutationResult: { isError: boolean; isLoading: boolean }
   ) {
-    if (client === null) {
+    if (client.access_token === null) {
       if (mutationResult.isLoading === true) {
         return AuthenticatorState.Loading;
       } else if (mutationResult.isError === true) {
@@ -32,10 +34,13 @@
   let navDialogIsOpen = false;
   let settingsDialog: HTMLDialogElement;
 
-  const clientAccess$ = getAppSelector((state) => state.client.access);
-  const readTokenInfo$ = readTokenInfo.mutation();
-  $: [trigger, mutationResult] = $readTokenInfo$;
-  $: authenticatorState = deriveAuthenticatorState($clientAccess$, mutationResult);
+  const clientAccess$ = getAppSelector(selectClient);
+  const readTokenInfo$ = readTokenInfo.query(skipToken, { skip: true });
+  $: readTokenInfo$.next(
+    $clientAccess$.access_token ? { access_token: $clientAccess$.access_token } : skipToken,
+    { skip: !$clientAccess$.access_token }
+  );
+  $: authenticatorState = deriveAuthenticatorState($clientAccess$, $readTokenInfo$);
 
   function onSubmitLogin(
     event: SubmitEvent & {
@@ -43,7 +48,12 @@
     }
   ) {
     const formData = new FormData(event.currentTarget);
-    trigger({ access_token: formData.get("access_token") as string });
+    const access_token = formData.get("access_token");
+    if (typeof access_token !== "string") {
+      // todo, somehow HTML form validation failed???
+      return;
+    }
+    dispatch(loginThunk({ access_token }));
   }
 
   function onResetLogin(
@@ -51,15 +61,12 @@
       currentTarget: EventTarget & HTMLFormElement;
     }
   ) {
-    dispatch(logoutThunk);
+    dispatch(logoutThunk({}));
   }
 </script>
 
 <header>
   <nav class="nav">
-    <h1 class="nav__heading">
-      <a href="/">Gwapo</a>
-    </h1>
     <button
       class="nav__open-nav"
       class:nav__open-nav--opened={navDialogIsOpen}
@@ -77,6 +84,9 @@
         <use href="/ri/menu-line.svg#path" />
       </svg>
     </button>
+    <h1 class="nav__heading">
+      <a href="/">Gwapo</a>
+    </h1>
     <button
       class="nav__open-settings"
       on:click={function onClickOpenDialog() {
@@ -110,7 +120,7 @@
         </a>
       </li>
       <li>
-        <p>vault</p>
+        <span>vault</span>
         <ul class="nav__list">
           <li>
             <a
@@ -166,7 +176,7 @@
   .dialog--nav {
     background-color: rgb(var(--primary--200));
     border: 0px solid transparent;
-    box-shadow: inset 0 0.5rem 0.75rem -0.25rem rgb(var(--black) / 0.3), var(--elevation--5);
+    box-shadow: inset 0 0.5rem 0.5rem -0.25rem rgb(var(--black) / 0.3), var(--elevation--5);
     box-sizing: border-box;
     min-height: calc(100vh - 3.25rem);
     margin: 0;
@@ -174,7 +184,6 @@
     padding: 1rem;
     position: absolute;
     top: 3.25rem;
-    transition: all 3s linear;
     width: 100%;
     z-index: var(--elevation--5--height);
   }
@@ -226,7 +235,7 @@
     box-sizing: border-box;
     outline-offset: -0.25rem;
     padding: 0.25rem;
-    margin: 0 0 0 2ch;
+    margin: 0 2ch 0 0;
     min-width: 2.75rem;
   }
 

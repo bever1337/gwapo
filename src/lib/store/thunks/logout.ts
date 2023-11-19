@@ -1,19 +1,41 @@
-import type { Action, ThunkAction } from "@reduxjs/toolkit";
+import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import type { RootState } from "..";
 import { api } from "../api";
-import { logout } from "../slice";
+import { login, logout } from "../api/slice";
 
-const invalidatedTagsAction = () =>
-  api.util.invalidateTags([{ type: "access_token" as const, id: "LIST" }]);
+export const loginThunk = createAsyncThunk(
+  "loginThunk",
+  ({ access_token }: { access_token: string }, { dispatch }) => {
+    const readTokenInfoResultSubscription = dispatch(
+      api.endpoints.readTokenInfo.initiate({ access_token })
+    );
+    return readTokenInfoResultSubscription
+      .unwrap()
+      .then((readTokenInfoResult) => {
+        dispatch(login({ access_token }));
+        return readTokenInfoResult;
+      })
+      .catch(() => {
+        dispatch(logout());
+        return null;
+      })
+      .then((authResult) => {
+        dispatch(api.util.invalidateTags([{ type: "access_token" as const, id: "LIST" }]));
+        return authResult;
+      })
+      .finally(() => {
+        readTokenInfoResultSubscription.unsubscribe();
+      });
+  }
+);
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const logoutThunk: ThunkAction<undefined, RootState, undefined, Action<any>> = (
-  dispatch
-) => {
-  // clear state BEFORE invalidating tags
-  // if these actions are reversed, then the invalidated queries still have access to the expiring token
-  dispatch(logout());
-  dispatch(invalidatedTagsAction());
-  return undefined;
-};
+export const logoutThunk = createAsyncThunk(
+  "logoutThunk",
+  (thunkArguments: Record<string, never>, { dispatch }) => {
+    // clear state BEFORE invalidating tags
+    // if these actions are reversed, then the invalidated queries still have access to the expiring token
+    const logoutResult = dispatch(logout());
+    dispatch(api.util.invalidateTags([{ type: "access_token" as const, id: "LIST" }]));
+    return logoutResult;
+  }
+);
