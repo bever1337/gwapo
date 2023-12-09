@@ -1,24 +1,5 @@
-<script context="module" lang="ts">
-  import UFuzzy from "@leeoniya/ufuzzy";
-  import type { Currency, ReadCurrenciesResult } from "$lib/store/api/read-currencies";
-
-  const uFuzzy = new UFuzzy();
-  const emptyArray: any[] = [];
-  function filterCurrencies(needle: string, currencies: ReadCurrenciesResult): Currency["id"][] {
-    const isNeedle = typeof needle === "string" && needle.length > 0;
-    if (!isNeedle) {
-      return currencies?.ids ?? emptyArray;
-    }
-    const haystack =
-      currencies?.ids.map((currencyId) => currencies!.entities[currencyId].name) ?? emptyArray;
-    const currencyIndices: number[] = uFuzzy.search(haystack, needle)[0] ?? emptyArray;
-    const currencyIds =
-      currencyIndices.map((currencyIndex) => currencies!.ids[currencyIndex]) ?? emptyArray;
-    return currencyIds;
-  }
-</script>
-
 <script lang="ts">
+  import UFuzzy from "@leeoniya/ufuzzy";
   import { browser } from "$app/environment";
   import AuthenticatorToast from "$lib/components/authenticatorToast.svelte";
   import { intl } from "$lib/intl";
@@ -26,18 +7,29 @@
   import { hydrateThunk } from "$lib/store/actions/hydrate";
   import { readAccountWallet } from "$lib/store/api/read-account-wallet";
   import { CurrencyCategory, readCurrencies } from "$lib/store/api/read-currencies";
+  import type { Currency, ReadCurrenciesResult } from "$lib/store/api/read-currencies";
   import { separateCopperCoins } from "$lib/types/currency";
 
   export let data;
 
+  const uFuzzy = new UFuzzy();
+  const emptyArray: any[] = [];
+
   const dispatch = getAppDispatch();
   dispatch(hydrateThunk(data.cache));
 
-  const readCurrencies$ = readCurrencies.query({});
+  const readCurrencies$ = readCurrencies.query({ langTag: "en" });
   $: ({ data: currencies } = $readCurrencies$);
 
   const readAccountWallet$ = readAccountWallet.query({});
   $: ({ data: wallet, status: readWalletStatus } = $readAccountWallet$);
+
+  let category: -1 | CurrencyCategory = -1;
+  let needle = "";
+  let selected: number[] = [];
+  let expandAllSelected: boolean;
+
+  $: expandAllSelected = selected.length === (currencies?.ids.length ?? 0);
 
   $: supportedCurrencies =
     currencies?.ids.filter((currencyId) => {
@@ -49,7 +41,6 @@
       return entity?.deprecated !== true;
     }) ?? [];
 
-  let category: -1 | CurrencyCategory = -1;
   $: currenciesInCategory =
     category === -1
       ? supportedCurrencies
@@ -59,15 +50,10 @@
           return entity.categories.includes(category as CurrencyCategory);
         });
 
-  let needle = "";
   $: filteredCurrencies = filterCurrencies(needle, {
     ids: currenciesInCategory,
     entities: currencies?.entities ?? {},
   });
-
-  let selected: number[] = [];
-  let expandAllSelected: boolean;
-  $: expandAllSelected = selected.length === (currencies?.ids.length ?? 0);
 
   function onReset() {
     category = -1;
@@ -85,6 +71,19 @@
     } else {
       selected = [];
     }
+  }
+
+  function filterCurrencies(needle: string, currencies: ReadCurrenciesResult): Currency["id"][] {
+    const isNeedle = typeof needle === "string" && needle.length > 0;
+    if (!isNeedle) {
+      return currencies?.ids ?? emptyArray;
+    }
+    const haystack =
+      currencies?.ids.map((currencyId) => currencies!.entities[currencyId].name) ?? emptyArray;
+    const currencyIndices: number[] = uFuzzy.search(haystack, needle)[0] ?? emptyArray;
+    const currencyIds =
+      currencyIndices.map((currencyIndex) => currencies!.ids[currencyIndex]) ?? emptyArray;
+    return currencyIds;
   }
 </script>
 
@@ -173,7 +172,8 @@
         {@const previousCurrency = currencies?.entities[previousCurrencyId]}
         {@const currencyIsCoin = (currency?.id ?? 0) === 1}
         {@const currencyWasGem = (previousCurrency?.id ?? 0) === 4}
-        {@const showConversionDialog = currencyIsCoin && currencyWasGem}
+        {@const showConversionDialog =
+          currencyIsCoin && currencyWasGem && category === -1 && needle === ""}
         {#if showConversionDialog}
           <li class="currencies__list__item currencies__list__item--conversion">
             <div class="currency__picture currency__picture--conversion" />
@@ -323,7 +323,7 @@
   .currencies__list__item {
     align-items: center;
     border-radius: 0.25rem;
-    box-shadow: var(--elevation--1);
+    box-shadow: var(--elevation--2);
     break-inside: avoid;
     display: grid;
     grid-template:
@@ -341,12 +341,7 @@
   }
 
   .currencies__list__item--conversion {
-    background: linear-gradient(
-        to right,
-        rgba(0, 0, 0, 0.25),
-        rgba(0, 0, 0, 0.2) 6rem,
-        rgba(0, 0, 0, 0)
-      ),
+    background: radial-gradient(ellipse at 33% 50%, rgba(0, 0, 0, 0.2) 10%, rgba(0, 0, 0, 0) 33%),
       url("/gw2/Currency_Exchange_banner.jpg");
     background-color: #061532;
     background-repeat: no-repeat;
@@ -655,19 +650,7 @@
   }
 
   .main {
-    background: linear-gradient(
-        to bottom,
-        rgba(255, 255, 255, 0),
-        rgba(255, 255, 255, 0.25) 4rem,
-        rgba(255, 255, 255, 0.5) 8rem,
-        rgba(255, 255, 255, 0.75) 32rem,
-        rgba(255, 255, 255, 1)
-      ),
-      url("/gw2/pattern3.jpg");
     background-color: rgb(var(--white));
-    background-position: 100% 0%;
-    background-repeat: no-repeat;
-    background-size: 60rem auto;
     box-shadow: var(--elevation--2);
     box-sizing: border-box;
     flex: 1 1 auto;

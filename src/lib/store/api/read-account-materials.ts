@@ -29,6 +29,13 @@ export const injectedApi = api.injectEndpoints({
           baseUrl: "https://api.guildwars2.com",
           scope: scopes,
         },
+        providesTags(result, error, queryArguments, meta) {
+          const tags = [{ type: "access_token" as const, id: "LIST" }];
+          if (meta?.access_token) {
+            tags.push({ type: "access_token", id: meta.access_token });
+          }
+          return tags;
+        },
         query() {
           return {
             url: "/v2/account/materials",
@@ -36,13 +43,6 @@ export const injectedApi = api.injectEndpoints({
               return response.status === 200 && Array.isArray(body);
             },
           };
-        },
-        providesTags(result, error, queryArguments, meta) {
-          const tags = [{ type: "access_token" as const, id: "LIST" }];
-          if (meta?.access_token) {
-            tags.push({ type: "access_token", id: meta.access_token });
-          }
-          return tags;
         },
         transformResponse(response: AccountMaterial[]) {
           return accountMaterialAdapter.setAll(accountMaterialAdapter.getInitialState(), response);

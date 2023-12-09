@@ -15,7 +15,7 @@
 
   const dispatch = getAppDispatch();
   dispatch(hydrateThunk(data.cache));
-  const readCurrencies$ = readCurrencies.query({});
+  const readCurrencies$ = readCurrencies.query({ langTag: "en" });
   $: ({ data: currencies } = $readCurrencies$);
   $: coins = currencies?.entities[1];
   $: gems = currencies?.entities[4];

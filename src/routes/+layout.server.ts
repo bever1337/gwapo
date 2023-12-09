@@ -1,26 +1,25 @@
 import { api } from "$lib/store/api";
-import { loginThunk } from "$lib/store/actions/session";
+import { login } from "$lib/store/api/slice";
 import { getStore } from "$lib/store/getStore";
 
 export function load({ cookies }) {
   const { dispatch, getState } = getStore();
-  const access_token = cookies.get("access_token");
 
-  return new Promise((resolve) => {
-    if (typeof access_token !== "string" || access_token.length === 0) {
-      resolve(undefined);
-      return;
-    }
+  return new Promise<ReturnType<typeof getState>>((resolve, reject) => {
+    try {
+      const access_token = cookies.get("access_token");
 
-    dispatch(loginThunk({ access_token }))
-      .unwrap()
-      .catch(() => {})
-      .finally(() => {
-        resolve(undefined);
-      });
-  })
-    .then(() => getState())
-    .finally(() => {
+      if (typeof access_token === "string" && access_token.length > 0) {
+        dispatch(login({ access_token }));
+      } else {
+        cookies.delete("access_token", { path: "/" });
+      }
+
+      resolve(getState());
+
       dispatch(api.util.resetApiState());
-    });
+    } catch (unknownError) {
+      reject(unknownError);
+    }
+  });
 }

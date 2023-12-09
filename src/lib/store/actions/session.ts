@@ -19,7 +19,7 @@ export const loginThunk = createAsyncThunk(
         return null;
       })
       .then((authResult) => {
-        dispatch(api.util.invalidateTags([{ type: "access_token", id: access_token }]));
+        dispatch(api.util.invalidateTags([{ type: "access_token", id: "LIST" }]));
         return authResult;
       })
       .finally(() => {

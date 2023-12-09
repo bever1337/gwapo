@@ -1,28 +1,34 @@
-import { loginThunk } from "$lib/store/actions/session";
 import { api } from "$lib/store/api";
 import { readAccountWallet } from "$lib/store/api/read-account-wallet";
-import { readCurrencies } from "$lib/store/api/read-currencies";
+import { readCurrencies } from "$lib/store/api/read-currencies.server";
+import { login } from "$lib/store/api/slice";
 import { getStore } from "$lib/store/getStore";
 
 export function load({ cookies }) {
   const { dispatch, getState } = getStore();
-  const access_token = cookies.get("access_token");
 
   return Promise.all([
-    dispatch(readCurrencies.initiate({})).unwrap(),
-    new Promise((resolve) => {
-      if (typeof access_token !== "string" || access_token.length === 0) {
-        resolve(undefined);
-        return;
-      }
+    dispatch(readCurrencies.initiate({ langTag: "en" })).unwrap(),
+    new Promise<void>((resolve, reject) => {
+      try {
+        const access_token = cookies.get("access_token");
 
-      dispatch(loginThunk({ access_token }))
-        .unwrap()
-        .then(() => dispatch(readAccountWallet.initiate({})).unwrap())
-        .catch(() => {})
-        .finally(() => {
-          resolve(undefined);
-        });
+        if (typeof access_token !== "string" || access_token.length === 0) {
+          cookies.delete("access_token", { path: "/" });
+          return resolve();
+        }
+
+        dispatch(login({ access_token }));
+
+        dispatch(readAccountWallet.initiate({}))
+          .unwrap()
+          .catch(() => {})
+          .then(() => {
+            resolve();
+          });
+      } catch (unknownError) {
+        reject(unknownError);
+      }
     }),
   ])
     .then(() => getState())

@@ -1,11 +1,6 @@
 <script lang="ts">
-  import { addListener, isAnyOf, isFulfilled, isRejected } from "@reduxjs/toolkit";
-  import { onMount } from "svelte";
-
   import { hydrateThunk } from "$lib/store/actions/hydrate";
-  import { loginThunk, logoutThunk } from "$lib/store/actions/session";
   import { api } from "$lib/store/api";
-  import { logout } from "$lib/store/api/slice";
   import { getStore } from "$lib/store/getStore";
   import { toSvelteStore } from "$lib/svelte-redux";
 
@@ -19,55 +14,11 @@
   const appStore = toSvelteStore(
     getStore({
       ...data,
-      [api.reducerPath]: api.reducer(undefined, { type: "" }),
+      [api.reducerPath]: api.reducer(undefined, { type: "hydrate", payload: data.cache }),
     })
   );
   appStore.dispatch(hydrateThunk(data[api.reducerPath]));
   storeCtx.set(appStore);
-
-  onMount(() => {
-    if (typeof localStorage === "undefined") {
-      return;
-    }
-
-    try {
-      const storedAccess = localStorage.getItem("access");
-      if (typeof storedAccess === "string") {
-        appStore.dispatch(loginThunk({ access_token: storedAccess }));
-      } else {
-        localStorage.removeItem("access");
-      }
-    } catch (jsonParsingError) {
-      //
-    }
-
-    const unsubscribeLocalStorageSetter = appStore.dispatch(
-      addListener({
-        matcher: isFulfilled(loginThunk),
-        effect(action) {
-          // re-assert for type guarding
-          if (!isFulfilled(loginThunk)(action)) {
-            return;
-          }
-          localStorage.setItem("access", action.meta.arg.access_token);
-        },
-      })
-    );
-
-    const unsubscribeLocalStorageRemover = appStore.dispatch(
-      addListener({
-        matcher: isAnyOf(logout.match, isFulfilled(logoutThunk), isRejected(logoutThunk)),
-        effect() {
-          localStorage.removeItem("access");
-        },
-      })
-    );
-
-    return function cleanup() {
-      unsubscribeLocalStorageSetter({ cancelActive: true });
-      unsubscribeLocalStorageRemover({ cancelActive: true });
-    };
-  });
 </script>
 
 <div class="layout">
@@ -91,7 +42,7 @@
     --primary--800: 63 63 60;
     --primary--900: 30 30 28;
     --elevation--1: 0px 1px 3px rgb(var(--black) / 0.3);
-    --elevation--2: 1px 1px 4px rgb(var(--black) / 0.3);
+    --elevation--2: 1px 1px 3px rgb(var(--black) / 0.35);
     --elevation--3: 2px 1px 4px rgb(var(--black) / 0.4);
     --elevation--4: 3px 2px 4px rgb(var(--black) / 0.4);
     --elevation--4--height: 40;

@@ -54,7 +54,6 @@ export const injectedApi = api.injectEndpoints({
         },
         query() {
           return {
-            meta: { answer: 42 },
             url: "/v2/account/achievements",
             validateStatus(response, body) {
               return response.status === 200 && Array.isArray(body);

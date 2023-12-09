@@ -116,9 +116,10 @@
             navDialog?.close();
           }}
         >
-          home
+          /home
         </a>
       </li>
+      <li />
       <li>
         <span>vault</span>
         <ul class="nav__list">

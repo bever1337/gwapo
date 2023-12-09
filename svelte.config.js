@@ -18,6 +18,10 @@ const config = {
       precompress: false,
       strict: true,
     }),
+    env: {
+      privatePrefix: "PG",
+      publicPrefix: "NEVER",
+    },
   },
 };
 

@@ -20,17 +20,22 @@ interface BaseQueryExtraOptions {
   scope?: Scope[];
 }
 
+export type ApiMeta =
+  | { access_token: null | string }
+  | (FetchBaseQueryMeta & { access_token: null | string });
+
 const rawBaseQuery = fetchBaseQuery({});
 
-const baseQuery: BaseQueryFn<
+export const baseQuery: BaseQueryFn<
   FetchArgs,
   unknown,
   FetchBaseQueryError,
   BaseQueryExtraOptions,
-  { access_token: null | string } & FetchBaseQueryMeta
+  ApiMeta
 > = async function baseQuery(args, queryApi, extraOptions) {
   const nextArguments = { ...args };
   const meta: { access_token: null | string } = { access_token: null };
+
   if (extraOptions.baseUrl) {
     nextArguments.url = `${extraOptions.baseUrl}${args.url}`;
   }
@@ -57,10 +62,12 @@ const baseQuery: BaseQueryFn<
 
   return {
     ...baseResult,
-    meta: baseResult.meta && {
-      ...baseResult.meta,
-      ...meta,
-    },
+    meta: baseResult.meta
+      ? {
+          ...baseResult.meta,
+          ...meta,
+        }
+      : meta,
   };
 };
 
