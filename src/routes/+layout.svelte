@@ -14,7 +14,11 @@
   const appStore = toSvelteStore(
     getStore({
       ...data,
-      [api.reducerPath]: api.reducer(undefined, { type: "hydrate", payload: data.cache }),
+      [api.reducerPath]: api.reducer(
+        undefined,
+        /** arbitrary type, nothing listens for this action */
+        { type: "@gwapo" }
+      ),
     })
   );
   appStore.dispatch(hydrateThunk(data[api.reducerPath]));

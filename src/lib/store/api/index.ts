@@ -8,7 +8,6 @@ import type {
 
 import { createSvelteApi } from "$lib/svelte-redux/query";
 
-import type { ReadTokenInfoArguments, ReadTokenInfoResult } from "./read-token-info";
 import { hydrate } from "./slice";
 
 import type { RootState } from "../reducer";
@@ -34,6 +33,10 @@ export const baseQuery: BaseQueryFn<
   ApiMeta
 > = async function baseQuery(args, queryApi, extraOptions) {
   const nextArguments = { ...args };
+  if ("params" in nextArguments) {
+    nextArguments.params = { ...nextArguments.params };
+  }
+
   const meta: { access_token: null | string } = { access_token: null };
 
   if (extraOptions.baseUrl) {
@@ -73,30 +76,8 @@ export const baseQuery: BaseQueryFn<
 
 export const api = createSvelteApi({
   baseQuery,
-  endpoints(build) {
-    return {
-      readTokenInfo: build.query<ReadTokenInfoResult, ReadTokenInfoArguments>({
-        extraOptions: {
-          baseUrl: "https://api.guildwars2.com",
-        },
-        providesTags(result, error, queryArguments, meta) {
-          const tags = [{ type: "access_token" as const, id: "LIST" }];
-          if (meta?.access_token) {
-            tags.push({ type: "access_token", id: meta.access_token });
-          }
-          return tags;
-        },
-        query({ access_token }) {
-          return {
-            params: { access_token, v: "2019-05-22T00:00:00.000Z" },
-            url: "/v2/tokeninfo",
-            validateStatus(response, body) {
-              return response.status === 200 && access_token.startsWith(body.id);
-            },
-          };
-        },
-      }),
-    };
+  endpoints() {
+    return {};
   },
   extractRehydrationInfo(action) {
     if (hydrate.match(action)) {
@@ -106,8 +87,6 @@ export const api = createSvelteApi({
   },
   reducerPath: "cache",
   tagTypes: [
-    // Internal
-    "internal/pouches",
     // Gw2
     "access_token",
     "characters",

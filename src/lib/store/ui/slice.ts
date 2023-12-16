@@ -2,8 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import type { RootState } from "../reducer";
 
-import { readCharacters } from "../api/read-characters";
-
 export const uiSlice = createSlice({
   initialState: {
     characterName: "",
@@ -14,14 +12,7 @@ export const uiSlice = createSlice({
       state.characterName = action.payload;
     },
   },
-  extraReducers(builder) {
-    builder.addMatcher(readCharacters.matchFulfilled, (state, action) => {
-      const invalidCharacterNameState = !action.payload.includes(state.characterName);
-      if (invalidCharacterNameState) {
-        state.characterName = action.payload[0] ?? "";
-      }
-    });
-  },
+  extraReducers() {},
 });
 
 export const selectUiSubstate = (state: RootState) =>

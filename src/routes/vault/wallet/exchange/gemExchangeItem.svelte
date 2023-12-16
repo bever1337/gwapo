@@ -12,7 +12,7 @@
     quantity: 0,
   };
 
-  const readCurrencies$ = readCurrencies.query({});
+  const readCurrencies$ = readCurrencies.query({ langTag: "en" });
   $: ({ data: currencies } = $readCurrencies$);
   $: gems = currencies?.entities[4];
 

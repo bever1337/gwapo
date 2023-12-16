@@ -1,7 +1,7 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { skipToken } from "@reduxjs/toolkit/query";
 
-import { api } from ".";
+import { readTokenInfo } from "./read-token-info";
 import { slice } from "./slice";
 
 import type { RootState } from "../reducer";
@@ -10,11 +10,11 @@ import type { Scope } from "../../types/token";
 export const selectClient = (state: RootState | undefined) =>
   state?.[slice.name] ?? slice.getInitialState();
 
-export const makeSelectReadTokenInfo = createSelector(selectClient, ({ access_token }) =>
-  api.endpoints.readTokenInfo.select(access_token ? { access_token: access_token } : skipToken)
+const makeSelectReadTokenInfo = createSelector(selectClient, ({ access_token }) =>
+  readTokenInfo.select(access_token ? { access_token: access_token } : skipToken)
 );
 
-export const selectReadTokenInfo = (state: RootState) => makeSelectReadTokenInfo(state)(state);
+const selectReadTokenInfo = (state: RootState) => makeSelectReadTokenInfo(state)(state);
 
 const selectInScope = (state: RootState, scopes?: Scope[]) => {
   const isPublicApi = (scopes?.length ?? 0) === 0;

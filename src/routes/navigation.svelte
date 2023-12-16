@@ -1,38 +1,9 @@
 <script lang="ts">
   import { skipToken } from "@reduxjs/toolkit/query";
-  import { getAppDispatch, getAppSelector } from "$lib/store";
-  import { loginThunk, logoutThunk } from "$lib/store/actions/session";
-  import { readTokenInfo } from "$lib/store/api/read-token-info";
+  import { beforeNavigate } from "$app/navigation";
+  import { getAppSelector } from "$lib/store";
   import { selectClient } from "$lib/store/api/selectors";
-  import type { ClientState } from "$lib/store/api/initial-state";
-
-  const dispatch = getAppDispatch();
-
-  enum AuthenticatorState {
-    Unauthenticated,
-    Loading,
-    Error,
-    Authenticated,
-  }
-
-  function deriveAuthenticatorState(
-    client: ClientState,
-    mutationResult: { isError: boolean; isLoading: boolean }
-  ) {
-    if (client.access_token === null) {
-      if (mutationResult.isLoading === true) {
-        return AuthenticatorState.Loading;
-      } else if (mutationResult.isError === true) {
-        return AuthenticatorState.Error;
-      }
-      return AuthenticatorState.Unauthenticated;
-    }
-    return AuthenticatorState.Authenticated;
-  }
-
-  let navDialog: HTMLDialogElement;
-  let navDialogIsOpen = false;
-  let settingsDialog: HTMLDialogElement;
+  import { readTokenInfo } from "$lib/store/api/read-token-info";
 
   const clientAccess$ = getAppSelector(selectClient);
   const readTokenInfo$ = readTokenInfo.query(skipToken, { skip: true });
@@ -40,28 +11,21 @@
     $clientAccess$.access_token ? { access_token: $clientAccess$.access_token } : skipToken,
     { skip: !$clientAccess$.access_token }
   );
-  $: authenticatorState = deriveAuthenticatorState($clientAccess$, $readTokenInfo$);
 
-  function onSubmitLogin(
-    event: SubmitEvent & {
-      currentTarget: EventTarget & HTMLFormElement;
-    }
-  ) {
-    const formData = new FormData(event.currentTarget);
-    const access_token = formData.get("access_token");
-    if (typeof access_token !== "string") {
-      // todo, somehow HTML form validation failed???
-      return;
-    }
-    dispatch(loginThunk({ access_token }));
-  }
+  let navDialog: HTMLDialogElement;
+  let navDialogIsOpen = false;
 
-  function onResetLogin(
-    event: Event & {
-      currentTarget: EventTarget & HTMLFormElement;
+  beforeNavigate(() => {
+    navDialogIsOpen = false;
+    navDialog?.close();
+  });
+
+  $: {
+    if (navDialogIsOpen) {
+      navDialog?.show();
+    } else {
+      navDialog?.close();
     }
-  ) {
-    dispatch(logoutThunk({}));
   }
 </script>
 
@@ -73,11 +37,6 @@
       type="button"
       on:click={function onClickToggleDialog() {
         navDialogIsOpen = !navDialogIsOpen;
-        if (navDialogIsOpen) {
-          navDialog?.show();
-        } else {
-          navDialog?.close();
-        }
       }}
     >
       <svg class="" height="2rem" viewBox="0 0 24 24" width="2rem">
@@ -87,17 +46,13 @@
     <h1 class="nav__heading">
       <a href="/">Gwapo</a>
     </h1>
-    <button
-      class="nav__open-settings"
-      on:click={function onClickOpenDialog() {
-        if (!(settingsDialog?.open ?? false)) {
-          settingsDialog?.showModal();
-        }
-      }}
-    >
-      <span class="hide">settings</span>
-      <img alt="settings" src="/ri/settings-4-line.svg" />
-    </button>
+    <a class="nav__open-settings" href="/session">
+      <span class="hide">Manage your GWAPO session</span>
+      <img
+        alt="identicon"
+        src={`/session/identicon?access_token=${$readTokenInfo$.currentData?.id ?? "praise joko"}`}
+      />
+    </a>
   </nav>
 </header>
 <dialog
@@ -110,67 +65,31 @@
   <nav>
     <ul class="nav__list">
       <li>
-        <a
-          href="/"
-          on:click={function closeDialog() {
-            navDialog?.close();
-          }}
-        >
-          /home
-        </a>
+        <a href="/">Home</a>
       </li>
-      <li />
-      <li>
-        <span>vault</span>
-        <ul class="nav__list">
-          <li>
-            <a
-              href="/vault/wallet"
-              on:click={function closeDialog() {
-                navDialog?.close();
-              }}
-            >
-              wallet
-            </a>
-            <ul>
-              <li>
-                <a
-                  href="/vault/wallet/exchange"
-                  on:click={function closeDialog() {
-                    navDialog?.close();
-                  }}
-                >
-                  exchange
-                </a>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </li>
+      <ul class="nav__list">
+        <li>
+          <a href="/session">Session</a>
+        </li>
+        <li>
+          <span>vault</span>
+          <ul class="nav__list">
+            <li>
+              <a href="/vault/dyes">Dyes</a>
+            </li>
+            <li>
+              <a href="/vault/wallet">Wallet</a>
+              <ul>
+                <li>
+                  <a href="/vault/wallet/exchange">Currency Exchange</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
     </ul>
   </nav>
-</dialog>
-<dialog bind:this={settingsDialog}>
-  <form method="dialog">
-    <button formmethod="dialog" type="submit">close</button>
-  </form>
-  <hr />
-  <form on:reset={onResetLogin} on:submit={onSubmitLogin}>
-    {#if authenticatorState === AuthenticatorState.Authenticated}
-      <button type="reset">logout</button>
-    {:else}
-      <input
-        disabled={authenticatorState === AuthenticatorState.Loading}
-        id="access_token"
-        name="access_token"
-        required
-        type="text"
-      />
-      <button disabled={authenticatorState === AuthenticatorState.Loading} type="submit">
-        submit
-      </button>
-    {/if}
-  </form>
 </dialog>
 
 <style>
