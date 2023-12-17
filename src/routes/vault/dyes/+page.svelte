@@ -70,9 +70,12 @@
     nextUrl.searchParams.set("id", `${id}`);
     return nextUrl.toString();
   }
+
+  $: height = radius * 100 * Math.sqrt(3);
+  $: width = radius * 200;
 </script>
 
-<svg viewBox={`${-100 * radius} ${-100 * radius} ${radius * 200} ${radius * 200}`}>
+<svg viewBox={`${-1 * (width / 2)} ${-1 * (height / 2)} ${width} ${height}`}>
   {#each collectHexagonCenterPoints(radius) as [cx, cy], index}
     {@const colorId = colors?.ids[index] ?? 0}
     {@const color = colors?.entities[colorId]}
@@ -85,8 +88,9 @@
           diameter={100}
           fill={`#${color?.rgb ?? "000000"}`}
           stroke={`#${color?.rgb ?? "000000"}`}
-          stroke-width={0}
-          strokeWidth={0}
+          stroke-dasharray={4}
+          stroke-width={2}
+          strokeWidth={4}
           vertices={6}
         />
       </a>

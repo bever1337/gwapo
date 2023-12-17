@@ -1,4 +1,10 @@
-<script context="module" lang="ts">
+<script lang="ts">
+  export let cx: number;
+  export let cy: number;
+  export let diameter: number;
+  export let strokeWidth: number;
+  export let vertices: number;
+
   function calculateNextPoint({
     cx,
     cy,
@@ -16,14 +22,6 @@
     const angleFromCenter = (2 * n * Math.PI) / vertices;
     return [cx + radius * Math.sin(angleFromCenter), cy + radius * Math.cos(angleFromCenter)];
   }
-</script>
-
-<script lang="ts">
-  export let cx: number;
-  export let cy: number;
-  export let diameter: number;
-  export let strokeWidth: number;
-  export let vertices: number;
 
   const zeroAdjustment = Math.max(0, strokeWidth / 2);
   const adjustedDiameter = diameter - zeroAdjustment;
