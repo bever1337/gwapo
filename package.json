@@ -1,62 +1,44 @@
 {
-  "name": "gwapo",
-  "version": "1.0.0",
+  "name": "gwapo-svelte",
+  "version": "0.0.1",
+  "private": true,
   "scripts": {
-    "start": "vite",
+    "dev": "vite dev",
     "build": "vite build",
-    "serve": "vite preview"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/bever1337/gwapo.git"
-  },
-  "author": "",
-  "license": "UNLICENSED",
-  "bugs": {
-    "url": "https://github.com/bever1337/gwapo/issues"
-  },
-  "dependencies": {
-    "@reduxjs/toolkit": "^1.8.6",
-    "dotenv": "^16.0.3",
-    "events": "^3.3.0",
-    "leaflet": "^1.9.2",
-    "node-fetch": "^3.2.10",
-    "pouchdb": "^7.3.0",
-    "pouchdb-adapter-indexeddb": "^7.3.0",
-    "pouchdb-adapter-memory": "^8.0.0",
-    "pouchdb-replication-stream": "^1.2.9",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-intl": "^6.2.5",
-    "react-redux": "^8.0.4",
-    "react-router-dom": "^6.14.2"
+    "preview": "vite preview",
+    "test": "npm run test:integration && npm run test:unit",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "lint": "prettier --plugin-search-dir . --check . && eslint .",
+    "format": "prettier --plugin-search-dir . --write .",
+    "test:integration": "playwright test",
+    "test:unit": "vitest"
   },
   "devDependencies": {
-    "@types/node": "^17.0.45",
-    "@types/pouchdb": "^6.4.0",
-    "@types/react": "^18.0.22",
-    "@types/react-dom": "^18.0.7",
-    "@vitejs/plugin-react": "^4.0.4",
-    "babel-plugin-formatjs": "^10.3.35",
-    "typescript": "^4.8.4",
-    "typescript-plugin-css-modules": "^5.0.1",
-    "vite": "^4.4.8"
+    "@playwright/test": "^1.28.1",
+    "@sveltejs/adapter-auto": "^2.0.0",
+    "@sveltejs/adapter-static": "^2.0.3",
+    "@sveltejs/kit": "^1.20.4",
+    "@types/pg": "^8.10.9",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.28.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-svelte": "^2.30.0",
+    "prettier": "^2.8.0",
+    "prettier-plugin-svelte": "^2.10.1",
+    "svelte": "^4.0.5",
+    "svelte-check": "^3.4.3",
+    "tslib": "^2.4.1",
+    "typescript": "^5.0.0",
+    "vite": "^4.4.2",
+    "vitest": "^0.32.2"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "type": "module",
+  "dependencies": {
+    "@formatjs/intl": "^2.9.3",
+    "@leeoniya/ufuzzy": "^1.0.10",
+    "@reduxjs/toolkit": "^2.0.0-beta.4",
+    "pg": "^8.11.3"
   }
 }
