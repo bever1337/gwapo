@@ -12,9 +12,9 @@
     vertices: number;
     n: number;
   }) {
-    const radius = diameter / 2;
+    const radius = (diameter * Math.sqrt(3)) / 3;
     const angleFromCenter = (2 * n * Math.PI) / vertices;
-    return [cx + radius * Math.cos(angleFromCenter), cy + radius * Math.sin(angleFromCenter)];
+    return [cx + radius * Math.sin(angleFromCenter), cy + radius * Math.cos(angleFromCenter)];
   }
 </script>
 
@@ -25,7 +25,7 @@
   export let strokeWidth: number;
   export let vertices: number;
 
-  const zeroAdjustment = Math.floor(strokeWidth / 2);
+  const zeroAdjustment = Math.max(0, strokeWidth / 2);
   const adjustedDiameter = diameter - zeroAdjustment;
   const [x1, y1] = calculateNextPoint({
     cx,
@@ -34,7 +34,7 @@
     n: 1,
     vertices,
   });
-  let d = `M ${x1} ${y1}`;
+  let d = `M ${Math.round(x1 * 100) / 100} ${Math.round(y1 * 100) / 100}`;
   for (let i = 2; i <= vertices; i++) {
     const [x, y] = calculateNextPoint({
       cx,
@@ -43,7 +43,7 @@
       n: i,
       vertices,
     });
-    d += ` L ${x} ${y}`;
+    d += ` L ${Math.round(x * 100) / 100} ${Math.round(y * 100) / 100}`;
   }
   d += " Z";
 </script>

@@ -44,10 +44,10 @@
     for (let i = 0; i < radius; i++) {
       /** Center-to-center distance between two hexagons */
       const distance = 100;
-      let [xN, yN]: [xN: number, yN: number] = [0, -1 * i * distance];
+      let [xN, yN]: [xN: number, yN: number] = [-1 * i * distance, 0];
       let [translateX, translateY]: [translateX: number, translateY: number] = [
-        (-1 * distance * Math.sqrt(3)) / 2,
         distance / 2,
+        (-1 * distance * Math.sqrt(3)) / 2,
       ];
       for (let j = 0; j < 6; j++) {
         for (let k = 0; k < i; k++) {
@@ -56,8 +56,8 @@
           centerPoints.push([xN, yN]);
         }
         [translateX, translateY] = [
-          Math.cos(Math.PI / 3) * translateX + Math.sin(Math.PI / 3) * translateY,
-          -1 * Math.sin(Math.PI / 3) * translateX + Math.cos(Math.PI / 3) * translateY,
+          Math.cos(Math.PI / 3) * translateX - Math.sin(Math.PI / 3) * translateY, // Negate sin term for clockwise rotation
+          Math.sin(Math.PI / 3) * translateX + Math.cos(Math.PI / 3) * translateY, // Negate cos term for clockwise rotation
         ];
       }
     }
@@ -84,12 +84,12 @@
           id={colorId}
           diameter={100}
           fill={`#${color?.rgb ?? "000000"}`}
-          stroke="#000000"
-          stroke-width={5}
+          stroke={`#${color?.rgb ?? "000000"}`}
+          stroke-width={0}
           strokeWidth={0}
           vertices={6}
-        /></a
-      >
+        />
+      </a>
     {/if}
   {/each}
 </svg>
