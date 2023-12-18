@@ -13,30 +13,14 @@
   const readColors$ = readColors.query({ langTag: "en", material: "cloth" });
   $: ({ data: colors } = $readColors$);
 
-  /** Calculate the number of tiles drawn for a given radius */
-  function radiusToTiles(radius: number) {
-    if (radius <= 0) return 0;
-    let tiles = 1;
-    for (let i = 2; i <= radius; i++) {
-      tiles += 6 * (i - 1);
-    }
-    return tiles;
-  }
-
   /** Calculate an approximate radius for a given number of tiles */
-  function tilesToRadius(tiles: number) {
-    let radius = 0;
-    for (; tiles >= 0; radius++) {
-      tiles -= 6 * radius + 1;
+  function tilesToRadius(tiles: number): number {
+    let consumed = 1;
+    let radius = 1;
+    for (; consumed < tiles; radius++) {
+      consumed += radius * 6;
     }
     return radius;
-  }
-
-  /** Pads the radius to ensure all tiles fit */
-  function tilesToPaddedRadius(tiles: number) {
-    const radius = tilesToRadius(tiles);
-    const unpaddedTiles = radiusToTiles(radius);
-    return tiles > unpaddedTiles ? radius + 1 : radius;
   }
 
   function collectHexagonCenterPoints(radius: number): [cx: number, cy: number][] {
@@ -64,7 +48,7 @@
     return centerPoints;
   }
 
-  $: radius = tilesToPaddedRadius(colors?.ids.length ?? 0);
+  $: radius = tilesToRadius(colors?.ids.length ?? 0);
   function toSearchUrl(originalUrl: URL, id: number): string {
     const nextUrl = new URL(originalUrl);
     nextUrl.searchParams.set("id", `${id}`);
