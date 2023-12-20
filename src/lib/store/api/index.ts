@@ -23,8 +23,6 @@ export type ApiMeta =
   | { access_token: null | string }
   | (FetchBaseQueryMeta & { access_token: null | string });
 
-const rawBaseQuery = fetchBaseQuery({});
-
 export const baseQuery: BaseQueryFn<
   FetchArgs,
   unknown,
@@ -39,11 +37,11 @@ export const baseQuery: BaseQueryFn<
 
   const meta: { access_token: null | string } = { access_token: null };
 
-  if (extraOptions.baseUrl) {
+  if (extraOptions?.baseUrl) {
     nextArguments.url = `${extraOptions.baseUrl}${args.url}`;
   }
 
-  if (Array.isArray(extraOptions.scope) && extraOptions.scope.length > 0) {
+  if (Array.isArray(extraOptions?.scope) && extraOptions.scope.length > 0) {
     // request is Gw2 authenticated api
     const { access_token } = (queryApi.getState() as RootState).client;
     if (!access_token) {
@@ -60,6 +58,15 @@ export const baseQuery: BaseQueryFn<
     nextArguments.params ??= {};
     nextArguments.params["access_token"] = access_token;
   }
+
+  const rawBaseQuery = fetchBaseQuery(
+    typeof queryApi.extra === "object" &&
+      queryApi.extra !== null &&
+      "fetchFn" in queryApi.extra &&
+      typeof queryApi.extra.fetchFn === "function"
+      ? { fetchFn: queryApi.extra.fetchFn as typeof fetch }
+      : {}
+  );
 
   const baseResult = await rawBaseQuery(nextArguments, queryApi, extraOptions);
 

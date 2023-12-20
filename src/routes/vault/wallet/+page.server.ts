@@ -4,8 +4,8 @@ import { readAccountWallet } from "$lib/store/api/read-account-wallet";
 import { readCurrencies } from "$lib/store/api/read-currencies.server";
 import { getStore } from "$lib/store/getStore";
 
-export function load({ cookies }) {
-  const { dispatch, getState } = getStore();
+export function load({ cookies, fetch }) {
+  const { dispatch, getState } = getStore(undefined, fetch);
 
   return Promise.all([
     dispatch(readCurrencies.initiate({ langTag: "en" })),

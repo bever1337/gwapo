@@ -4,61 +4,94 @@
   import { getAppDispatch } from "$lib/store";
   import { hydrateThunk } from "$lib/store/actions/hydrate";
   import { readColors } from "$lib/store/api/read-colors";
+  import {
+    initialState as initialDyeCategories,
+    readDyeCategories,
+  } from "$lib/store/api/read-dye-categories";
+
+  import { collectHexagonCenterPoints, paramToString, tilesToRadius } from "./common";
 
   export let data;
 
   const dispatch = getAppDispatch();
   dispatch(hydrateThunk(data.cache));
 
-  const readColors$ = readColors.query({ langTag: "en", material: "cloth" });
-  $: ({ data: colors } = $readColors$);
-
-  /** Calculate an approximate radius for a given number of tiles */
-  function tilesToRadius(tiles: number): number {
-    let consumed = 1;
-    let radius = 1;
-    for (; consumed < tiles; radius++) {
-      consumed += radius * 6;
-    }
-    return radius;
-  }
-
-  function collectHexagonCenterPoints(radius: number): [cx: number, cy: number][] {
-    const centerPoints: [number, number][] = [[0, 0]];
-    for (let i = 0; i < radius; i++) {
-      /** Center-to-center distance between two hexagons */
-      const distance = 100;
-      let [xN, yN]: [xN: number, yN: number] = [-1 * i * distance, 0];
-      let [translateX, translateY]: [translateX: number, translateY: number] = [
-        distance / 2,
-        (-1 * distance * Math.sqrt(3)) / 2,
-      ];
-      for (let j = 0; j < 6; j++) {
-        for (let k = 0; k < i; k++) {
-          xN += translateX;
-          yN += translateY;
-          centerPoints.push([xN, yN]);
-        }
-        [translateX, translateY] = [
-          Math.cos(Math.PI / 3) * translateX - Math.sin(Math.PI / 3) * translateY, // Negate sin term for clockwise rotation
-          Math.sin(Math.PI / 3) * translateX + Math.cos(Math.PI / 3) * translateY, // Negate cos term for clockwise rotation
-        ];
-      }
-    }
-    return centerPoints;
-  }
-
-  $: radius = tilesToRadius(colors?.ids.length ?? 0);
   function toSearchUrl(originalUrl: URL, id: number): string {
     const nextUrl = new URL(originalUrl);
     nextUrl.searchParams.set("id", `${id}`);
     return nextUrl.toString();
   }
 
+  let form: HTMLFormElement;
+
+  let hue_category = $page.url.searchParams.get("hue") ?? "";
+  let material_category = $page.url.searchParams.get("material") ?? "";
+  let rarity_category = $page.url.searchParams.get("rarity") ?? "";
+
+  const readColors$ = readColors.query({
+    langTag: "en",
+    material: "cloth",
+    where: [
+      paramToString(hue_category),
+      paramToString(material_category),
+      paramToString(rarity_category),
+    ],
+  });
+
+  $: readColors$.next({
+    langTag: "en",
+    material: "cloth",
+    where: [
+      paramToString(hue_category),
+      paramToString(material_category),
+      paramToString(rarity_category),
+    ],
+  });
+  $: ({ data: colors } = $readColors$);
+
+  const readDyeCategories$ = readDyeCategories.query({});
+  $: ({ data: { hue, material, rarity } = initialDyeCategories } = $readDyeCategories$);
+
+  $: radius = tilesToRadius(colors?.ids.length ?? 0);
   $: height = radius * 100 * Math.sqrt(3);
   $: width = radius * 200;
 </script>
 
+<form action="/vault/dyes" bind:this={form}>
+  <label>
+    Hue
+    <select bind:value={hue_category} name="where_hue">
+      <option label="All Hues" value="" />
+      {#each hue as hue_category (hue_category)}
+        <option label={hue_category} value={hue_category} />
+      {/each}
+    </select>
+  </label>
+  <label>
+    Material
+    <select bind:value={material_category} name="where_material">
+      <option label="All Materials" value="" />
+      {#each material as material_category (material_category)}
+        <option label={material_category} value={material_category} />
+      {/each}
+    </select>
+  </label>
+  <label>
+    Rarity
+    <select bind:value={rarity_category} name="where_rarity">
+      <option label="All Rarities" value="" />
+      {#each rarity as rarity_category (rarity_category)}
+        <option label={rarity_category} value={rarity_category} />
+      {/each}
+    </select>
+  </label>
+  <label>
+    Locked
+    <input name="locked" type="checkbox" value="true" />
+  </label>
+  <input name="id" type="hidden" value={$page.url.searchParams.get("id")} />
+  <button type="submit">submit</button>
+</form>
 <svg viewBox={`${-1 * (width / 2)} ${-1 * (height / 2)} ${width} ${height}`}>
   {#each collectHexagonCenterPoints(radius) as [cx, cy], index}
     {@const colorId = colors?.ids[index] ?? 0}

@@ -11,8 +11,8 @@ async function sha512(str: string) {
   );
 }
 
-export function GET({ cookies }) {
-  const { dispatch, getState } = getStore();
+export function GET({ cookies, fetch }) {
+  const { dispatch, getState } = getStore(undefined, fetch);
 
   return dispatch(addUserContext({ access_token: cookies.get("access_token") }))
     .unwrap()
