@@ -2,6 +2,7 @@ import { createEntityAdapter } from "@reduxjs/toolkit";
 import type { EntityState } from "@reduxjs/toolkit";
 
 import { api } from ".";
+import { selectGwapoEdgeUrl } from "./selectors";
 
 export enum CurrencyCategory {
   General,
@@ -38,8 +39,16 @@ export const injectedApi = api.injectEndpoints({
   endpoints(build) {
     return {
       readCurrencies: build.query<ReadCurrenciesResult, ReadCurrenciesArguments>({
-        queryFn() {
-          return { error: { error: "Unimplemented", status: "CUSTOM_ERROR" } };
+        extraOptions: {
+          baseUrl: selectGwapoEdgeUrl,
+        },
+        query({ langTag }) {
+          return {
+            params: {
+              langTag,
+            },
+            url: "/api/currencies",
+          };
         },
       }),
     };

@@ -1,4 +1,5 @@
 import { api } from ".";
+import { selectGw2Url } from "./selectors";
 
 import type { Scope } from "../../types/token";
 
@@ -24,7 +25,7 @@ export const injectedApi = api.injectEndpoints({
         ReadCommerceExchangeCoinsQueryArguments
       >({
         extraOptions: {
-          baseUrl: "https://api.guildwars2.com",
+          baseUrl: selectGw2Url,
           scope: scopes,
         },
         query(queryArguments) {

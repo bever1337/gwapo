@@ -1,13 +1,15 @@
 import { addUserContext } from "$lib/store/actions/session.server";
 import { api } from "$lib/store/api";
 import { readColors } from "$lib/store/api/read-colors";
-import { readDyeCategories } from "$lib/store/api/read-dye-categories.server";
+import { readDyeCategories } from "$lib/store/api/read-dye-categories";
+import { nextOrigin } from "$lib/store/api/slice";
 import { getStore } from "$lib/store/getStore";
 
 import { paramToString } from "./common";
 
 export async function load({ cookies, fetch, url }) {
   const { dispatch, getState } = getStore(undefined, fetch);
+  dispatch(nextOrigin({ gw2_url: "https://api.guildwars2.com", gwapo_edge_url: url.origin }));
   return Promise.all([
     dispatch(addUserContext({ access_token: cookies.get("access_token") })),
     dispatch(

@@ -1,4 +1,5 @@
 import { api } from ".";
+import { selectGw2Url } from "./selectors";
 
 import type { AccessToken } from "../../types/token";
 
@@ -13,7 +14,7 @@ export const injectedApi = api.injectEndpoints({
     return {
       readTokenInfo: build.query<ReadTokenInfoResult, ReadTokenInfoArguments>({
         extraOptions: {
-          baseUrl: "https://api.guildwars2.com",
+          baseUrl: selectGw2Url,
         },
         providesTags(result, error, queryArguments, meta) {
           const tags = [{ type: "access_token" as const, id: "LIST" }];

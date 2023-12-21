@@ -1,4 +1,5 @@
 import { api } from ".";
+import { selectGw2Url } from "./selectors";
 
 import { Scope } from "../../types/token";
 
@@ -34,7 +35,7 @@ export const injectedApi = api.injectEndpoints({
     return {
       readAccount: build.query<ReadAccountResult, ReadAccountArguments>({
         extraOptions: {
-          baseUrl: "https://api.guildwars2.com",
+          baseUrl: selectGw2Url,
           scope: scopes,
         },
         providesTags(result, error, queryArguments, meta) {

@@ -4,10 +4,8 @@ import { api } from "./api";
 import { reducer } from "./reducer";
 import type { RootState } from "./reducer";
 
-export const getStore = (preloadedState?: RootState, fetchFn?: typeof fetch) => {
-  console.log("make stre fetchFn", fetchFn);
-  return configureStore({
-    // ext
+export const getStore = (preloadedState?: RootState, fetchFn?: typeof fetch) =>
+  configureStore({
     middleware(getDefaultMiddleware) {
       return getDefaultMiddleware({ thunk: { extraArgument: { fetchFn } } })
         .prepend(createListenerMiddleware().middleware)
@@ -16,4 +14,3 @@ export const getStore = (preloadedState?: RootState, fetchFn?: typeof fetch) => 
     preloadedState,
     reducer,
   });
-};

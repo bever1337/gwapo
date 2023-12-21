@@ -15,7 +15,7 @@ import type { RootState } from "../reducer";
 import type { Scope } from "../../types/token";
 
 interface BaseQueryExtraOptions {
-  baseUrl?: `https://${string}`;
+  baseUrl?: (state: RootState) => null | string;
   scope?: Scope[];
 }
 
@@ -38,7 +38,11 @@ export const baseQuery: BaseQueryFn<
   const meta: { access_token: null | string } = { access_token: null };
 
   if (extraOptions?.baseUrl) {
-    nextArguments.url = `${extraOptions.baseUrl}${args.url}`;
+    const baseUrl = extraOptions.baseUrl(queryApi.getState() as RootState);
+    if (!baseUrl) {
+      throw new Error("No URL to query");
+    }
+    nextArguments.url = new URL(args.url, baseUrl).toString();
   }
 
   if (Array.isArray(extraOptions?.scope) && extraOptions.scope.length > 0) {

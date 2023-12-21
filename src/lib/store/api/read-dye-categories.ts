@@ -1,4 +1,5 @@
 import { api } from ".";
+import { selectGwapoEdgeUrl } from "./selectors";
 
 export type ReadDyeCategoriesArguments = Record<string, never>;
 
@@ -12,8 +13,9 @@ export const injectedApi = api.injectEndpoints({
   endpoints(build) {
     return {
       readDyeCategories: build.query<ReadDyeCategoriesResult, ReadDyeCategoriesArguments>({
-        queryFn() {
-          return { error: { error: "Unimplemented", status: "CUSTOM_ERROR" } };
+        extraOptions: { baseUrl: selectGwapoEdgeUrl },
+        query() {
+          return { url: "/api/dyes/categories" };
         },
       }),
     };

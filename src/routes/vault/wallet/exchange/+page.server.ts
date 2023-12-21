@@ -3,14 +3,15 @@ import { api } from "$lib/store/api";
 import { readAccountWallet } from "$lib/store/api/read-account-wallet";
 import { readCommerceExchangeCoins } from "$lib/store/api/read-commerce-exchange-coints";
 import { readCommerceExchangeGems } from "$lib/store/api/read-commerce-exchange-gems";
-import { readCurrencies } from "$lib/store/api/read-currencies.server";
+import { readCurrencies } from "$lib/store/api/read-currencies";
+import { nextOrigin } from "$lib/store/api/slice";
 import { getStore } from "$lib/store/getStore";
 
 import { GEMS, GEMS_INPUT, GOLD, GOLD_INPUT } from "./constants";
 
-export function load({ cookies, fetch }) {
+export function load({ cookies, fetch, url }) {
   const { dispatch, getState } = getStore(undefined, fetch);
-
+  dispatch(nextOrigin({ gw2_url: "https://api.guildwars2.com", gwapo_edge_url: url.origin }));
   return Promise.all([
     dispatch(readCurrencies.initiate({ langTag: "en" })),
     ...GEMS.concat([GEMS_INPUT]).map((gems) =>

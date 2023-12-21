@@ -2,6 +2,7 @@ import { createEntityAdapter } from "@reduxjs/toolkit";
 import type { EntityState } from "@reduxjs/toolkit";
 
 import { api } from ".";
+import { selectGw2Url } from "./selectors";
 
 import { Scope } from "../../types/token";
 
@@ -24,7 +25,7 @@ export const injectedApi = api.injectEndpoints({
     return {
       readAccountWallet: build.query<ReadAccountWalletResult, ReadAccountWalletArguments>({
         extraOptions: {
-          baseUrl: "https://api.guildwars2.com",
+          baseUrl: selectGw2Url,
           scope: scopes,
         },
         providesTags(result, error, queryArguments, meta) {

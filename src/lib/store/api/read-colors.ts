@@ -2,6 +2,7 @@ import { createEntityAdapter } from "@reduxjs/toolkit";
 import type { EntityState } from "@reduxjs/toolkit";
 
 import { api } from ".";
+import { selectGwapoEdgeUrl } from "./selectors";
 
 export interface Color {
   id: number;
@@ -29,6 +30,9 @@ export const injectedApi = api.injectEndpoints({
   endpoints(build) {
     return {
       readColors: build.query<ReadColorsResult, ReadColorsArguments>({
+        extraOptions: {
+          baseUrl: selectGwapoEdgeUrl,
+        },
         query({ langTag, material, where: [where_hue, where_material, where_rarity] }) {
           return {
             params: {
